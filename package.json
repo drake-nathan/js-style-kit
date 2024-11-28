@@ -1,19 +1,23 @@
 {
   "name": "eslint-config-vigilance",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write .",
+    "lint": "turbo lint"
   },
   "devDependencies": {
-    "prettier": "^3.2.5",
+    "prettier": "^3.4.1",
+    "prettier-plugin-packagejson": "^2.5.6",
+    "prettier-plugin-sort-json": "^4.0.0",
+    "prettier-plugin-tailwindcss": "^0.6.9",
     "turbo": "^2.3.3",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   }
 }
