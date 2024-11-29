@@ -1,3 +1,3 @@
-# `@turbo/eslint-config`
+# `eslint-config-everything`
 
-Collection of internal eslint configurations.
+The last eslint config you'll ever need.
