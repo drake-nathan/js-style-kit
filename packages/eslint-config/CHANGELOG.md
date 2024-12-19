@@ -1,5 +1,15 @@
 # eslint-config-everything
 
+## 0.0.8
+
+### Patch Changes
+
+- fix missing import
+- Organize and streamline configs
+- add types
+- fix broken config
+- add prettier and typescript
+
 ## 0.0.7
 
 ### Patch Changes
