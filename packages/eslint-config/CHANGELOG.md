@@ -1,5 +1,14 @@
 # eslint-config-everything
 
+## 0.0.6
+
+### Patch Changes
+
+- fix missing import
+- Organize and streamline configs
+- add types
+- fix broken config
+
 ## 0.0.5
 
 ### Patch Changes
