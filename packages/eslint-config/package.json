@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-everything",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A fully featured, opinionated ESLint configuration.",
   "keywords": [
     "eslint",
@@ -11,7 +11,7 @@
   "author": "Nathan Drake <nathan@drakewest.dev>",
   "type": "module",
   "exports": {
-    ".": "./src/index.js"
+    ".": "./dist/index.js"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
