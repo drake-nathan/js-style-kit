@@ -4,8 +4,8 @@
   "description": "A fully featured, opinionated ESLint configuration.",
   "keywords": [
     "eslint",
-    "eslint-config",
-    "eslint-config-vigilance"
+    "prettier",
+    "style guide"
   ],
   "license": "MIT",
   "author": "Nathan Drake <nathan@drakewest.dev>",
@@ -29,8 +29,8 @@
     "release": "changeset publish"
   },
   "dependencies": {
+    "@repo/typescript-config": "workspace:*",
     "eslint": "^9.17.0",
-    "eslint-plugin-only-warn": "^1.1.0",
     "eslint-plugin-perfectionist": "^4.3.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.1.0",
@@ -45,8 +45,12 @@
     "@arethetypeswrong/cli": "^0.17.1",
     "@changesets/cli": "^2.27.11",
     "@next/eslint-plugin-next": "^15.1.1",
+    "@types/node": "^22.10.2",
     "globals": "^15.14.0",
     "jiti": "^2.4.2",
     "tsup": "^8.3.5"
+  },
+  "engines": {
+    "node": "^20.11.0 || >=21.2.0"
   }
 }

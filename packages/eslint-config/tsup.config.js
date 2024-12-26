@@ -1,8 +1,10 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entryPoints: ["src/index.js"],
+  clean: true,
+  dts: true,
+  entryPoints: ["src/**/*"],
   format: ["esm"],
   outDir: "dist",
-  clean: true,
+  sourcemap: true,
 });
