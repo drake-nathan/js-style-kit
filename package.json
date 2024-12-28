@@ -5,10 +5,11 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "format": "prettier --write .",
+    "format": "turbo format",
     "lint": "turbo lint"
   },
   "devDependencies": {
+    "eslint-config-everything": "workspace:*",
     "turbo": "^2.3.3",
     "typescript": "5.7.2"
   },

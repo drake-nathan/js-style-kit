@@ -1,6 +1,6 @@
 import tseslint, { type Config } from "typescript-eslint";
 
-import { typescriptRules } from "../rules/typescript.js";
+import { tseslintRules } from "./rules.js";
 
 export const tseslintConfig: Config = tseslint.config(
   {
@@ -15,7 +15,7 @@ export const tseslintConfig: Config = tseslint.config(
     plugins: {
       "@typescript-eslint": tseslint.plugin,
     },
-    rules: typescriptRules,
+    rules: tseslintRules,
   },
   {
     extends: [tseslint.configs.disableTypeChecked],

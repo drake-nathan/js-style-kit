@@ -1,4 +1,4 @@
-import type { EslintRuleConfig } from "../types.js";
+import type { EslintRuleConfig } from "../../types.js";
 
 interface PerfectionistRuleOptions {
   order: "asc" | "desc";
@@ -10,7 +10,12 @@ const defaultOptions: PerfectionistRuleOptions = {
   type: "natural",
 };
 
-export const perfectionistRules = {
+type PerfectionRules = Record<
+  `perfectionist/${string}`,
+  EslintRuleConfig<PerfectionistRuleOptions>
+>;
+
+export const perfectionistRules: PerfectionRules = {
   "perfectionist/sort-array-includes": ["warn", defaultOptions],
   "perfectionist/sort-classes": ["warn", defaultOptions],
   "perfectionist/sort-decorators": ["warn", defaultOptions],
@@ -31,7 +36,4 @@ export const perfectionistRules = {
   "perfectionist/sort-switch-case": ["warn", defaultOptions],
   "perfectionist/sort-union-types": ["warn", defaultOptions],
   "perfectionist/sort-variable-declarations": ["warn", defaultOptions],
-} satisfies Record<
-  `perfectionist/${string}`,
-  EslintRuleConfig<PerfectionistRuleOptions>
->;
+};

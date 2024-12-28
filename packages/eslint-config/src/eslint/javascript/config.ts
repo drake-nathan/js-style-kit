@@ -1,9 +1,9 @@
 import type { Linter } from "eslint";
 
-import { javascriptEslintRules } from "./rules.js";
+import { baseEslintRules } from "./rules.js";
 
-export const javascriptEslintObj = {
+export const baseEslintConfig: Linter.Config = {
   linterOptions: { reportUnusedDisableDirectives: true },
-  name: "javascript",
-  rules: javascriptEslintRules,
-} satisfies Linter.Config;
+  name: "base-eslint-config",
+  rules: baseEslintRules,
+};

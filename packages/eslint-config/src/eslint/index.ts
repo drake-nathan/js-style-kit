@@ -1,21 +1,19 @@
 import type { Linter } from "eslint";
 
 import { ignores } from "./ignores.js";
-import { javascriptEslintObj } from "./javascript/config.js";
-import { perfectionist } from "./perfectionist.js";
-import { tseslintConfig } from "./typescript.js";
+import { baseEslintConfig } from "./javascript/config.js";
+import { perfectionistConfig } from "./perfectionist/config.js";
+import { tseslintConfig } from "./typescript/config.js";
 
-export const javascriptConfig = [
+export const eslintBase = [
   ignores,
-  javascriptEslintObj,
-  ...perfectionist,
+  baseEslintConfig,
+  perfectionistConfig,
 ] satisfies Linter.Config[];
 
-export const typescriptConfig = [
+export const eslintTypescript = [
   ignores,
-  javascriptEslintObj,
+  baseEslintConfig,
   ...(tseslintConfig as Linter.Config[]),
-  ...perfectionist,
+  perfectionistConfig,
 ] satisfies Linter.Config[];
-
-export { javascriptEslintRules } from "./javascript/rules.js";

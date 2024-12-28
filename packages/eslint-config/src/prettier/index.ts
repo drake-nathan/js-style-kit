@@ -13,14 +13,13 @@ enum CategorySort {
   ReverseNumeric = "reverseNumeric",
 }
 
+export type PrettierConfigWithTailwind = PrettierConfig & TailwindPluginOptions;
+export type PrettierConfig = Config & SortJsonOptions;
+
 interface SortJsonOptions {
   jsonRecursiveSort?: boolean;
   jsonSortOrder?: Record<string, CategorySort | null>;
 }
-
-export type PrettierConfig = Config & SortJsonOptions;
-
-export type PrettierConfigWithTailwind = PrettierConfig & TailwindPluginOptions;
 
 export const prettier = {
   experimentalTernaries: true,
@@ -28,7 +27,7 @@ export const prettier = {
   plugins: ["prettier-plugin-sort-json", "prettier-plugin-packagejson"],
 } satisfies PrettierConfig;
 
-export const prettierTailwind = {
+export const prettierWithTailwind = {
   ...prettier,
   plugins: [...prettier.plugins, "prettier-plugin-tailwindcss"],
   tailwindFunctions: ["clsx", "cva", "cn"],
