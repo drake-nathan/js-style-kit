@@ -1,5 +1,17 @@
 # eslint-config-everything
 
+## 0.0.11
+
+### Patch Changes
+
+- update project structure
+- fix tsup include
+- fix missing import
+- Organize and streamline configs
+- add types
+- fix broken config
+- add prettier and typescript
+
 ## 0.0.10
 
 ### Patch Changes
