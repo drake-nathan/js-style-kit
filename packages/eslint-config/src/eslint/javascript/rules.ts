@@ -1,6 +1,18 @@
-import type { Linter } from "eslint";
+import type { EslintRuleConfig, FunctionStyle } from "../../types.js";
 
-export const baseEslintRules: Linter.RulesRecord = {
+type BaseRules = Record<string, EslintRuleConfig> & {
+  "func-style"?: EslintRuleConfig<
+    "declaration" | "expression",
+    {
+      allowArrowFunctions?: boolean;
+      overrides?: {
+        namedExports?: "declaration" | "expression" | "ignore";
+      };
+    }
+  >;
+};
+
+export const baseEslintRules = (functionStyle: FunctionStyle): BaseRules => ({
   /**
    * Require return statements in array methods callbacks.
    *
@@ -39,7 +51,7 @@ export const baseEslintRules: Linter.RulesRecord = {
   "default-case-last": "warn",
   /**
    * Require triple equals (`===` and `!==`).
-   *
+   *å
    * 🔧 Fixable - https://eslint.org/docs/rules/eqeqeq
    */
   eqeqeq: "warn",
@@ -50,6 +62,11 @@ export const baseEslintRules: Linter.RulesRecord = {
    * 🚫 Not fixable - https://eslint.org/docs/rules/func-names
    */
   "func-names": ["warn", "as-needed"],
+  "func-style": [
+    "warn",
+    functionStyle === "arrow" ? "expression" : functionStyle,
+    { allowArrowFunctions: true },
+  ],
   /**
    * Require grouped accessor pairs in object literals and classes.
    *
@@ -416,4 +433,4 @@ export const baseEslintRules: Linter.RulesRecord = {
    * 🔧 Fixable - https://eslint.org/docs/rules/yoda
    */
   yoda: "warn",
-};
+});

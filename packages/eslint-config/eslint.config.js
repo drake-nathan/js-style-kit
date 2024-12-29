@@ -1,1 +1,3 @@
-export { eslintTypescript as default } from "eslint-config-everything";
+import { eslintConfig } from "eslint-config-everything";
+
+export default eslintConfig();

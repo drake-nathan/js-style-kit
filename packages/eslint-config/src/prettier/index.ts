@@ -13,22 +13,33 @@ enum CategorySort {
   ReverseNumeric = "reverseNumeric",
 }
 
-export type PrettierConfigWithTailwind = PrettierConfig & TailwindPluginOptions;
-export type PrettierConfig = Config & SortJsonOptions;
-
 interface SortJsonOptions {
   jsonRecursiveSort?: boolean;
   jsonSortOrder?: Record<string, CategorySort | null>;
 }
 
-export const prettier = {
-  experimentalTernaries: true,
-  jsonRecursiveSort: true,
-  plugins: ["prettier-plugin-sort-json", "prettier-plugin-packagejson"],
-} satisfies PrettierConfig;
+export type PrettierConfigWithTailwind = PrettierConfig & TailwindPluginOptions;
+export type PrettierConfig = Config & SortJsonOptions;
 
-export const prettierWithTailwind = {
-  ...prettier,
-  plugins: [...prettier.plugins, "prettier-plugin-tailwindcss"],
-  tailwindFunctions: ["clsx", "cva", "cn"],
-} satisfies PrettierConfigWithTailwind;
+interface PrettierConfigOptions {
+  tailwind?: boolean;
+}
+
+export const prettierConfig = ({
+  tailwind,
+}: PrettierConfigOptions = {}): PrettierConfigWithTailwind => {
+  const plugins = ["prettier-plugin-sort-json", "prettier-plugin-packagejson"];
+
+  const config: PrettierConfigWithTailwind = {
+    experimentalTernaries: true,
+    jsonRecursiveSort: true,
+    plugins,
+  };
+
+  if (tailwind) {
+    plugins.push("prettier-plugin-tailwindcss");
+    config.tailwindFunctions = ["clsx", "cva", "cn"];
+  }
+
+  return config;
+};
