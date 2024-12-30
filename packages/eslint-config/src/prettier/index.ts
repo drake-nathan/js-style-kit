@@ -25,9 +25,22 @@ interface PrettierConfigOptions {
   tailwind?: boolean;
 }
 
-export const prettierConfig = ({
-  tailwind,
-}: PrettierConfigOptions = {}): PrettierConfigWithTailwind => {
+/**
+ * Creates a Prettier configuration object with optional Tailwind support
+ * @param options - Configuration options for Prettier
+ * @param options.tailwind Tailwind CSS formatting support
+ * @returns Prettier configuration object with:
+ * - Default Prettier configuration
+ * - Experimental ternaries enabled
+ * - JSON sorting plugin
+ * - Package.json sorting plugin
+ * - Optional Tailwind plugin and functions
+ */
+export const prettierConfig = (
+  options: PrettierConfigOptions = {},
+): PrettierConfigWithTailwind => {
+  const { tailwind = false } = options;
+
   const plugins = ["prettier-plugin-sort-json", "prettier-plugin-packagejson"];
 
   const config: PrettierConfigWithTailwind = {

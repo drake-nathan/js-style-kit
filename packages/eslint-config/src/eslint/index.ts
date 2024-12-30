@@ -12,10 +12,8 @@ export interface EslintConfigOptions {
   functionStyle?: FunctionStyle;
   ignores?: string[];
   import?: boolean;
-  nextjs?: boolean;
   react?: boolean;
   sorting?: boolean;
-  turbo?: boolean;
   typescript?: boolean;
 }
 
@@ -58,5 +56,5 @@ export const eslintConfig = (
     configs.push(perfectionistConfig);
   }
 
-  return configs.filter(Boolean);
+  return configs;
 };
