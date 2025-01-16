@@ -1,9 +1,8 @@
 import type { Linter } from "eslint";
 
-import globals from "globals";
-
 import type { FunctionStyle } from "../../types.js";
 
+import { configNames } from "../constants.js";
 import { baseEslintRules } from "./rules.js";
 
 export const baseEslintConfig = (
@@ -11,12 +10,8 @@ export const baseEslintConfig = (
 ): Linter.Config => ({
   languageOptions: {
     ecmaVersion: 2022,
-    globals: {
-      ...globals.node,
-      ...globals.es2022,
-    },
   },
   linterOptions: { reportUnusedDisableDirectives: true },
-  name: "base-eslint-config",
+  name: configNames.base,
   rules: baseEslintRules(functionStyle),
 });

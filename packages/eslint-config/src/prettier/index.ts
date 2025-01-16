@@ -1,34 +1,24 @@
-import type { Config } from "prettier";
+import type { Config as PrettierConfig } from "prettier";
+import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-sort-json";
 import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
 
-enum CategorySort {
-  CaseInsensitiveLexical = "caseInsensitiveLexical",
-  CaseInsensitiveNumeric = "caseInsensitiveNumeric",
-  CaseInsensitiveReverseLexical = "caseInsensitiveReverseLexical",
-  CaseInsensitiveReverseNumeric = "caseInsensitiveReverseNumeric",
-  Lexical = "lexical",
-  None = "none",
-  Numeric = "numeric",
-  ReverseLexical = "reverseLexical",
-  ReverseNumeric = "reverseNumeric",
+interface PrettierConfigOptions extends PrettierConfig {
+  jsonSortPlugin?: boolean | SortJsonPluginOptions;
+  packageJsonPlugin?: boolean;
+  tailwindPlugin?: boolean | string[] | TailwindPluginOptions;
 }
 
-interface SortJsonOptions {
-  jsonRecursiveSort?: boolean;
-  jsonSortOrder?: Record<string, CategorySort | null>;
-}
-
-export type PrettierConfigWithTailwind = PrettierConfig & TailwindPluginOptions;
-export type PrettierConfig = Config & SortJsonOptions;
-
-interface PrettierConfigOptions {
-  tailwind?: boolean;
-}
+export interface PrettierConfigWithPlugins
+  extends PrettierConfig,
+    SortJsonPluginOptions,
+    TailwindPluginOptions {}
 
 /**
  * Creates a Prettier configuration object with optional Tailwind support
  * @param options - Configuration options for Prettier
  * @param options.tailwind Tailwind CSS formatting support
+ * @param options.jsonSort JSON sorting support
+ * @param options.packageJson Package.json sorting support
  * @returns Prettier configuration object with:
  * - Default Prettier configuration
  * - Experimental ternaries enabled
@@ -38,21 +28,47 @@ interface PrettierConfigOptions {
  */
 export const prettierConfig = (
   options: PrettierConfigOptions = {},
-): PrettierConfigWithTailwind => {
-  const { tailwind = false } = options;
+): PrettierConfigWithPlugins => {
+  const {
+    jsonSortPlugin = true,
+    packageJsonPlugin = true,
+    tailwindPlugin = false,
+    ...rest
+  } = options;
 
-  const plugins = ["prettier-plugin-sort-json", "prettier-plugin-packagejson"];
-
-  const config: PrettierConfigWithTailwind = {
+  const plugins: string[] = [];
+  const config: PrettierConfigWithPlugins = {
     experimentalTernaries: true,
-    jsonRecursiveSort: true,
-    plugins,
+    ...rest,
   };
 
-  if (tailwind) {
-    plugins.push("prettier-plugin-tailwindcss");
-    config.tailwindFunctions = ["clsx", "cva", "cn"];
+  if (jsonSortPlugin) {
+    plugins.push("prettier-plugin-json-sort");
+    config.jsonRecursiveSort = true;
   }
+
+  if (packageJsonPlugin) {
+    plugins.push("prettier-plugin-packagejson");
+  }
+
+  if (tailwindPlugin) {
+    plugins.push("prettier-plugin-tailwindcss");
+    const defaultTailwindFunctions = ["clsx", "cva", "cn"];
+
+    if (Array.isArray(tailwindPlugin)) {
+      config.tailwindFunctions = [
+        ...defaultTailwindFunctions,
+        ...tailwindPlugin,
+      ];
+    } else if (typeof tailwindPlugin === "object") {
+      Object.assign(config, tailwindPlugin);
+    } else {
+      config.tailwindFunctions = defaultTailwindFunctions;
+    }
+  }
+
+  // Set plugins after all configurations are done
+  config.plugins = plugins;
 
   return config;
 };

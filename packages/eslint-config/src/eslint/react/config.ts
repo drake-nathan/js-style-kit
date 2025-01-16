@@ -4,6 +4,7 @@ import react from "eslint-plugin-react";
 
 import type { FunctionStyle } from "../../types.js";
 
+import { configNames } from "../constants.js";
 import { reactRules } from "./rules.js";
 
 export const reactEslintConfig = (
@@ -11,7 +12,7 @@ export const reactEslintConfig = (
   typescript: boolean,
 ): Linter.Config => {
   return {
-    name: "react-eslint-config",
+    name: configNames.react,
     plugins: {
       react,
     },
