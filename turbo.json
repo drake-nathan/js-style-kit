@@ -25,6 +25,5 @@
     "test:coverage": {
       "dependsOn": ["^test:coverage"]
     }
-  },
-  "ui": "tui"
+  }
 }
