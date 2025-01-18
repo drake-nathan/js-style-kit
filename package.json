@@ -5,9 +5,11 @@
   "scripts": {
     "build": "turbo build",
     "build:stylekit": "turbo build -F js-style-kit",
+    "changeset": "changeset",
     "dev": "turbo dev",
     "format": "turbo format",
-    "lint": "turbo lint"
+    "lint": "turbo lint",
+    "test": "turbo test"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.11",

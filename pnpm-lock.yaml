@@ -13,7 +13,7 @@ importers:
         version: 2.27.11
       js-style-kit:
         specifier: workspace:*
-        version: link:js-style-kit
+        version: link:packages/style-kit
       turbo:
         specifier: ^2.3.3
         version: 2.3.3
@@ -21,7 +21,7 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
 
-  docs:
+  apps/docs:
     dependencies:
       next:
         specifier: 15.1.5
@@ -41,7 +41,7 @@ importers:
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../../packages/typescript-config
       '@types/node':
         specifier: ^22.10.7
         version: 22.10.7
@@ -53,12 +53,12 @@ importers:
         version: 19.0.3(@types/react@19.0.7)
       js-style-kit:
         specifier: workspace:*
-        version: link:../js-style-kit
+        version: link:../../packages/style-kit
       typescript:
         specifier: 5.7.3
         version: 5.7.3
 
-  js-style-kit:
+  packages/style-kit:
     dependencies:
       eslint:
         specifier: ^9.18.0
@@ -104,7 +104,7 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2(@types/node@22.10.7)(yaml@2.7.0)
 
-  typescript-config: {}
+  packages/typescript-config: {}
 
 packages:
 

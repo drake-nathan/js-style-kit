@@ -9,7 +9,7 @@ describe("prettierConfig", () => {
     expect(config).toEqual({
       experimentalTernaries: true,
       jsonRecursiveSort: true,
-      plugins: ["prettier-plugin-json-sort", "prettier-plugin-packagejson"],
+      plugins: ["prettier-plugin-sort-json", "prettier-plugin-packagejson"],
     });
   });
 
