@@ -20,12 +20,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "bump": "changeset version",
-    "changeset": "changeset",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "local-release": "dotenv -- changeset version && changeset publish",
-    "release": "changeset publish",
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
   },
