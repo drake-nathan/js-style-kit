@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "allowJs": true,
     "jsx": "preserve",
     "lib": ["es2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",

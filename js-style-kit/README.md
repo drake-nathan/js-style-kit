@@ -1,4 +1,4 @@
-# `eslint-config-everything`
+# `js-style-kit`
 
 ## How to Use
 
@@ -15,7 +15,7 @@ Create a `eslint.config.js` if using `"type": "module"`, or `eslint.config.mjs` 
 It accepts a config object, hover the function for the JSDoc options.
 
 ```js
-import { eslintConfig } from "eslint-config-everything";
+import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig({});
 ```
@@ -27,7 +27,7 @@ Create a `prettier.config.js` if using `"type": "module"`, or `prettier.config.m
 Add `tailwind: true` for to enable Tailwind.
 
 ```js
-import { prettierConfig } from "eslint-config-everything";
+import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({});
 ```

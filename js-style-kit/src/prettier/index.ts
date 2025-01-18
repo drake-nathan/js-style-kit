@@ -43,7 +43,7 @@ export const prettierConfig = (
   };
 
   if (jsonSortPlugin) {
-    plugins.push("prettier-plugin-json-sort");
+    plugins.push("prettier-plugin-sort-json");
     config.jsonRecursiveSort = true;
   }
 
