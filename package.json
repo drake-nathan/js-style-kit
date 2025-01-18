@@ -1,5 +1,5 @@
 {
-  "name": "eslint-config-vigilance",
+  "name": "js-style-kit-root",
   "private": true,
   "type": "module",
   "scripts": {
