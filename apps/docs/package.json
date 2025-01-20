@@ -6,7 +6,6 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "dev": "next dev",
-    "lint": "next lint --max-warnings 0",
     "start": "next start"
   },
   "dependencies": {
