@@ -1,2 +1,4 @@
 *.hbs
 dist
+coverage
+pnpm-lock.yaml

@@ -20,8 +20,7 @@
   ],
   "scripts": {
     "build": "tsup",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint": "eslint .",
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
   },

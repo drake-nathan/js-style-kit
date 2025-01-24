@@ -1,6 +1,9 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
+    "//#format:check": {
+      "dependsOn": ["^format:check"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
@@ -15,6 +18,15 @@
     },
     "format": {
       "dependsOn": ["^format"]
+    },
+    "format:check": {
+      "cache": true,
+      "inputs": [
+        "**/*.{js,jsx,ts,tsx,json,md}",
+        ".prettierrc",
+        ".prettierignore"
+      ],
+      "outputs": []
     },
     "lint": {
       "dependsOn": ["^lint"]
