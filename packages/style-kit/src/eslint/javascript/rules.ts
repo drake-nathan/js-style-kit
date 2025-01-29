@@ -12,7 +12,9 @@ type BaseRules = Record<string, EslintRuleConfig> & {
   >;
 };
 
-export const baseEslintRules = (functionStyle: FunctionStyle): BaseRules => ({
+export const baseEslintRules = (
+  functionStyle: "off" | FunctionStyle,
+): BaseRules => ({
   /**
    * Require return statements in array methods callbacks.
    *
@@ -62,11 +64,14 @@ export const baseEslintRules = (functionStyle: FunctionStyle): BaseRules => ({
    * 🚫 Not fixable - https://eslint.org/docs/rules/func-names
    */
   "func-names": ["warn", "as-needed"],
-  "func-style": [
-    "warn",
-    functionStyle === "arrow" ? "expression" : functionStyle,
-    { allowArrowFunctions: true },
-  ],
+  "func-style":
+    functionStyle === "off" ? "off" : (
+      [
+        "warn",
+        functionStyle === "arrow" ? "expression" : functionStyle,
+        { allowArrowFunctions: true },
+      ]
+    ),
   /**
    * Require grouped accessor pairs in object literals and classes.
    *

@@ -26,19 +26,21 @@ describe("eslintConfig", () => {
   it("includes React config when enabled", () => {
     const config = eslintConfig({ react: true });
 
-    expect(config.some((c) => c.name === "react-config")).toBe(true);
+    expect(config.some((c) => c.name === configNames.react)).toBe(true);
   });
 
   it("excludes TypeScript config when disabled", () => {
     const config = eslintConfig({ typescript: false });
 
-    expect(config.some((c) => c.name === "tseslint-config")).toBe(false);
+    expect(config.some((c) => c.name === configNames.typescript)).toBe(false);
   });
 
   it("excludes sorting config when disabled", () => {
     const config = eslintConfig({ sorting: false });
 
-    expect(config.some((c) => c.name === "perfectionist-config")).toBe(false);
+    expect(config.some((c) => c.name === configNames.perfectionist)).toBe(
+      false,
+    );
   });
 
   it("applies custom ignores", () => {

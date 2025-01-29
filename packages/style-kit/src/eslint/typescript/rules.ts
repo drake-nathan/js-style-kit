@@ -112,12 +112,12 @@ export const tseslintRules: Linter.RulesRecord = {
   "@typescript-eslint/restrict-template-expressions": [
     "warn",
     {
-      allowAny: false,
-      allowBoolean: false,
-      allowNever: false,
-      allowNullish: false,
-      allowNumber: false,
-      allowRegExp: false,
+      allow: [{ from: "lib", name: ["Error", "URL", "URLSearchParams"] }],
+      allowAny: true,
+      allowBoolean: true,
+      allowNullish: true,
+      allowNumber: true,
+      allowRegExp: true,
     },
   ],
   "@typescript-eslint/return-await": [

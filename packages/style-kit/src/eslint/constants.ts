@@ -5,5 +5,6 @@ export const configNames = {
   jsdoc: "jsdoc-config",
   perfectionist: "perfectionist-config",
   react: "react-config",
+  reactCompiler: "react-compiler-config",
   typescript: "tseslint-config",
 } as const;

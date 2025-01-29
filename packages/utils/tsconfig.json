@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "extends": "@repo/typescript-config/base.json",
+  "include": ["src/**/*"]
+}

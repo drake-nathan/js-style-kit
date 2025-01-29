@@ -5,7 +5,10 @@ type ReactFunctionDefinitions =
   | "function-declaration"
   | "function-expression";
 
-type ReactRules = Record<`react/${string}`, EslintRuleConfig> & {
+type ReactRules = Record<
+  `${"react" | "react-hooks"}/${string}`,
+  EslintRuleConfig
+> & {
   "react/destructuring-assignment"?: EslintRuleConfig<
     "always" | "never",
     {
@@ -23,7 +26,7 @@ type ReactRules = Record<`react/${string}`, EslintRuleConfig> & {
 };
 
 export const reactRules = (
-  functionStyle: FunctionStyle,
+  functionStyle: "off" | FunctionStyle,
   typescript: boolean,
 ): ReactRules => {
   const functionStyleMap: Record<FunctionStyle, ReactFunctionDefinitions> = {
@@ -37,6 +40,8 @@ export const reactRules = (
      * Disabled in favor of TypeScript for type checking, reducing build size
      */
     ...(typescript ? {} : { "react/prop-types": "warn" }),
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "warn",
     /**
      * Require an explicit type when using button elements.
      *
@@ -50,14 +55,19 @@ export const reactRules = (
      *
      * 🔧 Fixable - https://github.com/jsx-eslint/eslint-plugin-react/blob/HEAD/docs/rules/function-component-definition.md
      */
-    "react/function-component-definition": [
-      "warn",
-      {
-        namedComponents: functionStyleMap[functionStyle],
-        unnamedComponents:
-          functionStyle === "arrow" ? "arrow-function" : "function-expression",
-      },
-    ],
+    "react/function-component-definition":
+      functionStyle === "off" ? "off" : (
+        [
+          "warn",
+          {
+            namedComponents: functionStyleMap[functionStyle],
+            unnamedComponents:
+              functionStyle === "arrow" ? "arrow-function" : (
+                "function-expression"
+              ),
+          },
+        ]
+      ),
     /**
      * Require destructuring and symmetric naming of `useState` hook value and setter variables.
      *
@@ -143,8 +153,6 @@ export const reactRules = (
      * 🚫 Not fixable - https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/no-unstable-nested-components.md
      */
     "react/no-unstable-nested-components": "warn",
-    "react/prop-types": "warn",
-    "react/react-in-jsx-scope": "warn",
     "react/require-render-return": "warn",
     /**
      * Disallow closing tags for components without children.

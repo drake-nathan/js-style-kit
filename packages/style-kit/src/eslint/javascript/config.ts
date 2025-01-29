@@ -6,7 +6,7 @@ import { configNames } from "../constants.js";
 import { baseEslintRules } from "./rules.js";
 
 export const baseEslintConfig = (
-  functionStyle: FunctionStyle,
+  functionStyle: "off" | FunctionStyle,
 ): Linter.Config => ({
   languageOptions: {
     ecmaVersion: 2022,
