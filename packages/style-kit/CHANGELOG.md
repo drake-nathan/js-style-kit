@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.0.4
+
+### Patch Changes
+
+- e8a039c: Add package.json fields for GH package link
+
 ## 0.0.3
 
 ### Patch Changes
