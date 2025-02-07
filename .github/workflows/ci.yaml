@@ -1,10 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: ["main"]
   pull_request:
     types: [opened, synchronize]
+    branches: ["main"]
 
 jobs:
   build:
@@ -38,7 +37,10 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
+
+      - name: Run Sherif
+        run: pnpm dlx sherif@latest
 
       - name: Build
         run: pnpm turbo run build
