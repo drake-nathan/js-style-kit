@@ -8,3 +8,5 @@ export const configNames = {
   reactCompiler: "react-compiler-config",
   typescript: "tseslint-config",
 } as const;
+
+export type ConfigName = (typeof configNames)[keyof typeof configNames];

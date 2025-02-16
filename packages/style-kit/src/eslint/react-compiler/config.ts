@@ -1,10 +1,10 @@
-import type { Linter } from "eslint";
-
 import reactCompiler from "eslint-plugin-react-compiler";
+
+import type { EslintConfigObject } from "../types.js";
 
 import { configNames } from "../constants.js";
 
-export const reactCompilerEslintConfig: Linter.Config = {
+export const reactCompilerEslintConfig: EslintConfigObject = {
   name: configNames.reactCompiler,
   plugins: {
     "react-compiler": reactCompiler,

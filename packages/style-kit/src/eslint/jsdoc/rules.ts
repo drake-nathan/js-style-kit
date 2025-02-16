@@ -1,4 +1,4 @@
-import type { EslintRuleConfig } from "../../types.js";
+import type { EslintRuleConfig } from "../types.js";
 
 type JsdocRules = Record<`jsdoc/${string}`, EslintRuleConfig> & {
   "jsdoc/check-param-names": EslintRuleConfig<{
@@ -59,6 +59,7 @@ export const jsdocRules = (requireJsdoc = false): JsdocRules => ({
   "jsdoc/require-description-complete-sentence": "off",
   "jsdoc/require-file-overview": "off",
   "jsdoc/require-hyphen-before-param-description": "off",
+  "jsdoc/require-jsdoc": requireJsdoc ? "warn" : "off",
   "jsdoc/require-param": "warn",
   "jsdoc/require-param-description": "warn",
   "jsdoc/require-param-name": "warn",
