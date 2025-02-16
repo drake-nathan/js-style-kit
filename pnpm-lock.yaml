@@ -94,7 +94,7 @@ importers:
         specifier: ^15.15.0
         version: 15.15.0
       prettier:
-        specifier: ^3.5.1
+        specifier: ^3.4.2
         version: 3.5.1
       prettier-plugin-packagejson:
         specifier: ^2.5.8
