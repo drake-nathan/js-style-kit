@@ -142,9 +142,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.0.5
         version: 3.0.5(vitest@3.0.5(@types/debug@4.1.12)(@types/node@22.13.4)(jiti@1.21.7)(terser@5.37.0)(yaml@2.7.0))
-      js-style-kit:
-        specifier: ^0.0.4
-        version: 0.0.4(jiti@1.21.7)(prettier-plugin-css-order@2.1.2(postcss@8.5.1)(prettier@3.5.1))(typescript@5.7.3)
       vitest:
         specifier: ^3.0.5
         version: 3.0.5(@types/debug@4.1.12)(@types/node@22.13.4)(jiti@1.21.7)(terser@5.37.0)(yaml@2.7.0)
@@ -4013,10 +4010,6 @@ packages:
   joycon@3.1.1:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
-
-  js-style-kit@0.0.4:
-    resolution: {integrity: sha512-BitMgFnUDk1V5HKoUx+5MU2zq3Aknb2yyAK+FiQvH3ALJNIzwVj+0stgNvOSpj3SF3hxxy5l4yWIau2WWwDtfg==}
-    engines: {node: ^20.11.0 || >=21.2.0}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -11770,41 +11763,6 @@ snapshots:
       '@sideway/pinpoint': 2.0.0
 
   joycon@3.1.1: {}
-
-  js-style-kit@0.0.4(jiti@1.21.7)(prettier-plugin-css-order@2.1.2(postcss@8.5.1)(prettier@3.5.1))(typescript@5.7.3):
-    dependencies:
-      eslint: 9.20.1(jiti@1.21.7)
-      eslint-plugin-jsdoc: 50.6.3(eslint@9.20.1(jiti@1.21.7))
-      eslint-plugin-perfectionist: 4.9.0(eslint@9.20.1(jiti@1.21.7))(typescript@5.7.3)
-      eslint-plugin-react: 7.37.4(eslint@9.20.1(jiti@1.21.7))
-      eslint-plugin-react-compiler: 19.0.0-beta-decd7b8-20250118(eslint@9.20.1(jiti@1.21.7))
-      eslint-plugin-react-hooks: 5.1.0(eslint@9.20.1(jiti@1.21.7))
-      globals: 15.15.0
-      prettier: 3.5.1
-      prettier-plugin-packagejson: 2.5.8(prettier@3.5.1)
-      prettier-plugin-sort-json: 4.1.1(prettier@3.5.1)
-      prettier-plugin-tailwindcss: 0.6.11(prettier-plugin-css-order@2.1.2(postcss@8.5.1)(prettier@3.5.1))(prettier@3.5.1)
-      typescript-eslint: 8.24.0(eslint@9.20.1(jiti@1.21.7))(typescript@5.7.3)
-    transitivePeerDependencies:
-      - '@ianvs/prettier-plugin-sort-imports'
-      - '@prettier/plugin-pug'
-      - '@shopify/prettier-plugin-liquid'
-      - '@trivago/prettier-plugin-sort-imports'
-      - '@zackad/prettier-plugin-twig'
-      - jiti
-      - prettier-plugin-astro
-      - prettier-plugin-css-order
-      - prettier-plugin-import-sort
-      - prettier-plugin-jsdoc
-      - prettier-plugin-marko
-      - prettier-plugin-multiline-arrays
-      - prettier-plugin-organize-attributes
-      - prettier-plugin-organize-imports
-      - prettier-plugin-sort-imports
-      - prettier-plugin-style-order
-      - prettier-plugin-svelte
-      - supports-color
-      - typescript
 
   js-tokens@4.0.0: {}
 
