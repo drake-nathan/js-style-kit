@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.0.5
+
+### Patch Changes
+
+- 5ba206a: change some types and add jsdoc and react compiler
+
 ## 0.0.4
 
 ### Patch Changes
