@@ -1,4 +1,4 @@
-import type { EslintRuleConfig } from "../../types.js";
+import type { EslintRuleConfig } from "../types.js";
 
 interface PerfectionistRuleOptions {
   order: "asc" | "desc";

@@ -1,13 +1,11 @@
-import type { Linter } from "eslint";
-
-import type { FunctionStyle } from "../../types.js";
+import type { EslintConfigObject, FunctionStyle } from "../types.js";
 
 import { configNames } from "../constants.js";
 import { baseEslintRules } from "./rules.js";
 
 export const baseEslintConfig = (
   functionStyle: "off" | FunctionStyle,
-): Linter.Config => ({
+): EslintConfigObject => ({
   languageOptions: {
     ecmaVersion: 2022,
   },

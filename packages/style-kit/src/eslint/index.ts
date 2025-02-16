@@ -1,8 +1,8 @@
 import type { Linter } from "eslint";
 
-import { isBoolean, isString } from "@repo/utils";
+import { isString } from "@repo/utils";
 
-import type { FunctionStyle } from "../types.js";
+import type { FunctionStyle } from "./types.js";
 
 import { ignoresConfig } from "./ignores.js";
 import { baseEslintConfig } from "./javascript/config.js";
@@ -16,7 +16,7 @@ export type EslintConfigOptions = {
   functionStyle?: "off" | FunctionStyle;
   ignores?: string[];
   jsdoc?:
-    | boolean
+    | false
     | {
         requireJsdoc?: boolean;
       };
@@ -25,7 +25,7 @@ export type EslintConfigOptions = {
 } & (
   | {
       react: true;
-      reactCompiler?: boolean;
+      reactCompiler: boolean | undefined;
     }
   | {
       react?: boolean;
@@ -57,8 +57,8 @@ export const eslintConfig = ({
     baseEslintConfig(functionStyle),
   ];
 
-  if (jsdoc) {
-    configs.push(jsdocConfig(isBoolean(jsdoc) ? false : jsdoc.requireJsdoc));
+  if (jsdoc !== false) {
+    configs.push(jsdocConfig(jsdoc.requireJsdoc ?? false));
   }
 
   if (typescript) {
@@ -72,7 +72,8 @@ export const eslintConfig = ({
   if (react) {
     configs.push(reactEslintConfig(functionStyle, Boolean(typescript)));
 
-    if ("reactCompiler" in options && options.reactCompiler) {
+    // Default to true if not explicitly set to false
+    if (!("reactCompiler" in options) || options.reactCompiler !== false) {
       configs.push(reactCompilerEslintConfig);
     }
   }

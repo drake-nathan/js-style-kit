@@ -54,3 +54,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          gh release create v${{ steps.changesets.outputs.publishedPackages[0].version }} \
+            --title "v${{ steps.changesets.outputs.publishedPackages[0].version }}" \
+            --notes "$(cat .changeset/*.md)" \
+            --draft=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

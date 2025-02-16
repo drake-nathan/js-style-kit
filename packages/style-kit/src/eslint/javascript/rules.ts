@@ -1,4 +1,4 @@
-import type { EslintRuleConfig, FunctionStyle } from "../../types.js";
+import type { EslintRuleConfig, FunctionStyle } from "../types.js";
 
 type BaseRules = Record<string, EslintRuleConfig> & {
   "func-style"?: EslintRuleConfig<
