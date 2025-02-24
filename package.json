@@ -6,6 +6,7 @@
     "build": "turbo build",
     "build:stylekit": "turbo build -F js-style-kit",
     "changeset": "changeset",
+    "ci": "pnpm run format:check && pnpm run lint && pnpm run test && pnpm run sherif && pnpm run build",
     "dev": "turbo dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
