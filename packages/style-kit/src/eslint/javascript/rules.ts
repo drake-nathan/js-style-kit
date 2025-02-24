@@ -12,6 +12,16 @@ type BaseRules = Record<string, EslintRuleConfig> & {
   >;
 };
 
+/**
+ * Generates the base set of ESLint rules with configurable function style enforcement.
+ * 
+ * @param functionStyle - Controls how functions should be written. Can be:
+ *   - "off": Disables function style enforcement
+ *   - "arrow": Enforces arrow function expressions
+ *   - "declaration": Enforces function declarations
+ *   - "expression": Enforces function expressions
+ * @returns An object containing ESLint rule configurations
+ */
 export const baseEslintRules = (
   functionStyle: "off" | FunctionStyle,
 ): BaseRules => ({

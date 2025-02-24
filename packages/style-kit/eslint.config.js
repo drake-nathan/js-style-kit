@@ -1,3 +1,7 @@
 import { eslintConfig } from "js-style-kit";
 
-export default eslintConfig({});
+export default eslintConfig({
+  jsdoc: {
+    requireJsdoc: true,
+  },
+});

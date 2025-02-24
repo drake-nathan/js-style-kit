@@ -1,6 +1,6 @@
 import type { Linter } from "eslint";
 
-import { isString } from "@repo/utils";
+import { isString } from "is-type-of";
 
 import type { FunctionStyle } from "./types.js";
 
@@ -34,6 +34,7 @@ export type EslintConfigOptions = {
 
 /**
  * This function configures your ESLint config based on inputs. It accepts a configuration object with the following properties:
+ *
  * @param options - The optional configuration object.
  * @param options.functionStyle - The function style to use. Defaults to "arrow".
  * @param options.ignores - An array of paths to ignore. Already excludes `node_modules` and `dist`.
