@@ -3,6 +3,12 @@ import tseslint, { type Config } from "typescript-eslint";
 import { configNames } from "../constants.js";
 import { tseslintRules } from "./rules.js";
 
+/**
+ * Creates a TypeScript ESLint configuration object.
+ *
+ * @param tsconfigPath - Path to the TypeScript configuration file
+ * @returns TypeScript ESLint configuration object
+ */
 export const tseslintConfig = (tsconfigPath?: string): Config => {
   const userCwd = process.cwd();
 

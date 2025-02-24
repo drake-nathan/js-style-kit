@@ -1,24 +1,18 @@
-import type { EslintRuleConfig } from "../types.js";
+import type { JsdocRules } from "./types.js";
 
-type JsdocRules = Record<`jsdoc/${string}`, EslintRuleConfig> & {
-  "jsdoc/check-param-names": EslintRuleConfig<{
-    allowExtraTrailingParamDocs?: boolean;
-    checkDestructured?: boolean;
-    checkRestProperty?: boolean;
-    checkTypesPattern?: string;
-    disableExtraPropertyReporting?: boolean;
-    disableMissingParamChecks?: boolean;
-    enableFixer?: boolean;
-    useDefaultObjectProperties?: boolean;
-  }>;
-};
-
-export const jsdocRules = (requireJsdoc = false): JsdocRules => ({
+/**
+ * Generates ESLint rules configuration for JSDoc comments.
+ *
+ * @param requireJsdoc - Whether to enforce JSDoc comments on functions and classes. Defaults to false.
+ * @param typescript - Whether TypeScript is being used in the project. When true, some rules are adjusted to be more TypeScript-friendly. Defaults to true.
+ * @returns An object containing ESLint rules configuration for JSDoc validation and formatting.
+ */
+export const jsdocRules = (
+  requireJsdoc = false,
+  typescript = true,
+): JsdocRules => ({
   "jsdoc/check-access": "warn",
   "jsdoc/check-alignment": "warn",
-  "jsdoc/check-examples": "off",
-  "jsdoc/check-indentation": "off",
-  "jsdoc/check-line-alignment": "off",
   "jsdoc/check-param-names": [
     "warn",
     {
@@ -27,39 +21,43 @@ export const jsdocRules = (requireJsdoc = false): JsdocRules => ({
     },
   ],
   "jsdoc/check-property-names": "warn",
-  "jsdoc/check-syntax": "off",
   "jsdoc/check-tag-names": [
     "warn",
     {
       typed: true,
     },
   ],
-  "jsdoc/check-template-names": "off",
   "jsdoc/check-types": "warn",
   "jsdoc/check-values": "warn",
-  "jsdoc/convert-to-jsdoc-comments": "off",
   "jsdoc/empty-tags": "warn",
   "jsdoc/implements-on-classes": "warn",
-  "jsdoc/imports-as-dependencies": "off",
-  "jsdoc/informative-docs": "off",
-  "jsdoc/lines-before-block": "off",
-  "jsdoc/match-description": "off",
-  "jsdoc/match-name": "off",
   "jsdoc/multiline-blocks": "warn",
-  "jsdoc/no-bad-blocks": "off",
   "jsdoc/no-blank-block-descriptions": "off",
-  "jsdoc/no-blank-blocks": "off",
   "jsdoc/no-defaults": "warn",
-  "jsdoc/no-missing-syntax": "off",
   "jsdoc/no-multi-asterisks": "warn",
-  "jsdoc/no-restricted-syntax": "off",
-  "jsdoc/no-types": "off",
+  "jsdoc/no-types": typescript ? "warn" : "off",
+  "jsdoc/no-undefined-types": typescript ? "off" : "warn",
   "jsdoc/require-asterisk-prefix": "warn",
   "jsdoc/require-description": requireJsdoc ? "warn" : "off",
   "jsdoc/require-description-complete-sentence": "off",
   "jsdoc/require-file-overview": "off",
   "jsdoc/require-hyphen-before-param-description": "off",
-  "jsdoc/require-jsdoc": requireJsdoc ? "warn" : "off",
+  "jsdoc/require-jsdoc":
+    requireJsdoc ?
+      [
+        "warn",
+        {
+          require: {
+            ArrowFunctionExpression: true,
+            ClassDeclaration: true,
+            ClassExpression: true,
+            FunctionDeclaration: true,
+            FunctionExpression: true,
+            MethodDefinition: true,
+          },
+        },
+      ]
+    : "off",
   "jsdoc/require-param": "warn",
   "jsdoc/require-param-description": "warn",
   "jsdoc/require-param-name": "warn",
@@ -74,7 +72,16 @@ export const jsdocRules = (requireJsdoc = false): JsdocRules => ({
   "jsdoc/require-yields": "warn",
   "jsdoc/require-yields-check": "warn",
   "jsdoc/sort-tags": "off",
-  "jsdoc/tag-lines": "warn",
+  "jsdoc/tag-lines": [
+    "warn",
+    "never",
+    {
+      startLines: 1, // Allow 1 line between description and first tag
+      tags: {
+        param: { lines: "never" }, // Enforce no lines between param tags
+      },
+    },
+  ],
   "jsdoc/text-escaping": "off",
   "jsdoc/valid-types": "warn",
 });

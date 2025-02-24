@@ -15,6 +15,7 @@ export interface PrettierConfigWithPlugins
 
 /**
  * Creates a Prettier configuration object with optional Tailwind support
+ *
  * @param options - Configuration options for Prettier
  * @param options.tailwind Tailwind CSS formatting support
  * @param options.jsonSort JSON sorting support

@@ -70,7 +70,9 @@ describe("eslintConfig", () => {
       const jsdocConfig = config.find((c) => c.name === configNames.jsdoc);
 
       expect(jsdocConfig).toBeDefined();
-      expect(jsdocConfig?.rules?.["jsdoc/require-jsdoc"]).toBe("warn");
+      expect(jsdocConfig?.rules?.["jsdoc/require-jsdoc"]).toEqual(
+        expect.arrayContaining(["warn"]),
+      );
     });
 
     it("keeps JSDoc requirements disabled when explicitly set", () => {

@@ -25,6 +25,14 @@ type ReactRules = Record<
   }>;
 };
 
+/**
+ * Generates ESLint rules configuration for React and React Hooks.
+ * Includes settings for function component style enforcement and TypeScript-specific rules.
+ *
+ * @param functionStyle - The preferred style for React function components: 'arrow' for arrow functions, 'declaration' for function declarations, 'expression' for function expressions, or 'off' to disable style enforcement
+ * @param typescript - Whether TypeScript-specific React rules should be enabled
+ * @returns Configuration object containing ESLint rules for React and React Hooks
+ */
 export const reactRules = (
   functionStyle: "off" | FunctionStyle,
   typescript: boolean,
@@ -37,7 +45,7 @@ export const reactRules = (
 
   return {
     /**
-     * Disabled in favor of TypeScript for type checking, reducing build size
+     * Disabled in favor of TypeScript for type checking
      */
     ...(typescript ? {} : { "react/prop-types": "warn" }),
     "react-hooks/exhaustive-deps": "warn",
