@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.0.6
+
+### Patch Changes
+
+- 018dd51: Finish JSDoc rules
+
 ## 0.0.5
 
 ### Patch Changes
