@@ -1,3 +1,5 @@
+import type { Linter } from "eslint";
+
 import { describe, expect, it } from "vitest";
 
 import { configNames } from "./constants.js";
@@ -106,6 +108,55 @@ describe("eslintConfig", () => {
       const config = eslintConfig({ ignores: customIgnores });
 
       expect(config[0]?.ignores).toEqual(expect.arrayContaining(customIgnores));
+    });
+  });
+
+  describe("additional config objects", () => {
+    it("includes additional config objects in the returned array", () => {
+      const additionalConfig: Linter.Config = {
+        name: "custom-config",
+        rules: {
+          "no-console": 2,
+        },
+      };
+
+      const config = eslintConfig({}, additionalConfig);
+
+      expect(config).toContainEqual(additionalConfig);
+    });
+
+    it("appends multiple additional config objects to the returned array", () => {
+      const additionalConfig1: Linter.Config = {
+        name: "custom-config-1",
+        rules: {
+          "custom-rule-1": "error",
+        },
+      };
+
+      const additionalConfig2: Linter.Config = {
+        name: "custom-config-2",
+        rules: {
+          "custom-rule-2": "warn",
+        },
+      };
+
+      const config = eslintConfig({}, additionalConfig1, additionalConfig2);
+
+      expect(config).toContainEqual(additionalConfig1);
+      expect(config).toContainEqual(additionalConfig2);
+    });
+
+    it("maintains the order of additional config objects", () => {
+      const additionalConfig1: Linter.Config = { name: "custom-config-1" };
+      const additionalConfig2: Linter.Config = { name: "custom-config-2" };
+
+      const config = eslintConfig({}, additionalConfig1, additionalConfig2);
+      const index1 = config.findIndex((c) => c.name === "custom-config-1");
+      const index2 = config.findIndex((c) => c.name === "custom-config-2");
+
+      expect(index1).toBeGreaterThanOrEqual(0);
+      expect(index2).toBeGreaterThanOrEqual(0);
+      expect(index1).toBeLessThan(index2);
     });
   });
 });
