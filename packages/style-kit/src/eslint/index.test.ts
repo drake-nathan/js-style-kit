@@ -1,9 +1,10 @@
 import type { Linter } from "eslint";
 
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { configNames } from "./constants.js";
 import { eslintConfig } from "./index.js";
+import { tseslintConfig } from "./typescript/config.js";
 
 describe("eslintConfig", () => {
   describe("default configuration", () => {
@@ -25,6 +26,66 @@ describe("eslintConfig", () => {
       expectedConfigs.forEach((expectedName) => {
         expect(names).toContain(expectedName);
       });
+    });
+  });
+
+  describe("function style options", () => {
+    it("applies 'arrow' function style by default", () => {
+      const config = eslintConfig();
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["func-style"]).toEqual([
+        "warn",
+        "expression",
+        { allowArrowFunctions: true },
+      ]);
+    });
+
+    it("applies 'declaration' function style when specified", () => {
+      const config = eslintConfig({ functionStyle: "declaration" });
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["func-style"]).toEqual([
+        "warn",
+        "declaration",
+        { allowArrowFunctions: true },
+      ]);
+    });
+
+    it("applies 'expression' function style when specified", () => {
+      const config = eslintConfig({ functionStyle: "expression" });
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["func-style"]).toEqual([
+        "warn",
+        "expression",
+        { allowArrowFunctions: true },
+      ]);
+    });
+
+    it("disables function style rule when 'off' is specified", () => {
+      const config = eslintConfig({ functionStyle: "off" });
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["func-style"]).toBe("off");
+    });
+
+    it("applies function style to React component definition when React is enabled", () => {
+      const config = eslintConfig({
+        functionStyle: "declaration",
+        react: true,
+      });
+      const reactConfig = config.find((c) => c.name === configNames.react);
+
+      expect(
+        reactConfig?.rules?.["react/function-component-definition"],
+      ).toEqual([
+        "warn",
+        {
+          namedComponents: "function-declaration",
+          unnamedComponents: "function-expression",
+        },
+      ]);
     });
   });
 
@@ -109,6 +170,17 @@ describe("eslintConfig", () => {
 
       expect(config[0]?.ignores).toEqual(expect.arrayContaining(customIgnores));
     });
+
+    it("handles empty ignores array", () => {
+      const config = eslintConfig({ ignores: [] });
+      const ignoresConfig = config[0];
+
+      // Should still include default ignores
+      expect(ignoresConfig?.ignores?.length).toBeGreaterThan(0);
+      expect(ignoresConfig?.ignores).toEqual(
+        expect.arrayContaining(["**/node_modules/", "**/dist/"]),
+      );
+    });
   });
 
   describe("additional config objects", () => {
@@ -157,6 +229,43 @@ describe("eslintConfig", () => {
       expect(index1).toBeGreaterThanOrEqual(0);
       expect(index2).toBeGreaterThanOrEqual(0);
       expect(index1).toBeLessThan(index2);
+    });
+  });
+
+  describe("edge cases", () => {
+    it("works when all optional features are disabled", () => {
+      const config = eslintConfig({
+        jsdoc: false,
+        react: false,
+        sorting: false,
+        typescript: false,
+      });
+
+      const names = config.map((c) => c.name);
+
+      expect(names).toContain(configNames.base);
+      expect(names).toContain(configNames.ignores);
+
+      // These should be excluded
+      expect(names).not.toContain(configNames.typescript);
+      expect(names).not.toContain(configNames.react);
+      expect(names).not.toContain(configNames.reactCompiler);
+      expect(names).not.toContain(configNames.jsdoc);
+      expect(names).not.toContain(configNames.perfectionist);
+    });
+
+    it("handles React options without TypeScript", () => {
+      const config = eslintConfig({
+        react: true,
+        typescript: false,
+      });
+
+      const reactConfig = config.find((c) => c.name === configNames.react);
+
+      // Should still include React configs
+      expect(reactConfig).toBeDefined();
+      // React config should be initialized with typescript=false
+      expect(reactConfig?.rules?.["react/prop-types"]).toBe("warn");
     });
   });
 });

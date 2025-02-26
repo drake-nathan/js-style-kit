@@ -2,6 +2,8 @@ import type { Config as PrettierConfig } from "prettier";
 import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-sort-json";
 import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
 
+import { isArray, isObject } from "is-type-of";
+
 interface PrettierConfigOptions extends PrettierConfig {
   jsonSortPlugin?: boolean | SortJsonPluginOptions;
   packageJsonPlugin?: boolean;
@@ -45,7 +47,12 @@ export const prettierConfig = (
 
   if (jsonSortPlugin) {
     plugins.push("prettier-plugin-sort-json");
-    config.jsonRecursiveSort = true;
+
+    if (isObject(jsonSortPlugin)) {
+      Object.assign(config, jsonSortPlugin);
+    } else {
+      config.jsonRecursiveSort = true;
+    }
   }
 
   if (packageJsonPlugin) {
@@ -56,12 +63,12 @@ export const prettierConfig = (
     plugins.push("prettier-plugin-tailwindcss");
     const defaultTailwindFunctions = ["clsx", "cva", "cn"];
 
-    if (Array.isArray(tailwindPlugin)) {
+    if (isArray(tailwindPlugin)) {
       config.tailwindFunctions = [
         ...defaultTailwindFunctions,
         ...tailwindPlugin,
       ];
-    } else if (typeof tailwindPlugin === "object") {
+    } else if (isObject(tailwindPlugin)) {
       Object.assign(config, tailwindPlugin);
     } else {
       config.tailwindFunctions = defaultTailwindFunctions;
