@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.1.0
+
+### Minor Changes
+
+- c2c4d64: Add ability to add extra configs to ESLint.
+
 ## 0.0.6
 
 ### Patch Changes
