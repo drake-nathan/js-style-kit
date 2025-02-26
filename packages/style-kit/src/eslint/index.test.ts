@@ -1,10 +1,9 @@
 import type { Linter } from "eslint";
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { configNames } from "./constants.js";
 import { eslintConfig } from "./index.js";
-import { tseslintConfig } from "./typescript/config.js";
 
 describe("eslintConfig", () => {
   describe("default configuration", () => {
