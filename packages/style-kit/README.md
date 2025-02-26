@@ -1,6 +1,6 @@
 # `js-style-kit`
 
-A zero-configuration style guide for ESLint and Prettier with sensible defaults and flexible configuration options.
+A zero-configuration style guide for ESLint and Prettier that provides sensible default settings and flexible configuration options.
 
 ## Features
 
