@@ -42,17 +42,21 @@ export type EslintConfigOptions = {
  * @param options.react - Whether to include React rules. Defaults to false.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
  * @param options.typescript - Whether to include TypeScript rules OR a string with the path to your tsconfig. Defaults to true.
+ * @param additionalConfigs - Additional ESLint config objects to be included in the final configuration.
  * @returns The ESLint configuration array.
  */
-export const eslintConfig = ({
-  functionStyle = "arrow",
-  ignores = [],
-  jsdoc = { requireJsdoc: false },
-  react = false,
-  sorting = true,
-  typescript = true,
-  ...options
-}: EslintConfigOptions = {}): Linter.Config[] => {
+export const eslintConfig = (
+  {
+    functionStyle = "arrow",
+    ignores = [],
+    jsdoc = { requireJsdoc: false },
+    react = false,
+    sorting = true,
+    typescript = true,
+    ...options
+  }: EslintConfigOptions = {},
+  ...additionalConfigs: Linter.Config[]
+): Linter.Config[] => {
   const configs: Linter.Config[] = [
     ignoresConfig(ignores),
     baseEslintConfig(functionStyle),
@@ -81,6 +85,11 @@ export const eslintConfig = ({
 
   if (sorting) {
     configs.push(perfectionistConfig);
+  }
+
+  // Add any additional config objects provided by the user
+  if (additionalConfigs.length > 0) {
+    configs.push(...additionalConfigs);
   }
 
   return configs;

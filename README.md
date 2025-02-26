@@ -1,81 +1,102 @@
-# Turborepo starter
+# JS Style Kit
 
-This is an official starter Turborepo.
+A zero-configuration ESLint and Prettier toolkit for JavaScript and TypeScript projects.
 
-## Using this example
+[![CI](https://github.com/drake-nathan/js-style-kit/actions/workflows/ci.yaml/badge.svg)](https://github.com/drake-nathan/js-style-kit/actions/workflows/ci.yaml)
+[![Release](https://github.com/drake-nathan/js-style-kit/actions/workflows/release.yaml/badge.svg)](https://github.com/drake-nathan/js-style-kit/actions/workflows/release.yaml)
+[![npm version](https://img.shields.io/npm/v/js-style-kit.svg)](https://www.npmjs.com/package/js-style-kit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Run the following command:
+## Overview
 
-```sh
-npx create-turbo@latest
+JS Style Kit is a comprehensive, batteries-included linting and formatting solution for modern JavaScript and TypeScript projects. It provides:
+
+- Zero-config ESLint setup with sensible defaults
+- TypeScript support out of the box
+- React and React Compiler support
+- JSDoc validation
+- Perfectionist sorting rules
+- Prettier configuration with plugin support
+
+## Getting Started
+
+```bash
+# npm
+npm install --save-dev js-style-kit
+
+# yarn
+yarn add --dev js-style-kit
+
+# pnpm
+pnpm add --save-dev js-style-kit
 ```
 
-## What's inside?
+### ESLint Configuration
 
-This Turborepo includes the following packages/apps:
+Create an `eslint.config.js` (or `eslint.config.mjs`) file at the root of your project:
 
-### Apps and Packages
+```js
+import { eslintConfig } from "js-style-kit";
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+export default eslintConfig({
+  // options
+});
+```
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Prettier Configuration
 
-### Utilities
+Create a `prettier.config.js` (or `prettier.config.mjs`) file at the root of your project:
 
-This Turborepo has some additional tools already setup for you:
+```js
+import { prettierConfig } from "js-style-kit";
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+export default prettierConfig({
+  // options
+});
+```
 
-### Build
+## Documentation
 
-To build all apps and packages, run the following command:
+For detailed usage and configuration options, see the [package documentation](./packages/style-kit/README.md).
 
-```sh
-cd my-turborepo
+## Repository Structure
+
+This is a monorepo managed with Turborepo and pnpm.
+
+```
+/
+├── apps/
+│   └── docs/             # Documentation site built with Docusaurus (WIP)
+├── packages/
+│   ├── style-kit/        # Main package with ESLint and Prettier configurations
+│   └── typescript-config/ # Shared TypeScript configurations
+├── .changeset/          # Changesets for versioning
+├── .github/             # GitHub Actions workflows
+└── turbo.json           # Turborepo configuration
+```
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Build all packages
 pnpm build
+
+# Run tests
+pnpm test
+
+# Format code
+pnpm format
+
+# Lint code
+pnpm lint
+
+# Create a changeset
+pnpm changeset
 ```
 
-### Develop
+## License
 
-To develop all apps and packages, run the following command:
-
-```sh
-cd my-turborepo
-pnpm dev
-```
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```sh
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```sh
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+MIT © [Nathan Drake](https://github.com/drake-nathan)

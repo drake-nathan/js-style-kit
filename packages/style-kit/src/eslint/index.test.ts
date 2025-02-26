@@ -1,3 +1,5 @@
+import type { Linter } from "eslint";
+
 import { describe, expect, it } from "vitest";
 
 import { configNames } from "./constants.js";
@@ -23,6 +25,66 @@ describe("eslintConfig", () => {
       expectedConfigs.forEach((expectedName) => {
         expect(names).toContain(expectedName);
       });
+    });
+  });
+
+  describe("function style options", () => {
+    it("applies 'arrow' function style by default", () => {
+      const config = eslintConfig();
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["func-style"]).toEqual([
+        "warn",
+        "expression",
+        { allowArrowFunctions: true },
+      ]);
+    });
+
+    it("applies 'declaration' function style when specified", () => {
+      const config = eslintConfig({ functionStyle: "declaration" });
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["func-style"]).toEqual([
+        "warn",
+        "declaration",
+        { allowArrowFunctions: true },
+      ]);
+    });
+
+    it("applies 'expression' function style when specified", () => {
+      const config = eslintConfig({ functionStyle: "expression" });
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["func-style"]).toEqual([
+        "warn",
+        "expression",
+        { allowArrowFunctions: true },
+      ]);
+    });
+
+    it("disables function style rule when 'off' is specified", () => {
+      const config = eslintConfig({ functionStyle: "off" });
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["func-style"]).toBe("off");
+    });
+
+    it("applies function style to React component definition when React is enabled", () => {
+      const config = eslintConfig({
+        functionStyle: "declaration",
+        react: true,
+      });
+      const reactConfig = config.find((c) => c.name === configNames.react);
+
+      expect(
+        reactConfig?.rules?.["react/function-component-definition"],
+      ).toEqual([
+        "warn",
+        {
+          namedComponents: "function-declaration",
+          unnamedComponents: "function-expression",
+        },
+      ]);
     });
   });
 
@@ -106,6 +168,103 @@ describe("eslintConfig", () => {
       const config = eslintConfig({ ignores: customIgnores });
 
       expect(config[0]?.ignores).toEqual(expect.arrayContaining(customIgnores));
+    });
+
+    it("handles empty ignores array", () => {
+      const config = eslintConfig({ ignores: [] });
+      const ignoresConfig = config[0];
+
+      // Should still include default ignores
+      expect(ignoresConfig?.ignores?.length).toBeGreaterThan(0);
+      expect(ignoresConfig?.ignores).toEqual(
+        expect.arrayContaining(["**/node_modules/", "**/dist/"]),
+      );
+    });
+  });
+
+  describe("additional config objects", () => {
+    it("includes additional config objects in the returned array", () => {
+      const additionalConfig: Linter.Config = {
+        name: "custom-config",
+        rules: {
+          "no-console": 2,
+        },
+      };
+
+      const config = eslintConfig({}, additionalConfig);
+
+      expect(config).toContainEqual(additionalConfig);
+    });
+
+    it("appends multiple additional config objects to the returned array", () => {
+      const additionalConfig1: Linter.Config = {
+        name: "custom-config-1",
+        rules: {
+          "custom-rule-1": "error",
+        },
+      };
+
+      const additionalConfig2: Linter.Config = {
+        name: "custom-config-2",
+        rules: {
+          "custom-rule-2": "warn",
+        },
+      };
+
+      const config = eslintConfig({}, additionalConfig1, additionalConfig2);
+
+      expect(config).toContainEqual(additionalConfig1);
+      expect(config).toContainEqual(additionalConfig2);
+    });
+
+    it("maintains the order of additional config objects", () => {
+      const additionalConfig1: Linter.Config = { name: "custom-config-1" };
+      const additionalConfig2: Linter.Config = { name: "custom-config-2" };
+
+      const config = eslintConfig({}, additionalConfig1, additionalConfig2);
+      const index1 = config.findIndex((c) => c.name === "custom-config-1");
+      const index2 = config.findIndex((c) => c.name === "custom-config-2");
+
+      expect(index1).toBeGreaterThanOrEqual(0);
+      expect(index2).toBeGreaterThanOrEqual(0);
+      expect(index1).toBeLessThan(index2);
+    });
+  });
+
+  describe("edge cases", () => {
+    it("works when all optional features are disabled", () => {
+      const config = eslintConfig({
+        jsdoc: false,
+        react: false,
+        sorting: false,
+        typescript: false,
+      });
+
+      const names = config.map((c) => c.name);
+
+      expect(names).toContain(configNames.base);
+      expect(names).toContain(configNames.ignores);
+
+      // These should be excluded
+      expect(names).not.toContain(configNames.typescript);
+      expect(names).not.toContain(configNames.react);
+      expect(names).not.toContain(configNames.reactCompiler);
+      expect(names).not.toContain(configNames.jsdoc);
+      expect(names).not.toContain(configNames.perfectionist);
+    });
+
+    it("handles React options without TypeScript", () => {
+      const config = eslintConfig({
+        react: true,
+        typescript: false,
+      });
+
+      const reactConfig = config.find((c) => c.name === configNames.react);
+
+      // Should still include React configs
+      expect(reactConfig).toBeDefined();
+      // React config should be initialized with typescript=false
+      expect(reactConfig?.rules?.["react/prop-types"]).toBe("warn");
     });
   });
 });

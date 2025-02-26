@@ -1,3 +1,6 @@
+import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-sort-json";
+import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
+
 import { describe, expect, it } from "vitest";
 
 import { prettierConfig } from "../index.js";
@@ -33,5 +36,83 @@ describe("prettierConfig", () => {
       "customFn",
       "anotherFn",
     ]);
+  });
+
+  it("should accept tailwind plugin options as an object", () => {
+    const tailwindOptions: TailwindPluginOptions = {
+      tailwindAttributes: ["customAttr"],
+      tailwindFunctions: ["customOnly"],
+    };
+    const config = prettierConfig({
+      tailwindPlugin: tailwindOptions,
+    });
+
+    expect(config.plugins).toContain("prettier-plugin-tailwindcss");
+    expect(config.tailwindFunctions).toEqual(["customOnly"]);
+    expect(config.tailwindAttributes).toEqual(["customAttr"]);
+  });
+
+  it("should disable JSON sort plugin when specified", () => {
+    const config = prettierConfig({ jsonSortPlugin: false });
+
+    expect(config.plugins).not.toContain("prettier-plugin-sort-json");
+    expect(config.jsonRecursiveSort).toBeUndefined();
+  });
+
+  it("should disable package.json plugin when specified", () => {
+    const config = prettierConfig({ packageJsonPlugin: false });
+
+    expect(config.plugins).not.toContain("prettier-plugin-packagejson");
+  });
+
+  it("should accept JSON sort plugin options", () => {
+    const jsonSortOptions: SortJsonPluginOptions = {
+      jsonRecursiveSort: false,
+      jsonSortOrder: {
+        something: "caseInsensitiveReverseLexical",
+      },
+    };
+    const config = prettierConfig({
+      jsonSortPlugin: jsonSortOptions,
+    });
+
+    expect(config.plugins).toContain("prettier-plugin-sort-json");
+    expect(config.jsonRecursiveSort).toBe(false);
+    expect(config.jsonSortOrder).toEqual({
+      something: "caseInsensitiveReverseLexical",
+    });
+  });
+
+  it("should pass through standard prettier options", () => {
+    const config = prettierConfig({
+      printWidth: 100,
+      singleQuote: true,
+      tabWidth: 4,
+    });
+
+    expect(config.tabWidth).toBe(4);
+    expect(config.printWidth).toBe(100);
+    expect(config.singleQuote).toBe(true);
+  });
+
+  it("should combine multiple plugin configurations correctly", () => {
+    const config = prettierConfig({
+      jsonSortPlugin: {
+        jsonSortOrder: {
+          something: "caseInsensitiveReverseLexical",
+        },
+      },
+      tabWidth: 2,
+      tailwindPlugin: true,
+    });
+
+    expect(config.plugins).toContain("prettier-plugin-sort-json");
+    expect(config.plugins).toContain("prettier-plugin-packagejson");
+    expect(config.plugins).toContain("prettier-plugin-tailwindcss");
+    expect(config.jsonSortOrder).toEqual({
+      something: "caseInsensitiveReverseLexical",
+    });
+    expect(config.tailwindFunctions).toEqual(["clsx", "cva", "cn"]);
+    expect(config.tabWidth).toBe(2);
   });
 });
