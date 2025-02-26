@@ -10,7 +10,7 @@
     "dev": "turbo dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "turbo lint",
+    "lint": "turbo lint -- --max-warnings 0",
     "lint:fix": "turbo lint -- --fix",
     "sherif": "pnpm dlx sherif@latest",
     "test": "turbo test"

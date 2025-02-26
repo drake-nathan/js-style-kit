@@ -49,7 +49,7 @@ jobs:
         run: pnpm turbo run format:check
 
       - name: Lint
-        run: pnpm turbo run lint
+        run: pnpm turbo run lint -- --max-warnings 0
 
       - name: Test
         run: pnpm turbo run test
