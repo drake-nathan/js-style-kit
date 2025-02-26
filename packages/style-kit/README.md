@@ -43,6 +43,19 @@ export default eslintConfig();
 
 > **Note:** If you're not using `"type": "module"` in your package.json, name your file `eslint.config.mjs` instead.
 
+Setup your `package.json` commands:
+
+```json
+{
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix --max-warnings 0"
+  }
+}
+```
+
+> **Note:** The `--max-warnings 0` option is important because all rules are set to warning by default.
+
 ### Configuration Options
 
 The `eslintConfig()` function accepts a configuration object with the following options:
