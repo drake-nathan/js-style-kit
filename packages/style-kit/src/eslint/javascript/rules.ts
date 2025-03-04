@@ -1,6 +1,6 @@
 import type { EslintRuleConfig, FunctionStyle } from "../types.js";
 
-type BaseRules = Record<string, EslintRuleConfig> & {
+export type BaseRules = Record<string, EslintRuleConfig> & {
   "func-style"?: EslintRuleConfig<
     "declaration" | "expression",
     {

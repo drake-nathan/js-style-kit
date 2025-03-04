@@ -2,7 +2,7 @@ import type { Linter } from "eslint";
 
 import { isString } from "is-type-of";
 
-import type { FunctionStyle } from "./types.js";
+import type { FunctionStyle, Rules } from "./types.js";
 
 import { ignoresConfig } from "./ignores.js";
 import { baseEslintConfig } from "./javascript/config.js";
@@ -11,6 +11,7 @@ import { perfectionistConfig } from "./perfectionist/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { tseslintConfig } from "./typescript/config.js";
+import { unicornConfig } from "./unicorn/config.js";
 
 export type EslintConfigOptions = {
   functionStyle?: "off" | FunctionStyle;
@@ -22,6 +23,7 @@ export type EslintConfigOptions = {
       };
   sorting?: boolean;
   typescript?: boolean | string;
+  unicorn?: boolean;
 } & (
   | {
       react: true;
@@ -31,6 +33,10 @@ export type EslintConfigOptions = {
       react?: boolean;
     }
 );
+
+interface AdditionalConfig extends Linter.Config {
+  rules: Rules;
+}
 
 /**
  * This function configures your ESLint config based on inputs. It accepts a configuration object with the following properties:
@@ -42,6 +48,7 @@ export type EslintConfigOptions = {
  * @param options.react - Whether to include React rules. Defaults to false.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
  * @param options.typescript - Whether to include TypeScript rules OR a string with the path to your tsconfig. Defaults to true.
+ * @param options.unicorn - Whether to include Unicorn rules. Defaults to true.
  * @param additionalConfigs - Additional ESLint config objects to be included in the final configuration.
  * @returns The ESLint configuration array.
  */
@@ -53,9 +60,10 @@ export const eslintConfig = (
     react = false,
     sorting = true,
     typescript = true,
+    unicorn = true,
     ...options
   }: EslintConfigOptions = {},
-  ...additionalConfigs: Linter.Config[]
+  ...additionalConfigs: AdditionalConfig[]
 ): Linter.Config[] => {
   const configs: Linter.Config[] = [
     ignoresConfig(ignores),
@@ -87,6 +95,10 @@ export const eslintConfig = (
     configs.push(perfectionistConfig);
   }
 
+  if (unicorn) {
+    configs.push(unicornConfig);
+  }
+
   // Add any additional config objects provided by the user
   if (additionalConfigs.length > 0) {
     configs.push(...additionalConfigs);
@@ -94,3 +106,12 @@ export const eslintConfig = (
 
   return configs;
 };
+
+eslintConfig(
+  { functionStyle: "arrow" },
+  {
+    rules: {
+      "jsdoc/require-jsdoc": ["warn"],
+    },
+  },
+);
