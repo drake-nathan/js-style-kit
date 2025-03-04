@@ -8,6 +8,7 @@ import { ignoresConfig } from "./ignores.js";
 import { baseEslintConfig } from "./javascript/config.js";
 import { jsdocConfig } from "./jsdoc/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
+import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { tseslintConfig } from "./typescript/config.js";
@@ -85,6 +86,10 @@ export const eslintConfig = (
 
   if (sorting) {
     configs.push(perfectionistConfig);
+  }
+
+  if (functionStyle === "arrow") {
+    configs.push(preferArrowFunctionConfig());
   }
 
   // Add any additional config objects provided by the user
