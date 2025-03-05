@@ -1,16 +1,5 @@
-import type { EslintRuleConfig, FunctionStyle } from "../types.js";
-
-type BaseRules = Record<string, EslintRuleConfig> & {
-  "func-style"?: EslintRuleConfig<
-    "declaration" | "expression",
-    {
-      allowArrowFunctions?: boolean;
-      overrides?: {
-        namedExports?: "declaration" | "expression" | "ignore";
-      };
-    }
-  >;
-};
+import type { FunctionStyle } from "../types.js";
+import type { BaseRules } from "./types.js";
 
 /**
  * Generates the base set of ESLint rules with configurable function style enforcement.
@@ -47,7 +36,12 @@ export const baseEslintRules = (
    */
   camelcase: [
     "warn",
-    { allow: ["^UNSAFE_"], ignoreDestructuring: false, properties: "never" },
+    {
+      allow: ["^UNSAFE_"],
+      ignoreDestructuring: false,
+      ignoreImports: true,
+      properties: "never",
+    },
   ],
   /**
    * Require curly braces for multiline blocks.
