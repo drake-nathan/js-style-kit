@@ -43,6 +43,7 @@
     "globals": "^16.0.0",
     "is-type-of": "^2.2.0",
     "prettier": "^3.5.3",
+    "prettier-plugin-css-order": "^2.1.2",
     "prettier-plugin-packagejson": "^2.5.10",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.11",

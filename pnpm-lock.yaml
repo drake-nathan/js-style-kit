@@ -102,6 +102,9 @@ importers:
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
+      prettier-plugin-css-order:
+        specifier: ^2.1.2
+        version: 2.1.2(postcss@8.5.1)(prettier@3.5.3)
       prettier-plugin-packagejson:
         specifier: ^2.5.10
         version: 2.5.10(prettier@3.5.3)
@@ -13466,7 +13469,6 @@ snapshots:
   postcss-less@6.0.0(postcss@8.5.1):
     dependencies:
       postcss: 8.5.1
-    optional: true
 
   postcss-load-config@6.0.1(jiti@1.21.7)(postcss@8.5.1)(yaml@2.7.0):
     dependencies:
@@ -13727,7 +13729,6 @@ snapshots:
   postcss-scss@4.0.9(postcss@8.5.1):
     dependencies:
       postcss: 8.5.1
-    optional: true
 
   postcss-selector-not@8.0.1(postcss@8.5.1):
     dependencies:
@@ -13782,7 +13783,6 @@ snapshots:
       prettier: 3.5.3
     transitivePeerDependencies:
       - postcss
-    optional: true
 
   prettier-plugin-packagejson@2.5.10(prettier@3.5.3):
     dependencies:
