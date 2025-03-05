@@ -29,8 +29,7 @@
   "scripts": {
     "build": "tsup",
     "lint": "eslint .",
-    "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test": "vitest"
   },
   "dependencies": {
     "eslint": "^9.21.0",
