@@ -52,4 +52,9 @@ jobs:
         run: pnpm turbo run lint -- --max-warnings 0
 
       - name: Test
-        run: pnpm turbo run test
+        run: pnpm turbo run test -- --coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
