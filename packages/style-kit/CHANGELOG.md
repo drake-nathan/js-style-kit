@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.1.1
+
+### Patch Changes
+
+- d758c68: Add prefer-arrow-functions to autofix function preference
+
 ## 0.1.0
 
 ### Minor Changes
