@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.1.3
+
+### Patch Changes
+
+- e04635d: Change `react` to accept options, optimize "camelcase" rule.
+
 ## 0.1.2
 
 ### Patch Changes
