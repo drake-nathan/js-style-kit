@@ -77,7 +77,7 @@ export default eslintConfig({
 
 #### Function Style Configuration
 
-Controls how functions should be written:
+Controls how functions should be written. Some configurations are auto-fixable, but some require manual adjustment.
 
 ```js
 // Enforce arrow functions (default)

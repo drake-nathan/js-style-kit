@@ -33,11 +33,8 @@ describe("eslintConfig", () => {
       const config = eslintConfig();
       const baseConfig = config.find((c) => c.name === configNames.base);
 
-      expect(baseConfig?.rules?.["func-style"]).toEqual([
-        "warn",
-        "expression",
-        { allowArrowFunctions: true },
-      ]);
+      // it is enforced by prefer-arrow-functions when functionStyle is "arrow"
+      expect(baseConfig?.rules?.["func-style"]).toEqual("off");
     });
 
     it("applies 'declaration' function style when specified", () => {
@@ -228,6 +225,50 @@ describe("eslintConfig", () => {
       expect(index1).toBeGreaterThanOrEqual(0);
       expect(index2).toBeGreaterThanOrEqual(0);
       expect(index1).toBeLessThan(index2);
+    });
+  });
+
+  describe("prefer arrow functions configuration", () => {
+    it("includes prefer-arrow-function config when function style is 'arrow'", () => {
+      const config = eslintConfig({ functionStyle: "arrow" });
+
+      expect(
+        config.some((c) => c.name === configNames.preferArrowFunction),
+      ).toBe(true);
+    });
+
+    it("excludes prefer-arrow-function config when function style is not 'arrow'", () => {
+      const config = eslintConfig({ functionStyle: "declaration" });
+
+      expect(
+        config.some((c) => c.name === configNames.preferArrowFunction),
+      ).toBe(false);
+    });
+
+    it("applies expected rules in prefer-arrow-function config", () => {
+      const config = eslintConfig({ functionStyle: "arrow" });
+      const arrowConfig = config.find(
+        (c) => c.name === configNames.preferArrowFunction,
+      );
+
+      expect(arrowConfig).toBeDefined();
+      expect(
+        arrowConfig?.rules?.["prefer-arrow-functions/prefer-arrow-functions"],
+      ).toEqual([
+        "warn",
+        {
+          returnStyle: "unchanged",
+          singleReturnOnly: false,
+        },
+      ]);
+    });
+
+    it("includes prefer-arrow-function config by default", () => {
+      const config = eslintConfig();
+
+      expect(
+        config.some((c) => c.name === configNames.preferArrowFunction),
+      ).toBe(true);
     });
   });
 

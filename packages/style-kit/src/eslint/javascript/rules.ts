@@ -75,13 +75,10 @@ export const baseEslintRules = (
    */
   "func-names": ["warn", "as-needed"],
   "func-style":
-    functionStyle === "off" ? "off" : (
-      [
-        "warn",
-        functionStyle === "arrow" ? "expression" : functionStyle,
-        { allowArrowFunctions: true },
-      ]
-    ),
+    // if arrow function, we use the prefer-arrow-functions plugin
+    functionStyle === "off" || functionStyle === "arrow" ?
+      "off"
+    : ["warn", functionStyle, { allowArrowFunctions: true }],
   /**
    * Require grouped accessor pairs in object literals and classes.
    *
