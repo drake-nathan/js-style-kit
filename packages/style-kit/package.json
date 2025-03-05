@@ -28,6 +28,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "coverage": "vitest run --coverage",
     "lint": "eslint .",
     "test": "vitest"
   },
