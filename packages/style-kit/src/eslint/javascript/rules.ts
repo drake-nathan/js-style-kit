@@ -20,11 +20,19 @@ type BaseRules = Record<string, EslintRuleConfig> & {
  *   - "arrow": Enforces arrow function expressions
  *   - "declaration": Enforces function declarations
  *   - "expression": Enforces function expressions
+ * @param typescript - Whether TypeScript is being used in the project. When true, some rules are adjusted to be more TypeScript-friendly.
  * @returns An object containing ESLint rule configurations
  */
 export const baseEslintRules = (
   functionStyle: "off" | FunctionStyle,
+  typescript: boolean,
 ): BaseRules => ({
+  ...(typescript ?
+    {
+      "no-unused-expressions": "warn",
+      "no-unused-vars": "warn",
+    }
+  : {}),
   /**
    * Require return statements in array methods callbacks.
    *
@@ -74,11 +82,10 @@ export const baseEslintRules = (
    * 🚫 Not fixable - https://eslint.org/docs/rules/func-names
    */
   "func-names": ["warn", "as-needed"],
-  "func-style":
-    // if arrow function, we use the prefer-arrow-functions plugin
-    functionStyle === "off" || functionStyle === "arrow" ?
-      "off"
-    : ["warn", functionStyle, { allowArrowFunctions: true }],
+  // if arrow function, we use the prefer-arrow-functions plugin
+  ...(functionStyle === "off" || functionStyle === "arrow" ?
+    {}
+  : { "func-style": ["warn", functionStyle, { allowArrowFunctions: true }] }),
   /**
    * Require grouped accessor pairs in object literals and classes.
    *

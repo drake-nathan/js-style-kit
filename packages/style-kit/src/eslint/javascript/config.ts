@@ -11,15 +11,18 @@ import { baseEslintRules } from "./rules.js";
  *   - "arrow": Enforces arrow function expressions
  *   - "declaration": Enforces function declarations
  *   - "expression": Enforces function expressions
+ * @param typescript - Whether TypeScript is being used in the project. When true, some rules are adjusted to be more TypeScript-friendly.
  * @returns ESLint configuration object
  */
 export const baseEslintConfig = (
   functionStyle: "off" | FunctionStyle,
+  typescript: boolean,
 ): EslintConfigObject => ({
   languageOptions: {
-    ecmaVersion: 2022,
+    ecmaVersion: "latest",
+    sourceType: "module",
   },
   linterOptions: { reportUnusedDisableDirectives: true },
   name: configNames.base,
-  rules: baseEslintRules(functionStyle),
+  rules: baseEslintRules(functionStyle, typescript),
 });

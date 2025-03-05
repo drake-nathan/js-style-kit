@@ -5,6 +5,7 @@ import { isString } from "is-type-of";
 import type { FunctionStyle } from "./types.js";
 
 import { ignoresConfig } from "./ignores.js";
+import { importConfig } from "./import/config.js";
 import { baseEslintConfig } from "./javascript/config.js";
 import { jsdocConfig } from "./jsdoc/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
@@ -16,6 +17,7 @@ import { tseslintConfig } from "./typescript/config.js";
 export type EslintConfigOptions = {
   functionStyle?: "off" | FunctionStyle;
   ignores?: string[];
+  importPlugin?: boolean;
   jsdoc?:
     | false
     | {
@@ -39,6 +41,7 @@ export type EslintConfigOptions = {
  * @param options - The optional configuration object.
  * @param options.functionStyle - The function style to use. Defaults to "arrow".
  * @param options.ignores - An array of paths to ignore. Already excludes `node_modules` and `dist`.
+ * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
  * @param options.jsdoc - Whether to include JSDoc rules. Defaults to true.
  * @param options.react - Whether to include React rules. Defaults to false.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
@@ -50,6 +53,7 @@ export const eslintConfig = (
   {
     functionStyle = "arrow",
     ignores = [],
+    importPlugin = true,
     jsdoc = { requireJsdoc: false },
     react = false,
     sorting = true,
@@ -60,7 +64,7 @@ export const eslintConfig = (
 ): Linter.Config[] => {
   const configs: Linter.Config[] = [
     ignoresConfig(ignores),
-    baseEslintConfig(functionStyle),
+    baseEslintConfig(functionStyle, Boolean(typescript)),
   ];
 
   if (jsdoc !== false) {
@@ -73,6 +77,10 @@ export const eslintConfig = (
         isString(typescript) ? typescript : undefined,
       ) as Linter.Config[]),
     );
+  }
+
+  if (importPlugin) {
+    configs.push(importConfig(Boolean(typescript)));
   }
 
   if (react) {

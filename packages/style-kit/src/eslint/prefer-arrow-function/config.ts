@@ -22,7 +22,6 @@ export const preferArrowFunctionConfig = (): EslintConfigObject => ({
       "warn",
       {
         returnStyle: "unchanged",
-        singleReturnOnly: false,
       },
     ],
   } satisfies PreferArrowFunctionsRules,
