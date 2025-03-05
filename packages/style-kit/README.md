@@ -1,3 +1,5 @@
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/drake-nathan/js-style-kit?labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit%20Reviews)
+
 # `js-style-kit`
 
 A zero-configuration style guide for ESLint and Prettier that provides sensible default settings and flexible configuration options.

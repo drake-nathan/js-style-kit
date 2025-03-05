@@ -20,10 +20,10 @@ export interface PrettierConfigWithPlugins
  * Creates a Prettier configuration object with optional Tailwind support
  *
  * @param options - Configuration options for Prettier
- * @param options.cssOrder CSS order sorting support
- * @param options.jsonSort JSON sorting support
- * @param options.packageJson Package.json sorting support
- * @param options.tailwind Tailwind CSS formatting support
+ * @param options.cssOrderPlugin CSS order sorting support
+ * @param options.jsonSortPlugin JSON sorting support
+ * @param options.packageJsonPlugin Package.json sorting support
+ * @param options.tailwindPlugin Tailwind CSS formatting support
  * @returns Prettier configuration object with:
  * - Default Prettier configuration
  * - Experimental ternaries enabled
