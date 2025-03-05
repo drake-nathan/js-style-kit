@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.1.2
+
+### Patch Changes
+
+- ddfc826: Add prettier-plugin-css-order
+
 ## 0.1.1
 
 ### Patch Changes
