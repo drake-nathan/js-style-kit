@@ -12,7 +12,11 @@ describe("prettierConfig", () => {
     expect(config).toEqual({
       experimentalTernaries: true,
       jsonRecursiveSort: true,
-      plugins: ["prettier-plugin-sort-json", "prettier-plugin-packagejson"],
+      plugins: [
+        "prettier-plugin-css-order",
+        "prettier-plugin-sort-json",
+        "prettier-plugin-packagejson",
+      ],
     });
   });
 
@@ -114,5 +118,17 @@ describe("prettierConfig", () => {
     });
     expect(config.tailwindFunctions).toEqual(["clsx", "cva", "cn"]);
     expect(config.tabWidth).toBe(2);
+  });
+
+  it("should include css order plugin by default", () => {
+    const config = prettierConfig();
+
+    expect(config.plugins).toContain("prettier-plugin-css-order");
+  });
+
+  it("should disable css order plugin when specified", () => {
+    const config = prettierConfig({ cssOrderPlugin: false });
+
+    expect(config.plugins).not.toContain("prettier-plugin-css-order");
   });
 });

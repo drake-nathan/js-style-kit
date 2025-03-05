@@ -1,3 +1,5 @@
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/drake-nathan/js-style-kit?labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit%20Reviews)
+
 # `js-style-kit`
 
 A zero-configuration style guide for ESLint and Prettier that provides sensible default settings and flexible configuration options.
@@ -204,6 +206,7 @@ import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
   // All options shown with their default values
+  cssOrderPlugin: true, // Enable CSS order plugin
   jsonSortPlugin: true, // Enable JSON sorting plugin
   packageJsonPlugin: true, // Enable package.json sorting plugin
   tailwindPlugin: false, // Enable Tailwind CSS plugin (boolean, string[], or options object)
@@ -231,6 +234,15 @@ tailwindPlugin: {
   tailwindFunctions: ["clsx", "cva", "myCustomFunction"],
   tailwindAttributes: ["tw"]
 }
+```
+
+#### CSS Order Plugin
+
+The CSS order plugin is enabled by default. It sorts CSS properties in a consistent order. You can disable it:
+
+```js
+// Disable CSS order plugin
+cssOrderPlugin: false;
 ```
 
 #### JSON Sorting
@@ -303,6 +315,7 @@ import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
   tailwindPlugin: true,
+  cssOrderPlugin: true,
   printWidth: 100,
   singleQuote: true,
 });
