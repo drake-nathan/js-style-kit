@@ -101,7 +101,7 @@ describe("eslintConfig", () => {
     });
 
     it("excludes React compiler config when React is enabled but React compiler is not", () => {
-      const config = eslintConfig({ react: true, reactCompiler: false });
+      const config = eslintConfig({ react: { reactCompiler: false } });
 
       expect(config.some((c) => c.name === configNames.reactCompiler)).toBe(
         false,
@@ -176,6 +176,13 @@ describe("eslintConfig", () => {
       expect(ignoresConfig?.ignores).toEqual(
         expect.arrayContaining(["**/node_modules/", "**/dist/"]),
       );
+    });
+
+    it("it adds '.next' to ignores when `react.next` is true", () => {
+      const config = eslintConfig({ react: { next: true } });
+      const ignoresConfig = config[0];
+
+      expect(ignoresConfig?.ignores).toEqual(expect.arrayContaining([".next"]));
     });
   });
 

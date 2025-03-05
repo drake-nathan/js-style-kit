@@ -1,6 +1,6 @@
-import type { Linter } from "eslint";
+import type { TypescriptRules } from "./types.js";
 
-export const tseslintRules: Linter.RulesRecord = {
+export const tseslintRules: TypescriptRules = {
   "@typescript-eslint/adjacent-overload-signatures": "warn",
   "@typescript-eslint/array-type": "warn",
   "@typescript-eslint/await-thenable": "warn",
@@ -128,6 +128,4 @@ export const tseslintRules: Linter.RulesRecord = {
   "@typescript-eslint/unbound-method": "warn",
   "@typescript-eslint/unified-signatures": "warn",
   "@typescript-eslint/use-unknown-in-catch-callback-variable": "warn",
-  "dot-notation": "off",
-  "no-empty-function": "off",
 };
