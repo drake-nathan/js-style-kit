@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.1.4
+
+### Patch Changes
+
+- 5f1685f: Refine docs for alpha release
+
 ## 0.1.3
 
 ### Patch Changes
