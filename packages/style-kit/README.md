@@ -14,13 +14,15 @@ A zero-configuration style guide for ESLint and Prettier that provides sensible 
 JS Style Kit is a comprehensive, batteries-included linting and formatting solution for modern JavaScript and TypeScript projects.
 
 - ✅ All dependencies included (ESLint, Prettier, plugins) - no need to install extras
-- ✅ ESlint v9 flat config
+- ✅ ESLint v9 flat config
 - ✅ TypeScript support out of the box
 - ✅ Optional React and React Compiler support
 - ✅ JSDoc validation with configurable requirements for libraries
 - ✅ Automatic import, prop, and object sorting with Perfectionist
 - ✅ Tailwind CSS support for Prettier
 - ✅ Modern ESM-only package
+
+> **Note:** This is very much a work in progress. I want to know what configuration changes you make, so please open an issue!
 
 ## Requirements
 
