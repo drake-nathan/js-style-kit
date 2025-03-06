@@ -1,6 +1,6 @@
-# JS Style Kit
+# `js-style-kit`
 
-A zero-configuration ESLint and Prettier toolkit for JavaScript and TypeScript projects.
+A zero-configuration style guide for ESLint and Prettier that provides sensible default settings and flexible configuration options.
 
 [![CI](https://github.com/drake-nathan/js-style-kit/actions/workflows/ci.yaml/badge.svg)](https://github.com/drake-nathan/js-style-kit/actions/workflows/ci.yaml)
 [![Release](https://github.com/drake-nathan/js-style-kit/actions/workflows/release.yaml/badge.svg)](https://github.com/drake-nathan/js-style-kit/actions/workflows/release.yaml)
@@ -11,26 +11,31 @@ A zero-configuration ESLint and Prettier toolkit for JavaScript and TypeScript p
 
 ## Overview
 
-JS Style Kit is a comprehensive, batteries-included linting and formatting solution for modern JavaScript and TypeScript projects. It provides:
+JS Style Kit is a comprehensive, batteries-included linting and formatting solution for modern JavaScript and TypeScript projects.
 
-- Zero-config ESLint setup with sensible defaults
-- TypeScript support out of the box
-- React and React Compiler support
-- JSDoc validation
-- Perfectionist sorting rules
-- Prettier configuration with plugin support
+- ✅ All dependencies included (ESLint, Prettier, plugins) - no need to install extras
+- ✅ ESlint v9 flat config
+- ✅ TypeScript support out of the box
+- ✅ Optional React and React Compiler support
+- ✅ JSDoc validation with configurable requirements for libraries
+- ✅ Automatic import, prop, and object sorting with Perfectionist
+- ✅ Tailwind CSS support for Prettier
+- ✅ Modern ESM-only package
 
-## Getting Started
+For detailed usage and configuration options, see the [package documentation](./packages/style-kit/README.md).
+
+> **Note:** This is very much a work in progress. I want to know what configuration changes you make, or what rules annoy you, so please open an issue, even just to share your config.
+
+## Basic Setup
 
 ```bash
-# npm
-npm install --save-dev js-style-kit
-
-# yarn
-yarn add --dev js-style-kit
-
-# pnpm
-pnpm add --save-dev js-style-kit
+npm install js-style-kit --save-dev
+# or
+yarn add js-style-kit --dev
+# or
+pnpm add js-style-kit --save-dev
+# or
+bun add js-style-kit --dev
 ```
 
 ### ESLint Configuration
@@ -56,10 +61,6 @@ export default prettierConfig({
   // options
 });
 ```
-
-## Documentation
-
-For detailed usage and configuration options, see the [package documentation](./packages/style-kit/README.md).
 
 ## Repository Structure
 
