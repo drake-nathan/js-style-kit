@@ -16,7 +16,7 @@ describe("eslintConfig", () => {
         configNames.jsdoc,
         configNames.typescript,
         configNames.perfectionist,
-        configNames.vitest,
+        configNames.testing,
         configNames.preferArrowFunction,
         configNames.disableTypeChecked,
         // the disable type checked config comes with an additional un-named config
@@ -24,6 +24,7 @@ describe("eslintConfig", () => {
       ];
 
       expect(config).toBeInstanceOf(Array);
+
       expectedConfigs.forEach((expectedName) => {
         expect(names).toContain(expectedName);
       });
@@ -316,7 +317,7 @@ describe("eslintConfig", () => {
       expect(names).not.toContain(configNames.reactCompiler);
       expect(names).not.toContain(configNames.jsdoc);
       expect(names).not.toContain(configNames.perfectionist);
-      expect(names).not.toContain(configNames.vitest);
+      expect(names).not.toContain(configNames.testing);
     });
 
     it("handles React options without TypeScript", () => {
@@ -338,23 +339,31 @@ describe("eslintConfig", () => {
     it("includes vitest config by default", () => {
       const config = eslintConfig();
 
-      expect(config.some((c) => c.name === configNames.vitest)).toBe(true);
+      expect(config.some((c) => c.name === configNames.testing)).toBe(true);
     });
 
     it("excludes testing config when testing is false", () => {
       const config = eslintConfig({ testing: false });
 
-      expect(config.some((c) => c.name === configNames.vitest)).toBe(false);
+      expect(config.some((c) => c.name === configNames.testing)).toBe(false);
     });
 
     it("applies default testing configuration when testing is not provided", () => {
       const config = eslintConfig();
-      const vitestConfig = config.find((c) => c.name === configNames.vitest);
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
 
-      expect(vitestConfig).toBeDefined();
-      expect(vitestConfig?.files).toStrictEqual([
+      expect(testingConfigObj).toBeDefined();
+      expect(testingConfigObj?.files).toStrictEqual([
         "**/*.{test,spec}.{ts,tsx,js,jsx}",
       ]);
+      // Default framework should be vitest
+      expect(testingConfigObj?.languageOptions?.globals).toBeDefined();
+      // Default formattingRules should be true
+      expect(testingConfigObj?.rules?.["jest/padding-around-test-blocks"]).toBe(
+        "warn",
+      );
     });
 
     it("applies custom testing configuration when provided", () => {
@@ -363,14 +372,16 @@ describe("eslintConfig", () => {
         testing: {
           filenamePattern: "spec",
           files: customFiles,
+          framework: "vitest",
           itOrTest: "test",
-          lib: "vitest",
         },
       });
-      const vitestConfig = config.find((c) => c.name === configNames.vitest);
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
 
-      expect(vitestConfig).toBeDefined();
-      expect(vitestConfig?.files).toStrictEqual(customFiles);
+      expect(testingConfigObj).toBeDefined();
+      expect(testingConfigObj?.files).toStrictEqual(customFiles);
     });
 
     it("merges custom testing configuration with defaults", () => {
@@ -379,13 +390,90 @@ describe("eslintConfig", () => {
           itOrTest: "test",
         },
       });
-      const vitestConfig = config.find((c) => c.name === configNames.vitest);
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
 
-      expect(vitestConfig).toBeDefined();
+      expect(testingConfigObj).toBeDefined();
       // Should still have default files pattern
-      expect(vitestConfig?.files).toStrictEqual([
+      expect(testingConfigObj?.files).toStrictEqual([
         "**/*.{test,spec}.{ts,tsx,js,jsx}",
       ]);
+    });
+
+    it("applies jest framework when specified", () => {
+      const config = eslintConfig({
+        testing: {
+          framework: "jest",
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Should have jest globals
+      expect(testingConfigObj?.languageOptions?.globals).toBeDefined();
+      // Should have jest rules
+      expect(testingConfigObj?.rules?.["jest/expect-expect"]).toBeDefined();
+    });
+
+    it("applies node framework when specified", () => {
+      const config = eslintConfig({
+        testing: {
+          framework: "node",
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Should have node:test settings
+      expect(testingConfigObj?.settings).toStrictEqual({
+        jest: {
+          globalPackage: "node:test",
+        },
+      });
+    });
+
+    it("applies bun framework when specified", () => {
+      const config = eslintConfig({
+        testing: {
+          framework: "bun",
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Should have bun:test settings
+      expect(testingConfigObj?.settings).toStrictEqual({
+        jest: {
+          globalPackage: "bun:test",
+        },
+      });
+    });
+
+    it("disables formatting rules when formattingRules is false", () => {
+      const config = eslintConfig({
+        testing: {
+          formattingRules: false,
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Formatting rules should be undefined
+      expect(
+        testingConfigObj?.rules?.["jest/padding-around-test-blocks"],
+      ).toBeUndefined();
+      expect(
+        testingConfigObj?.rules?.["jest/padding-around-describe-blocks"],
+      ).toBeUndefined();
     });
   });
 });

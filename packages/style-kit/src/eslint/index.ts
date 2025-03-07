@@ -11,15 +11,8 @@ import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactEslintConfig } from "./react/config.js";
+import { testingConfig, type TestingConfig } from "./testing/config.js";
 import { tseslintConfig } from "./typescript/config.js";
-import { vitestConfig } from "./vitest/config.js";
-
-export interface TestingConfig {
-  filenamePattern?: "spec" | "test";
-  files?: string[];
-  itOrTest?: "it" | "test";
-  lib?: "vitest";
-}
 
 export interface EslintConfigOptions {
   functionStyle?: "off" | FunctionStyle;
@@ -53,8 +46,9 @@ export interface EslintConfigOptions {
  * @param options.testing - An object with the following properties:
  *                          - `filenamePattern`: One of "spec" or "test" to determine which filename pattern to use.
  *                          - `files`: Array of file patterns to include in the configuration.
+ *                          - `framework`: One of "vitest" or "jest" to determine which testing library to use.
+ *                          - `formattingRules`: Whether to include formatting rules like padding around blocks.
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
- *                          - `lib`: One of "vitest" to determine which testing library to use. Jest support forthcoming.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
  * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
  * @returns An array of ESLint configuration objects.
@@ -107,8 +101,9 @@ export const eslintConfig = (
     const defaultTestingConfig: TestingConfig = {
       filenamePattern: "test",
       files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
+      formattingRules: true,
+      framework: "vitest",
       itOrTest: "it",
-      lib: "vitest",
     };
 
     // Merge the user's testing config with defaults
@@ -118,17 +113,18 @@ export const eslintConfig = (
     };
 
     // Destructure from the merged config
-    const { filenamePattern, files, itOrTest, lib } = mergedTestingConfig;
+    const { filenamePattern, files, formattingRules, framework, itOrTest } =
+      mergedTestingConfig;
 
-    if (lib === "vitest") {
-      configs.push(
-        vitestConfig({
-          filenamePattern,
-          files,
-          itOrTest,
-        }),
-      );
-    }
+    configs.push(
+      testingConfig({
+        filenamePattern,
+        files,
+        formattingRules,
+        framework,
+        itOrTest,
+      }),
+    );
   }
 
   if (sorting) {
