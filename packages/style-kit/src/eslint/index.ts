@@ -18,7 +18,7 @@ export interface TestingConfig {
   filenamePattern?: "spec" | "test";
   files?: string[];
   itOrTest?: "it" | "test";
-  lib?: "jest" | "vitest";
+  lib?: "vitest";
 }
 
 export interface EslintConfigOptions {
@@ -54,7 +54,7 @@ export interface EslintConfigOptions {
  *                          - `filenamePattern`: One of "spec" or "test" to determine which filename pattern to use.
  *                          - `files`: Array of file patterns to include in the configuration.
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
- *                          - `lib`: One of "jest" or "vitest" to determine which testing library to use.
+ *                          - `lib`: One of "vitest" to determine which testing library to use. Jest support forthcoming.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
  * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
  * @returns An array of ESLint configuration objects.
