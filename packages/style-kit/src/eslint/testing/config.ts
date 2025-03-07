@@ -16,7 +16,7 @@ export interface TestingConfig {
 }
 
 /**
- * Creates an ESLint configuration object for Vitest.
+ * Creates an ESLint configuration object for testing.
  *
  * @param options - Configuration options
  * @param options.files - Files to include in the configuration
@@ -44,9 +44,7 @@ export const testingConfig = (
   languageOptions: {
     globals:
       framework === "vitest" ?
-        {
-          ...vitest.environments.env.globals,
-        }
+        { ...vitest.environments.env.globals }
       : jest.environments.globals.globals,
   },
   name: configNames.testing,
