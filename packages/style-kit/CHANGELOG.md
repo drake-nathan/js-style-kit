@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.1.6
+
+### Patch Changes
+
+- f60afd4: Update testing config to includes jest rules
+
 ## 0.1.5
 
 ### Patch Changes
