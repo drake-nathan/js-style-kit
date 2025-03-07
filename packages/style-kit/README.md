@@ -149,6 +149,24 @@ jsdoc: {
 }
 ```
 
+#### Testing Configuration
+
+Testing support is enabled by default with Vitest configuration. You can customize it or disable it completely:
+
+```js
+// Disable testing configuration
+testing: false;
+
+// Enable with custom options
+testing: {
+  filenamePattern: "spec", // "test" (.test, default) or "spec" (.spec)
+  files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"], // Override file patterns
+  formattingRules: true, // Whether to include formatting rules like padding around blocks
+  framework: "vitest", // "vitest" (default), "jest", "node", or "bun"
+  itOrTest: "test", // "it" (default) or "test"
+}
+```
+
 #### Perfectionist (Code Organization)
 
 Sorting/organization rules from the Perfectionist plugin are enabled by default:

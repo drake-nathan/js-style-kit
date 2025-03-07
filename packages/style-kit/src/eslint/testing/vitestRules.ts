@@ -5,30 +5,10 @@ type VitestRules = Record<`vitest/${string}`, EslintRuleConfig>;
 /**
  * Creates an object containing the ESLint rules for vitest.
  *
- * @param options - Configuration options for the rules.
- * @param options.filenamePattern - ".test" or ".spec" filename pattern
- * @param options.itOrTest - "it" or "test"
+ * @param itOrTest - "it" or "test"
  * @returns An object containing the ESLint rules for vitest.
  */
-export const vitestRules = (
-  {
-    filenamePattern = "test",
-    itOrTest = "test",
-  }: {
-    filenamePattern?: "spec" | "test";
-    itOrTest?: "it" | "test";
-  } = {
-    filenamePattern: "test",
-    itOrTest: "test",
-  },
-): VitestRules => ({
-  "vitest/consistent-test-filename": [
-    "warn",
-    {
-      allTestPattern: ".*\\.(test|spec)\\.[tj]sx?$",
-      pattern: `.*\\.${filenamePattern}\\.[tj]sx?$`,
-    },
-  ],
+export const vitestRules = (itOrTest: "it" | "test" = "test"): VitestRules => ({
   "vitest/consistent-test-it": [
     "warn",
     { fn: itOrTest, withinDescribe: itOrTest },
