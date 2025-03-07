@@ -16,6 +16,8 @@ describe("eslintConfig", () => {
         configNames.jsdoc,
         configNames.typescript,
         configNames.perfectionist,
+        configNames.vitest,
+        configNames.preferArrowFunction,
         configNames.disableTypeChecked,
         // the disable type checked config comes with an additional un-named config
         undefined,
@@ -34,14 +36,14 @@ describe("eslintConfig", () => {
       const baseConfig = config.find((c) => c.name === configNames.base);
 
       // it is enforced by prefer-arrow-functions when functionStyle is "arrow"
-      expect(baseConfig?.rules?.["func-style"]).toEqual("off");
+      expect(baseConfig?.rules?.["func-style"]).toBe("off");
     });
 
     it("applies 'declaration' function style when specified", () => {
       const config = eslintConfig({ functionStyle: "declaration" });
       const baseConfig = config.find((c) => c.name === configNames.base);
 
-      expect(baseConfig?.rules?.["func-style"]).toEqual([
+      expect(baseConfig?.rules?.["func-style"]).toStrictEqual([
         "warn",
         "declaration",
         { allowArrowFunctions: true },
@@ -52,7 +54,7 @@ describe("eslintConfig", () => {
       const config = eslintConfig({ functionStyle: "expression" });
       const baseConfig = config.find((c) => c.name === configNames.base);
 
-      expect(baseConfig?.rules?.["func-style"]).toEqual([
+      expect(baseConfig?.rules?.["func-style"]).toStrictEqual([
         "warn",
         "expression",
         { allowArrowFunctions: true },
@@ -75,7 +77,7 @@ describe("eslintConfig", () => {
 
       expect(
         reactConfig?.rules?.["react/function-component-definition"],
-      ).toEqual([
+      ).toStrictEqual([
         "warn",
         {
           namedComponents: "function-declaration",
@@ -85,7 +87,7 @@ describe("eslintConfig", () => {
     });
   });
 
-  describe("React configuration", () => {
+  describe("react configuration", () => {
     it("includes React config when enabled", () => {
       const config = eslintConfig({ react: true });
 
@@ -107,9 +109,19 @@ describe("eslintConfig", () => {
         false,
       );
     });
+
+    it("enables React with Next.js support when next is true", () => {
+      const config = eslintConfig({ react: { next: true } });
+      const ignoresConfig = config[0];
+
+      expect(config.some((c) => c.name === configNames.react)).toBe(true);
+      expect(ignoresConfig?.ignores).toStrictEqual(
+        expect.arrayContaining([".next"]),
+      );
+    });
   });
 
-  describe("JSDoc configuration", () => {
+  describe("jSDoc configuration", () => {
     it("includes JSDoc config by default with requirements disabled", () => {
       const config = eslintConfig();
       const jsdocConfig = config.find((c) => c.name === configNames.jsdoc);
@@ -129,7 +141,7 @@ describe("eslintConfig", () => {
       const jsdocConfig = config.find((c) => c.name === configNames.jsdoc);
 
       expect(jsdocConfig).toBeDefined();
-      expect(jsdocConfig?.rules?.["jsdoc/require-jsdoc"]).toEqual(
+      expect(jsdocConfig?.rules?.["jsdoc/require-jsdoc"]).toStrictEqual(
         expect.arrayContaining(["warn"]),
       );
     });
@@ -164,7 +176,9 @@ describe("eslintConfig", () => {
       const customIgnores = ["*.test.ts", "*.spec.ts"];
       const config = eslintConfig({ ignores: customIgnores });
 
-      expect(config[0]?.ignores).toEqual(expect.arrayContaining(customIgnores));
+      expect(config[0]?.ignores).toStrictEqual(
+        expect.arrayContaining(customIgnores),
+      );
     });
 
     it("handles empty ignores array", () => {
@@ -173,16 +187,18 @@ describe("eslintConfig", () => {
 
       // Should still include default ignores
       expect(ignoresConfig?.ignores?.length).toBeGreaterThan(0);
-      expect(ignoresConfig?.ignores).toEqual(
+      expect(ignoresConfig?.ignores).toStrictEqual(
         expect.arrayContaining(["**/node_modules/", "**/dist/"]),
       );
     });
 
-    it("it adds '.next' to ignores when `react.next` is true", () => {
+    it("adds '.next' to ignores when `react.next` is true", () => {
       const config = eslintConfig({ react: { next: true } });
       const ignoresConfig = config[0];
 
-      expect(ignoresConfig?.ignores).toEqual(expect.arrayContaining([".next"]));
+      expect(ignoresConfig?.ignores).toStrictEqual(
+        expect.arrayContaining([".next"]),
+      );
     });
   });
 
@@ -261,7 +277,7 @@ describe("eslintConfig", () => {
       expect(arrowConfig).toBeDefined();
       expect(
         arrowConfig?.rules?.["prefer-arrow-functions/prefer-arrow-functions"],
-      ).toEqual([
+      ).toStrictEqual([
         "warn",
         {
           returnStyle: "unchanged",
@@ -285,6 +301,7 @@ describe("eslintConfig", () => {
         jsdoc: false,
         react: false,
         sorting: false,
+        testing: false,
         typescript: false,
       });
 
@@ -299,6 +316,7 @@ describe("eslintConfig", () => {
       expect(names).not.toContain(configNames.reactCompiler);
       expect(names).not.toContain(configNames.jsdoc);
       expect(names).not.toContain(configNames.perfectionist);
+      expect(names).not.toContain(configNames.vitest);
     });
 
     it("handles React options without TypeScript", () => {
@@ -313,6 +331,61 @@ describe("eslintConfig", () => {
       expect(reactConfig).toBeDefined();
       // React config should be initialized with typescript=false
       expect(reactConfig?.rules?.["react/prop-types"]).toBe("warn");
+    });
+  });
+
+  describe("testing configuration", () => {
+    it("includes vitest config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.vitest)).toBe(true);
+    });
+
+    it("excludes testing config when testing is false", () => {
+      const config = eslintConfig({ testing: false });
+
+      expect(config.some((c) => c.name === configNames.vitest)).toBe(false);
+    });
+
+    it("applies default testing configuration when testing is not provided", () => {
+      const config = eslintConfig();
+      const vitestConfig = config.find((c) => c.name === configNames.vitest);
+
+      expect(vitestConfig).toBeDefined();
+      expect(vitestConfig?.files).toStrictEqual([
+        "**/*.{test,spec}.{ts,tsx,js,jsx}",
+      ]);
+    });
+
+    it("applies custom testing configuration when provided", () => {
+      const customFiles = ["**/*.spec.{ts,tsx}"];
+      const config = eslintConfig({
+        testing: {
+          filenamePattern: "spec",
+          files: customFiles,
+          itOrTest: "test",
+          lib: "vitest",
+        },
+      });
+      const vitestConfig = config.find((c) => c.name === configNames.vitest);
+
+      expect(vitestConfig).toBeDefined();
+      expect(vitestConfig?.files).toStrictEqual(customFiles);
+    });
+
+    it("merges custom testing configuration with defaults", () => {
+      const config = eslintConfig({
+        testing: {
+          itOrTest: "test",
+        },
+      });
+      const vitestConfig = config.find((c) => c.name === configNames.vitest);
+
+      expect(vitestConfig).toBeDefined();
+      // Should still have default files pattern
+      expect(vitestConfig?.files).toStrictEqual([
+        "**/*.{test,spec}.{ts,tsx,js,jsx}",
+      ]);
     });
   });
 });

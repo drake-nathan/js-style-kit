@@ -12,6 +12,14 @@ import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { tseslintConfig } from "./typescript/config.js";
+import { vitestConfig } from "./vitest/config.js";
+
+export interface TestingConfig {
+  filenamePattern?: "spec" | "test";
+  files?: string[];
+  itOrTest?: "it" | "test";
+  lib?: "jest" | "vitest";
+}
 
 export interface EslintConfigOptions {
   functionStyle?: "off" | FunctionStyle;
@@ -28,6 +36,7 @@ export interface EslintConfigOptions {
         reactCompiler?: boolean | undefined;
       };
   sorting?: boolean;
+  testing?: false | TestingConfig;
   typescript?: boolean | string;
 }
 
@@ -41,6 +50,11 @@ export interface EslintConfigOptions {
  * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
  *                        Can be configured with an object to control next.js support and reactCompiler.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
+ * @param options.testing - An object with the following properties:
+ *                          - `filenamePattern`: One of "spec" or "test" to determine which filename pattern to use.
+ *                          - `files`: Array of file patterns to include in the configuration.
+ *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
+ *                          - `lib`: One of "jest" or "vitest" to determine which testing library to use.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
  * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
  * @returns An array of ESLint configuration objects.
@@ -52,6 +66,7 @@ export const eslintConfig = (
     jsdoc = { requireJsdoc: false },
     react = false,
     sorting = true,
+    testing,
     typescript = true,
   }: EslintConfigOptions = {},
   ...additionalConfigs: Linter.Config[]
@@ -85,6 +100,34 @@ export const eslintConfig = (
 
     if (shouldUseReactCompiler) {
       configs.push(reactCompilerEslintConfig);
+    }
+  }
+
+  if (testing !== false) {
+    const defaultTestingConfig: TestingConfig = {
+      filenamePattern: "test",
+      files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
+      itOrTest: "it",
+      lib: "vitest",
+    };
+
+    // Merge the user's testing config with defaults
+    const mergedTestingConfig: TestingConfig = {
+      ...defaultTestingConfig,
+      ...(isObject(testing) ? testing : {}),
+    };
+
+    // Destructure from the merged config
+    const { filenamePattern, files, itOrTest, lib } = mergedTestingConfig;
+
+    if (lib === "vitest") {
+      configs.push(
+        vitestConfig({
+          filenamePattern,
+          files,
+          itOrTest,
+        }),
+      );
     }
   }
 

@@ -14,6 +14,7 @@ export const configNames = {
   react: "react-config",
   reactCompiler: "react-compiler-config",
   typescript: "tseslint-config",
+  vitest: "vitest-config",
 } as const;
 
 export type ConfigName = (typeof configNames)[keyof typeof configNames];
