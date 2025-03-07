@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.1.5
+
+### Patch Changes
+
+- 87480a0: Add `eslint-plugin-vitest` with new config
+
 ## 0.1.4
 
 ### Patch Changes
