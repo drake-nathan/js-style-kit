@@ -33,7 +33,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "eslint": "^9.21.0",
+    "eslint": "^9.22.0",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.6.3",
     "eslint-plugin-perfectionist": "^4.9.0",
@@ -41,6 +41,7 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-compiler": "^19.0.0-beta-30d8a17-20250209",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-tailwindcss": "^3.18.0",
     "eslint-plugin-vitest": "^0.5.4",
     "globals": "^16.0.0",
     "is-type-of": "^2.2.0",
