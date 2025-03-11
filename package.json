@@ -12,8 +12,10 @@
     "format:check": "prettier --check .",
     "lint": "turbo lint -- --max-warnings 0",
     "lint:fix": "turbo lint -- --fix",
+    "outdated": "pnpm outdated --recursive",
     "sherif": "pnpm dlx sherif@latest",
-    "test": "turbo test"
+    "test": "turbo test",
+    "update": "pnpm update --recursive"
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
