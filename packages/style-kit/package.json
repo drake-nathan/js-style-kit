@@ -23,11 +23,13 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": "./dist/bin/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
     "lint": "eslint .",
     "lint:inspect": "eslint --inspect-config",
     "test": "vitest"
@@ -55,6 +57,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.13.10",
     "@vitest/coverage-v8": "^3.0.8",
+    "commander": "^13.1.0",
     "tsup": "^8.4.0",
     "vitest": "^3.0.8"
   },
