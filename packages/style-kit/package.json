@@ -23,16 +23,20 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": "./bin/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsup",
+    "dev": "tsup --watch",
+    "dev:cli": "tsup --watch --entry ./bin/index.ts",
     "lint": "eslint .",
     "lint:inspect": "eslint --inspect-config",
     "test": "vitest"
   },
   "dependencies": {
+    "commander": "^13.1.0",
     "eslint": "^9.22.0",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.6.6",
