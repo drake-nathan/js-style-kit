@@ -1,0 +1,11 @@
+{
+  "name": "js-style-kit-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "mintlify dev"
+  },
+  "devDependencies": {
+    "mintlify": "^4.0.427"
+  }
+}
