@@ -1,0 +1,190 @@
+---
+title: "TypeScript Configuration"
+description: "Configure TypeScript support with JS Style Kit"
+---
+
+## Overview
+
+JS Style Kit provides TypeScript configuration through two mechanisms:
+
+1. TypeScript support in ESLint configuration
+2. Reusable TypeScript configuration files for your projects
+
+## TypeScript Support in ESLint
+
+TypeScript support is enabled by default in the ESLint configuration. The `typescript-eslint` plugin is automatically configured with sensible defaults.
+
+### Basic Configuration
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+// TypeScript is enabled by default
+export default eslintConfig();
+```
+
+### Configuration Options
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  // Enable with automatic project detection (default)
+  typescript: true,
+
+  // Disable TypeScript rules
+  // typescript: false,
+
+  // Specify path to your tsconfig.json
+  // typescript: "./tsconfig.json",
+});
+```
+
+### TypeScript Rules
+
+When TypeScript support is enabled, JS Style Kit automatically configures the following:
+
+- **Type checking rules** from `@typescript-eslint`
+- **Best practices** for TypeScript code
+- **Consistency rules** for TypeScript syntax
+- **React-specific TypeScript rules** when React support is enabled
+
+## Reusable TypeScript Configurations
+
+JS Style Kit includes several reusable TypeScript configurations you can extend:
+
+### Using TypeScript Configuration
+
+In your project, create a `tsconfig.json` that extends from JS Style Kit's configurations:
+
+```json
+{
+  "compilerOptions": {
+    // Your custom compiler options...
+  },
+  "exclude": ["node_modules"],
+  "extends": "js-style-kit/typescript-config/base.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}
+```
+
+### Available TypeScript Configurations
+
+JS Style Kit provides the following TypeScript configurations:
+
+#### Base Configuration (`base.json`)
+
+The base configuration provides sensible defaults for modern TypeScript projects:
+
+```json
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "incremental": false,
+    "isolatedModules": true,
+    "lib": ["es2022"],
+    "module": "NodeNext",
+    "moduleDetection": "force",
+    "moduleResolution": "NodeNext",
+    "noImplicitOverride": true,
+    "noUncheckedIndexedAccess": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "verbatimModuleSyntax": true
+  }
+}
+```
+
+#### Library Configuration (`lib.json`)
+
+For creating TypeScript libraries:
+
+```json
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "composite": true
+  },
+  "extends": "./base.json"
+}
+```
+
+#### Documentation Configuration (`docs.json`)
+
+For documentation projects:
+
+```json
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "es2022"],
+    "noEmit": true
+  },
+  "extends": "./base.json"
+}
+```
+
+## Customizing TypeScript Configuration
+
+When creating your own `tsconfig.json`, you can extend from one of these configurations and add your own custom settings:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "rootDir": "src"
+  },
+  "exclude": ["node_modules", "dist"],
+  "extends": "js-style-kit/typescript-config/base.json",
+  "include": ["src/**/*"]
+}
+```
+
+## TypeScript Integration Tips
+
+### Project References
+
+For monorepos or projects with multiple packages, use TypeScript's project references:
+
+```json
+{
+  "compilerOptions": {
+    "composite": true,
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "extends": "js-style-kit/typescript-config/base.json",
+  "references": [{ "path": "../common" }, { "path": "../utils" }]
+}
+```
+
+### Path Aliases
+
+Configure path aliases to simplify imports:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@components/*": ["src/components/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  },
+  "extends": "js-style-kit/typescript-config/base.json"
+}
+```
+
+Don't forget to configure your build tool (webpack, vite, etc.) to handle these path aliases as well.

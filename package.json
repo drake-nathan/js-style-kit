@@ -8,6 +8,7 @@
     "changeset": "changeset",
     "ci": "pnpm run format:check && pnpm run lint && pnpm run test && pnpm run sherif && pnpm run build",
     "dev": "turbo dev",
+    "docs": "mintlify dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "turbo lint -- --max-warnings 0",
