@@ -6,6 +6,7 @@ description: "Detailed guide for configuring Prettier with JS Style Kit"
 ## Overview
 
 JS Style Kit provides a comprehensive Prettier configuration with support for various plugins, including:
+
 - CSS order sorting
 - JSON sorting
 - Package.json sorting
@@ -49,11 +50,11 @@ import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
   // Plugin options with their default values
-  cssOrderPlugin: true,      // Enable CSS order sorting
-  jsonSortPlugin: true,      // Enable JSON sorting
-  packageJsonPlugin: true,   // Enable package.json sorting
-  tailwindPlugin: false,     // Enable Tailwind CSS support
-  
+  cssOrderPlugin: true, // Enable CSS order sorting
+  jsonSortPlugin: true, // Enable JSON sorting
+  packageJsonPlugin: true, // Enable package.json sorting
+  tailwindPlugin: false, // Enable Tailwind CSS support
+
   // Standard Prettier options can also be included
   printWidth: 80,
   tabWidth: 2,
@@ -73,7 +74,7 @@ To disable it:
 
 ```js
 export default prettierConfig({
-  cssOrderPlugin: false
+  cssOrderPlugin: false,
 });
 ```
 
@@ -105,7 +106,7 @@ To disable it:
 
 ```js
 export default prettierConfig({
-  packageJsonPlugin: false
+  packageJsonPlugin: false,
 });
 ```
 
@@ -117,7 +118,7 @@ Enable with default settings:
 
 ```js
 export default prettierConfig({
-  tailwindPlugin: true
+  tailwindPlugin: true,
 });
 ```
 
@@ -127,7 +128,7 @@ Add custom tailwind functions:
 
 ```js
 export default prettierConfig({
-  tailwindPlugin: ["myCustomFunction", "anotherFunction"]
+  tailwindPlugin: ["myCustomFunction", "anotherFunction"],
 });
 ```
 
@@ -137,8 +138,8 @@ Advanced configuration:
 export default prettierConfig({
   tailwindPlugin: {
     tailwindFunctions: ["clsx", "cva", "cn", "myCustomFunction"],
-    tailwindAttributes: ["className", "class", "myAttr"]
-  }
+    tailwindAttributes: ["className", "class", "myAttr"],
+  },
 });
 ```
 
@@ -150,7 +151,7 @@ You can include any standard Prettier configuration option along with the plugin
 export default prettierConfig({
   // Plugin options
   tailwindPlugin: true,
-  
+
   // Standard Prettier options
   printWidth: 100,
   tabWidth: 2,
@@ -177,8 +178,8 @@ Add the following to your `.vscode/settings.json` file:
 
 ```json
 {
-  "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "prettier.requireConfig": true
 }
 ```

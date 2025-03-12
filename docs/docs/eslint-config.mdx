@@ -61,16 +61,16 @@ Controls how functions should be written throughout your codebase. Some configur
 
 ```js
 // Enforce arrow functions (default)
-functionStyle: "arrow"
+functionStyle: "arrow";
 
 // Enforce function declarations
-functionStyle: "declaration"
+functionStyle: "declaration";
 
 // Enforce function expressions
-functionStyle: "expression"
+functionStyle: "expression";
 
 // Disable function style enforcement
-functionStyle: "off"
+functionStyle: "off";
 ```
 
 ## Adding Ignores
@@ -79,7 +79,7 @@ By default, JS Style Kit ignores `node_modules` and `dist` directories. You can 
 
 ```js
 export default eslintConfig({
-  ignores: ['build', '.cache', 'coverage']
+  ignores: ["build", ".cache", "coverage"],
 });
 ```
 
@@ -112,7 +112,7 @@ export default eslintConfig(
       "no-console": "warn",
       "prefer-const": "error",
     },
-  }
+  },
 );
 ```
 
