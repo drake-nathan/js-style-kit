@@ -2,13 +2,13 @@ import type { Config as PrettierConfig } from "prettier";
 import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-sort-json";
 import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
 
-import { isArray, isObject } from "is-type-of";
+import { isObject, isString } from "is-type-of";
 
-interface PrettierConfigOptions extends PrettierConfig {
+export interface PrettierConfigOptions extends PrettierConfig {
   cssOrderPlugin?: boolean;
   jsonSortPlugin?: boolean | SortJsonPluginOptions;
   packageJsonPlugin?: boolean;
-  tailwindPlugin?: boolean | string[] | TailwindPluginOptions;
+  tailwindPlugin?: boolean | string | TailwindPluginOptions;
 }
 
 export interface PrettierConfigWithPlugins
@@ -71,13 +71,17 @@ export const prettierConfig = (
     plugins.push("prettier-plugin-tailwindcss");
     const defaultTailwindFunctions = ["clsx", "cva", "cn"];
 
-    if (isArray(tailwindPlugin)) {
-      config.tailwindFunctions = [
-        ...defaultTailwindFunctions,
-        ...tailwindPlugin,
-      ];
+    if (isString(tailwindPlugin)) {
+      // then it's the path to the stylesheet
+      config.tailwindStylesheet = tailwindPlugin;
+      config.tailwindFunctions = defaultTailwindFunctions;
     } else if (isObject(tailwindPlugin)) {
       Object.assign(config, tailwindPlugin);
+
+      // Ensure defaultTailwindFunctions is applied if tailwindFunctions wasn't specified
+      if (!tailwindPlugin.tailwindFunctions) {
+        config.tailwindFunctions = defaultTailwindFunctions;
+      }
     } else {
       config.tailwindFunctions = defaultTailwindFunctions;
     }
