@@ -51,8 +51,8 @@ jobs:
             ${{ runner.os }}-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}-
             ${{ runner.os }}-turbo-
 
-      - name: Run Sherif
-        run: pnpm dlx sherif@latest
+      - name: Sherif Monorepo Check
+        run: turbo run sherif
 
       - name: Build
         run: turbo run build
