@@ -1,8 +1,8 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
-    "//#format:check": {
-      "dependsOn": ["^format:check"]
+    "//#format": {
+      "dependsOn": ["^format"]
     },
     "build": {
       "dependsOn": ["^build"],
@@ -17,16 +17,12 @@
       "persistent": true
     },
     "format": {
-      "dependsOn": ["^format"]
-    },
-    "format:check": {
       "cache": true,
       "inputs": [
         "**/*.{js,jsx,ts,tsx,json,md}",
         "prettier.config.js",
         ".prettierignore"
-      ],
-      "outputs": []
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
