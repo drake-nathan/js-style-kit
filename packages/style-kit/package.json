@@ -30,9 +30,12 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "format": "prettier --write . --ignore-path .prettierignore.ci",
+    "format:check": "prettier --check . --ignore-path .prettierignore.ci",
     "lint": "eslint .",
     "lint:inspect": "eslint --inspect-config",
-    "test": "vitest"
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "eslint": "^9.22.0",
