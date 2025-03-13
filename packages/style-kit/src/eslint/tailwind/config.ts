@@ -1,12 +1,26 @@
 import tailwindEslint from "eslint-plugin-tailwindcss";
 
 import type { EslintConfigObject, EslintRuleConfig } from "../types.js";
+import type { TailwindPluginSettings } from "./types.js";
 
 import { configNames } from "../constants.js";
 
 type TailwindRules = Record<`tailwindcss/${string}`, EslintRuleConfig>;
 
-export const tailwindConfig: EslintConfigObject = {
+interface TailwindConfigOptions {
+  configPath?: string;
+}
+
+/**
+ * Creates an ESLint configuration for Tailwind CSS.
+ *
+ * @param options
+ * @param options.configPath
+ * @returns ESLint configuration object for Tailwind CSS
+ */
+export const tailwindConfig = ({
+  configPath,
+}: TailwindConfigOptions): EslintConfigObject => ({
   name: configNames.tailwind,
   plugins: {
     tailwind: tailwindEslint,
@@ -19,4 +33,7 @@ export const tailwindConfig: EslintConfigObject = {
     "tailwindcss/no-custom-classname": "warn",
     "tailwindcss/no-unnecessary-arbitrary-value": "warn",
   } satisfies TailwindRules,
-};
+  settings: {
+    tailwindcss: {},
+  } satisfies TailwindPluginSettings,
+});
