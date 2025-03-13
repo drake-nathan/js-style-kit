@@ -30,6 +30,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "postinstall": "node ./dist/scripts/postinstall.js",
     "lint": "eslint .",
     "lint:inspect": "eslint --inspect-config",
     "test": "vitest"

@@ -21,4 +21,12 @@ export default defineConfig([
     outDir: "dist/bin",
     sourcemap: true,
   },
+  {
+    clean: false,
+    dts: false,
+    entryPoints: ["scripts/postinstall.js"],
+    format: ["esm"],
+    outDir: "dist/scripts",
+    sourcemap: true,
+  },
 ]);
