@@ -6,6 +6,8 @@ on:
     branches: ["main"]
   push:
     branches: ["main"]
+    paths-ignore:
+      - "**/*[bot]@users.noreply.github.com**"
 
 jobs:
   build:
@@ -20,6 +22,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
+          # Add token to allow commits back to the repository
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -47,8 +51,22 @@ jobs:
       - name: Build
         run: pnpm turbo run build
 
-      - name: Format check
-        run: pnpm turbo run format:check
+      - name: Format code
+        run: pnpm turbo run format
+
+      - name: Commit formatting changes if needed
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add .
+            git commit -m "style: apply prettier formatting"
+            git push
+            echo "Formatting changes were committed and pushed"
+          else
+            echo "No formatting changes needed"
+          fi
 
       - name: Lint
         run: pnpm turbo run lint -- --max-warnings 0

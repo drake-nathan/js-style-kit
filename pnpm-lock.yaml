@@ -24,8 +24,8 @@ importers:
   docs:
     devDependencies:
       mintlify:
-        specifier: ^4.0.431
-        version: 4.0.431(@types/node@22.13.10)(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2)
+        specifier: ^4.0.432
+        version: 4.0.432(@types/node@22.13.10)(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2)
 
   packages/style-kit:
     dependencies:
@@ -436,8 +436,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@eslint-community/eslint-utils@4.5.0':
-    resolution: {integrity: sha512-RoV8Xs9eNwiDvhv7M+xcL4PWyRyIXRY/FLp3buU4h1EYfdF7unWUy3dOjPqb3C7rMUewIcqwW850PgS8h1o1yg==}
+  '@eslint-community/eslint-utils@4.5.1':
+    resolution: {integrity: sha512-soEIOALTfTK6EjmKMMoLugwaP0rzkad90iIWd1hMO9ARkSAyjfMfkRRhLvD5qH7vvM0Cg72pieUfR6yh6XxC4w==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
@@ -785,8 +785,8 @@ packages:
       '@types/react': '>=16'
       react: '>=16'
 
-  '@mintlify/cli@4.0.430':
-    resolution: {integrity: sha512-g6wQCM/jpdbJtjGvBIYFYX67uAO3hUrZukL0oWNThnwTj6T/M+b9va0gw1CHJQDj3LUNMdwQ+ZmJEAw3uqnCHg==}
+  '@mintlify/cli@4.0.431':
+    resolution: {integrity: sha512-1vJMNssNhi8FvoYXgsO1JwGjdm6n0U/YRblYGHHc2iU9HhRP/3U6rUdX1qZbu8KVDOb+L9hE8BHf+Cp73UvxMQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -1552,8 +1552,8 @@ packages:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
 
-  caniuse-lite@1.0.30001703:
-    resolution: {integrity: sha512-kRlAGTRWgPsOj7oARC9m1okJEXdL/8fekFVcxA8Hl7GH4r/sN4OJn/i6Flde373T50KS7Y37oFbMwlE8+F42kQ==}
+  caniuse-lite@1.0.30001704:
+    resolution: {integrity: sha512-+L2IgBbV6gXB4ETf0keSvLr7JUrRVbIaB/lrQ1+z8mRcQiisG5k+lG6O4n6Y5q6f5EuNfaYXKgymucphlEXQew==}
 
   ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -1884,8 +1884,8 @@ packages:
   ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  electron-to-chromium@1.5.115:
-    resolution: {integrity: sha512-MN1nahVHAQMOz6dz6bNZ7apgqc9InZy7Ja4DBEVCTdeiUcegbyOYE9bi/f2Z/z6ZxLi0RxLpyJ3EGe+4h3w73A==}
+  electron-to-chromium@1.5.116:
+    resolution: {integrity: sha512-mufxTCJzLBQVvSdZzX1s5YAuXsN1M4tTyYxOOL1TcSKtIzQ9rjIrm7yFK80rN5dwGTePgdoABDSHpuVtRQh0Zw==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3195,8 +3195,8 @@ packages:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
 
-  mintlify@4.0.431:
-    resolution: {integrity: sha512-IQObA+qejymnHuryQrmPTdtAoxWr7ltlU9EM28cRJrL38U49OW+tu5AUUI+y7rDamj4Vf9m1LlfNcwsb8NAu0g==}
+  mintlify@4.0.432:
+    resolution: {integrity: sha512-zJzi5heUGb+kuyG6//BPcGQ5vQYj0NI9MPoiZt6dKeFTymSu2aeemm7BLEIG7Y4Tq/6ojT4Sh9swY27gPkxIvw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -5098,7 +5098,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.1':
     optional: true
 
-  '@eslint-community/eslint-utils@4.5.0(eslint@9.22.0(jiti@1.21.7))':
+  '@eslint-community/eslint-utils@4.5.1(eslint@9.22.0(jiti@1.21.7))':
     dependencies:
       eslint: 9.22.0(jiti@1.21.7)
       eslint-visitor-keys: 3.4.3
@@ -5446,7 +5446,7 @@ snapshots:
       '@types/react': 19.0.10
       react: 18.3.1
 
-  '@mintlify/cli@4.0.430(@types/node@22.13.10)(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2)':
+  '@mintlify/cli@4.0.431(@types/node@22.13.10)(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2)':
     dependencies:
       '@mintlify/common': 1.0.305(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@mintlify/link-rot': 3.0.406(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2)
@@ -6107,7 +6107,7 @@ snapshots:
 
   '@typescript-eslint/utils@7.18.0(eslint@9.22.0(jiti@1.21.7))(typescript@5.8.2)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.5.0(eslint@9.22.0(jiti@1.21.7))
+      '@eslint-community/eslint-utils': 4.5.1(eslint@9.22.0(jiti@1.21.7))
       '@typescript-eslint/scope-manager': 7.18.0
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.8.2)
@@ -6118,7 +6118,7 @@ snapshots:
 
   '@typescript-eslint/utils@8.19.1(eslint@9.22.0(jiti@1.21.7))(typescript@5.8.2)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.5.0(eslint@9.22.0(jiti@1.21.7))
+      '@eslint-community/eslint-utils': 4.5.1(eslint@9.22.0(jiti@1.21.7))
       '@typescript-eslint/scope-manager': 8.19.1
       '@typescript-eslint/types': 8.19.1
       '@typescript-eslint/typescript-estree': 8.19.1(typescript@5.8.2)
@@ -6129,7 +6129,7 @@ snapshots:
 
   '@typescript-eslint/utils@8.26.1(eslint@9.22.0(jiti@1.21.7))(typescript@5.8.2)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.5.0(eslint@9.22.0(jiti@1.21.7))
+      '@eslint-community/eslint-utils': 4.5.1(eslint@9.22.0(jiti@1.21.7))
       '@typescript-eslint/scope-manager': 8.26.1
       '@typescript-eslint/types': 8.26.1
       '@typescript-eslint/typescript-estree': 8.26.1(typescript@5.8.2)
@@ -6472,8 +6472,8 @@ snapshots:
 
   browserslist@4.24.4:
     dependencies:
-      caniuse-lite: 1.0.30001703
-      electron-to-chromium: 1.5.115
+      caniuse-lite: 1.0.30001704
+      electron-to-chromium: 1.5.116
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.24.4)
 
@@ -6532,7 +6532,7 @@ snapshots:
 
   callsites@3.1.0: {}
 
-  caniuse-lite@1.0.30001703: {}
+  caniuse-lite@1.0.30001704: {}
 
   ccount@2.0.1: {}
 
@@ -6816,7 +6816,7 @@ snapshots:
 
   ee-first@1.1.1: {}
 
-  electron-to-chromium@1.5.115: {}
+  electron-to-chromium@1.5.116: {}
 
   emoji-regex@8.0.0: {}
 
@@ -7136,7 +7136,7 @@ snapshots:
 
   eslint@9.22.0(jiti@1.21.7):
     dependencies:
-      '@eslint-community/eslint-utils': 4.5.0(eslint@9.22.0(jiti@1.21.7))
+      '@eslint-community/eslint-utils': 4.5.1(eslint@9.22.0(jiti@1.21.7))
       '@eslint-community/regexpp': 4.12.1
       '@eslint/config-array': 0.19.2
       '@eslint/config-helpers': 0.1.0
@@ -8725,9 +8725,9 @@ snapshots:
       minipass: 3.3.6
       yallist: 4.0.0
 
-  mintlify@4.0.431(@types/node@22.13.10)(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2):
+  mintlify@4.0.432(@types/node@22.13.10)(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2):
     dependencies:
-      '@mintlify/cli': 4.0.430(@types/node@22.13.10)(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2)
+      '@mintlify/cli': 4.0.431(@types/node@22.13.10)(@types/react@19.0.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.8.2)
     transitivePeerDependencies:
       - '@types/node'
       - '@types/react'

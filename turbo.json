@@ -23,7 +23,7 @@
       "cache": true,
       "inputs": [
         "**/*.{js,jsx,ts,tsx,json,md}",
-        ".prettierrc",
+        "prettier.config.js",
         ".prettierignore"
       ],
       "outputs": []
@@ -35,7 +35,8 @@
       "dependsOn": ["^test"]
     },
     "test:coverage": {
-      "dependsOn": ["^test:coverage"]
+      "dependsOn": ["^test:coverage"],
+      "outputs": ["coverage/**"]
     }
   }
 }
