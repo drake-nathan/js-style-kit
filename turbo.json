@@ -7,6 +7,12 @@
     "//#format:check": {
       "dependsOn": ["^format:check"]
     },
+    "//#lint": {
+      "dependsOn": ["^lint"]
+    },
+    "//#lint:fix": {
+      "dependsOn": ["^lint:fix"]
+    },
     "//#sherif": {
       "dependsOn": ["^sherif"]
     },
@@ -39,7 +45,12 @@
       ]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
     },
     "sherif": {
       "cache": true,
