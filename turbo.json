@@ -4,6 +4,12 @@
     "//#format": {
       "dependsOn": ["^format"]
     },
+    "//#format:check": {
+      "dependsOn": ["^format:check"]
+    },
+    "//#sherif": {
+      "dependsOn": ["^sherif"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
@@ -34,6 +40,11 @@
     },
     "lint": {
       "dependsOn": ["^lint"]
+    },
+    "sherif": {
+      "cache": true,
+      "inputs": ["**/package.json", "pnpm-lock.yaml"],
+      "outputs": []
     },
     "test": {
       "dependsOn": ["^test"],

@@ -1,11 +1,11 @@
 import { spawn } from "node:child_process";
 
 const commands = [
-  { name: "format", command: "pnpm run format:check", color: "\x1b[36m" }, // Cyan
-  { name: "lint", command: "pnpm run lint", color: "\x1b[33m" }, // Yellow
-  { name: "test", command: "pnpm run test", color: "\x1b[35m" }, // Magenta
+  { name: "format", command: "turbo run format:check", color: "\x1b[36m" }, // Cyan
+  { name: "lint", command: "turbo run lint", color: "\x1b[33m" }, // Yellow
+  { name: "test", command: "turbo run test", color: "\x1b[35m" }, // Magenta
   { name: "sherif", command: "pnpm run sherif", color: "\x1b[32m" }, // Green
-  { name: "build", command: "pnpm run build", color: "\x1b[34m" }, // Blue
+  { name: "build", command: "turbo run build", color: "\x1b[34m" }, // Blue
 ];
 
 // Clear the terminal
