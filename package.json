@@ -16,7 +16,8 @@
     "lint:fix": "turbo lint -- --fix",
     "outdated": "pnpm outdated --recursive",
     "sherif": "pnpm dlx sherif@latest",
-    "test": "turbo test",
+    "test": "turbo run test",
+    "test:coverage": "turbo run test:coverage",
     "update": "pnpm update --recursive"
   },
   "devDependencies": {

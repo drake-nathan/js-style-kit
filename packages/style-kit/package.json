@@ -32,7 +32,8 @@
     "dev": "tsup --watch",
     "lint": "eslint .",
     "lint:inspect": "eslint --inspect-config",
-    "test": "vitest"
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "eslint": "^9.22.0",

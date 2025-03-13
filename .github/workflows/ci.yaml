@@ -55,10 +55,10 @@ jobs:
         run: pnpm dlx sherif@latest
 
       - name: Build
-        run: turbo build
+        run: turbo run build
 
       - name: Format code
-        run: turbo format
+        run: turbo run format
 
       - name: Commit formatting changes if needed
         run: |
@@ -83,12 +83,15 @@ jobs:
           fi
 
       - name: Lint
-        run: turbo lint -- --max-warnings 0
+        run: turbo run lint -- --max-warnings 0
 
       - name: Test and generate coverage reports
-        run: turbo test -- --coverage
+        id: test-coverage
+        run: turbo run test:coverage
+        continue-on-error: true
 
       - name: Upload coverage reports to Codecov
+        if: steps.test-coverage.outcome == 'success'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

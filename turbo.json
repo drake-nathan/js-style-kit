@@ -24,14 +24,35 @@
         ".prettierignore"
       ]
     },
+    "format:check": {
+      "cache": true,
+      "inputs": [
+        "**/*.{js,jsx,ts,tsx,json,md}",
+        "prettier.config.js",
+        ".prettierignore"
+      ]
+    },
     "lint": {
       "dependsOn": ["^lint"]
     },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": ["^test"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "**/*.{js,jsx,ts,tsx}",
+        "!**/node_modules/**",
+        "!**/dist/**"
+      ],
+      "outputs": []
     },
     "test:coverage": {
       "dependsOn": ["^test:coverage"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "**/*.{js,jsx,ts,tsx}",
+        "!**/node_modules/**",
+        "!**/dist/**"
+      ],
       "outputs": ["coverage/**"]
     }
   }
