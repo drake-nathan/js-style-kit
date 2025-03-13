@@ -44,6 +44,7 @@
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-compiler": "19.0.0-beta-bafa41b-20250307",
     "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-tailwindcss": "^3.18.0",
     "eslint-plugin-vitest": "^0.5.4",
     "globals": "^16.0.0",
     "is-type-of": "^2.2.0",
