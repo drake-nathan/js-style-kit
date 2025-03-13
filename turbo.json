@@ -25,7 +25,7 @@
     "format": {
       "cache": true,
       "inputs": [
-        "**/*.{js,jsx,ts,tsx,json,md}",
+        "**/*.{js,jsx,ts,tsx,json,md,mdx}",
         "prettier.config.js",
         ".prettierignore"
       ]
@@ -33,7 +33,7 @@
     "format:check": {
       "cache": true,
       "inputs": [
-        "**/*.{js,jsx,ts,tsx,json,md}",
+        "**/*.{js,jsx,ts,tsx,json,md,mdx}",
         "prettier.config.js",
         ".prettierignore"
       ]
