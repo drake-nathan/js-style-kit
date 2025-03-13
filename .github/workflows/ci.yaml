@@ -24,6 +24,7 @@ jobs:
           fetch-depth: 2
           # Add token to allow commits back to the repository
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -62,7 +63,15 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "style: apply prettier formatting"
-            git push
+            
+            # For pull requests
+            if [ -n "${{ github.head_ref }}" ]; then
+              git push origin HEAD:${{ github.head_ref }}
+            # For direct pushes to branches
+            else
+              git push origin HEAD:${{ github.ref_name }}
+            fi
+            
             echo "Formatting changes were committed and pushed"
           else
             echo "No formatting changes needed"
