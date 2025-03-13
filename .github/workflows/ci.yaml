@@ -28,14 +28,10 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
+        # This will use the version from packageManager in package.json
 
-      - name: Cache turbo build setup
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
+      - name: Install global Turbo
+        run: pnpm add --global turbo@^2
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -44,16 +40,25 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}-
+            ${{ runner.os }}-turbo-
 
       - name: Run Sherif
         run: pnpm dlx sherif@latest
 
       - name: Build
-        run: pnpm turbo run build
+        run: turbo build
 
       - name: Format code
-        run: pnpm turbo run format
+        run: turbo format
 
       - name: Commit formatting changes if needed
         run: |
@@ -78,10 +83,10 @@ jobs:
           fi
 
       - name: Lint
-        run: pnpm turbo run lint -- --max-warnings 0
+        run: turbo lint -- --max-warnings 0
 
       - name: Test and generate coverage reports
-        run: pnpm turbo run test -- --coverage
+        run: turbo test -- --coverage
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
