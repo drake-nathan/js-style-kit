@@ -1,8 +1,6 @@
 import type { Linter } from "eslint";
 
 import type { ConfigName } from "./constants.js";
-import type { BaseRules } from "./javascript/rules.js";
-import type { JsdocRules } from "./jsdoc/types.js";
 
 export type EslintSeverity = 0 | 1 | 2 | "error" | "off" | "warn";
 
@@ -21,5 +19,3 @@ export type FunctionStyle = "arrow" | "declaration" | "expression";
 export interface EslintConfigObject extends Linter.Config {
   name: ConfigName;
 }
-
-export type Rules = BaseRules & JsdocRules;

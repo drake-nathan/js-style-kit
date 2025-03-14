@@ -2,7 +2,7 @@ import type { Linter } from "eslint";
 
 import { isObject, isString } from "is-type-of";
 
-import type { FunctionStyle, Rules } from "./types.js";
+import type { FunctionStyle } from "./types.js";
 
 import { baseEslintConfig } from "./base/config.js";
 import { ignoresConfig } from "./ignores.js";
@@ -33,10 +33,6 @@ export interface EslintConfigOptions {
   testing?: false | TestingConfig;
   typescript?: boolean | string;
   unicorn?: boolean;
-}
-
-interface AdditionalConfig extends Linter.Config {
-  rules: Rules;
 }
 
 /**
@@ -71,7 +67,7 @@ export const eslintConfig = (
     typescript = true,
     unicorn = true,
   }: EslintConfigOptions = {},
-  ...additionalConfigs: AdditionalConfig[]
+  ...additionalConfigs: Linter.Config[]
 ): Linter.Config[] => {
   const configs: Linter.Config[] = [
     ignoresConfig({
