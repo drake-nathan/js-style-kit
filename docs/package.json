@@ -1,0 +1,13 @@
+{
+  "name": "js-style-kit-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "mintlify dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "mintlify": "^4.0.432"
+  }
+}

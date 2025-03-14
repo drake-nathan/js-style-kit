@@ -1,19 +1,21 @@
 import type { Linter } from "eslint";
 
-import { isString } from "is-type-of";
+import { isObject, isString } from "is-type-of";
 
 import type { FunctionStyle, Rules } from "./types.js";
 
+import { baseEslintConfig } from "./base/config.js";
 import { ignoresConfig } from "./ignores.js";
-import { baseEslintConfig } from "./javascript/config.js";
 import { jsdocConfig } from "./jsdoc/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
+import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactEslintConfig } from "./react/config.js";
+import { testingConfig, type TestingConfig } from "./testing/config.js";
 import { tseslintConfig } from "./typescript/config.js";
 import { unicornConfig } from "./unicorn/config.js";
 
-export type EslintConfigOptions = {
+export interface EslintConfigOptions {
   functionStyle?: "off" | FunctionStyle;
   ignores?: string[];
   jsdoc?:
@@ -21,36 +23,42 @@ export type EslintConfigOptions = {
     | {
         requireJsdoc?: boolean;
       };
+  react?:
+    | boolean
+    | {
+        next?: boolean | undefined;
+        reactCompiler?: boolean | undefined;
+      };
   sorting?: boolean;
+  testing?: false | TestingConfig;
   typescript?: boolean | string;
   unicorn?: boolean;
-} & (
-  | {
-      react: true;
-      reactCompiler: boolean | undefined;
-    }
-  | {
-      react?: boolean;
-    }
-);
+}
 
 interface AdditionalConfig extends Linter.Config {
   rules: Rules;
 }
 
 /**
- * This function configures your ESLint config based on inputs. It accepts a configuration object with the following properties:
+ * Configures ESLint based on provided options.
  *
  * @param options - The optional configuration object.
- * @param options.functionStyle - The function style to use. Defaults to "arrow".
- * @param options.ignores - An array of paths to ignore. Already excludes `node_modules` and `dist`.
- * @param options.jsdoc - Whether to include JSDoc rules. Defaults to true.
- * @param options.react - Whether to include React rules. Defaults to false.
+ * @param options.functionStyle - The function style to enforce. Defaults to "arrow".
+ * @param options.ignores - Additional paths to ignore. Already excludes `node_modules` and `dist`.
+ * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
+ * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
+ *                        Can be configured with an object to control next.js support and reactCompiler.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
- * @param options.typescript - Whether to include TypeScript rules OR a string with the path to your tsconfig. Defaults to true.
+ * @param options.testing - An object with the following properties:
+ *                          - `filenamePattern`: One of "spec" or "test" to determine which filename pattern to use.
+ *                          - `files`: Array of file patterns to include in the configuration.
+ *                          - `framework`: One of "vitest" or "jest" to determine which testing library to use.
+ *                          - `formattingRules`: Whether to include formatting rules like padding around blocks.
+ *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
+ * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
  * @param options.unicorn - Whether to include Unicorn rules. Defaults to true.
- * @param additionalConfigs - Additional ESLint config objects to be included in the final configuration.
- * @returns The ESLint configuration array.
+ * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
+ * @returns An array of ESLint configuration objects.
  */
 export const eslintConfig = (
   {
@@ -59,14 +67,17 @@ export const eslintConfig = (
     jsdoc = { requireJsdoc: false },
     react = false,
     sorting = true,
+    testing,
     typescript = true,
     unicorn = true,
-    ...options
   }: EslintConfigOptions = {},
   ...additionalConfigs: AdditionalConfig[]
 ): Linter.Config[] => {
   const configs: Linter.Config[] = [
-    ignoresConfig(ignores),
+    ignoresConfig({
+      next: isObject(react) && react.next,
+      userIgnores: ignores,
+    }),
     baseEslintConfig(functionStyle),
   ];
 
@@ -85,10 +96,43 @@ export const eslintConfig = (
   if (react) {
     configs.push(reactEslintConfig(functionStyle, Boolean(typescript)));
 
-    // Default to true if not explicitly set to false
-    if (!("reactCompiler" in options) || options.reactCompiler !== false) {
+    // Apply reactCompiler by default if react is true or if react.reactCompiler isn't explicitly false
+    const shouldUseReactCompiler =
+      react === true || (isObject(react) && react.reactCompiler !== false);
+
+    if (shouldUseReactCompiler) {
       configs.push(reactCompilerEslintConfig);
     }
+  }
+
+  if (testing !== false) {
+    const defaultTestingConfig: TestingConfig = {
+      filenamePattern: "test",
+      files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
+      formattingRules: true,
+      framework: "vitest",
+      itOrTest: "it",
+    };
+
+    // Merge the user's testing config with defaults
+    const mergedTestingConfig: TestingConfig = {
+      ...defaultTestingConfig,
+      ...(isObject(testing) ? testing : {}),
+    };
+
+    // Destructure from the merged config
+    const { filenamePattern, files, formattingRules, framework, itOrTest } =
+      mergedTestingConfig;
+
+    configs.push(
+      testingConfig({
+        filenamePattern,
+        files,
+        formattingRules,
+        framework,
+        itOrTest,
+      }),
+    );
   }
 
   if (sorting) {
@@ -99,6 +143,10 @@ export const eslintConfig = (
     configs.push(unicornConfig);
   }
 
+  if (functionStyle === "arrow") {
+    configs.push(preferArrowFunctionConfig());
+  }
+
   // Add any additional config objects provided by the user
   if (additionalConfigs.length > 0) {
     configs.push(...additionalConfigs);
@@ -106,12 +154,3 @@ export const eslintConfig = (
 
   return configs;
 };
-
-eslintConfig(
-  { functionStyle: "arrow" },
-  {
-    rules: {
-      "jsdoc/require-jsdoc": ["warn"],
-    },
-  },
-);

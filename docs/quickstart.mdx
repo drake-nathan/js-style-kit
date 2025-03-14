@@ -1,0 +1,140 @@
+---
+title: "Quickstart"
+description: "Get started with JS Style Kit in minutes"
+---
+
+## Installation
+
+JS Style Kit is available as an npm package. Install it with your package manager of choice:
+
+```bash
+# npm
+npm install js-style-kit --save-dev
+
+# yarn
+yarn add js-style-kit --dev
+
+# pnpm
+pnpm add js-style-kit --save-dev
+
+# bun
+bun add js-style-kit --dev
+```
+
+## Basic Usage
+
+### ESLint Configuration
+
+Create an `eslint.config.js` file in your project root:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig();
+```
+
+> **Note:** If you're not using `"type": "module"` in your package.json, name your file `eslint.config.mjs` instead.
+
+Setup your `package.json` commands:
+
+```json
+{
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix --max-warnings 0"
+  }
+}
+```
+
+> **Note:** The `--max-warnings 0` option is important because all rules are set to warning by default.
+
+### Prettier Configuration
+
+Create a `.prettierrc.js` file in your project root:
+
+```js
+import { prettierConfig } from "js-style-kit";
+
+export default prettierConfig();
+```
+
+Or, if you're not using ESM, create a `.prettierrc.mjs` file:
+
+```js
+import { prettierConfig } from "js-style-kit";
+
+export default prettierConfig();
+```
+
+Add the formatting commands to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "format": "prettier --check .",
+    "format:fix": "prettier --write ."
+  }
+}
+```
+
+## Configuration Options
+
+### ESLint Configuration Options
+
+The `eslintConfig()` function accepts a configuration object with various options:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  // All options shown with their default values
+  functionStyle: "arrow", // Controls function style: "arrow", "declaration", "expression", or "off"
+  ignores: [], // Additional paths to ignore (node_modules and dist already excluded)
+  jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
+  react: false, // Whether to include React rules, see below for options
+  sorting: true, // Whether to include sorting rules from Perfectionist
+  typescript: true, // Boolean or string path to tsconfig.json
+});
+```
+
+### Prettier Configuration Options
+
+The `prettierConfig()` function accepts optional configuration options:
+
+```js
+import { prettierConfig } from "js-style-kit";
+
+export default prettierConfig({
+  // All options shown with their default values
+  cssOrderPlugin: true, // Enable CSS order sorting
+  jsonSortPlugin: true, // Enable JSON sorting
+  packageJsonPlugin: true, // Enable package.json sorting
+  tailwindPlugin: false, // Enable Tailwind CSS support (boolean, string[], or object)
+  // Additional standard prettier options
+  tabWidth: 2,
+  semi: true,
+  // etc...
+});
+```
+
+## TypeScript Setup
+
+TypeScript support is enabled by default. If your project uses TypeScript, no additional configuration is required.
+
+For custom TypeScript configurations, you can specify the path to your `tsconfig.json`:
+
+```js
+export default eslintConfig({
+  typescript: "./path/to/tsconfig.json",
+});
+```
+
+## Next Steps
+
+Explore the Configuration section for detailed information on:
+
+- [ESLint Configuration](/essentials/eslint-config)
+- [Prettier Configuration](/essentials/prettier-config)
+- [TypeScript Configuration](/essentials/typescript-config)
+- [React Configuration](/essentials/react-config)
+- [JSDoc Configuration](/essentials/jsdoc-config)

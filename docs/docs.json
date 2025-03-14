@@ -1,0 +1,70 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "colors": {
+    "dark": "#2563EB",
+    "light": "#3B82F6",
+    "primary": "#2563EB"
+  },
+  "favicon": "/favicon.svg",
+  "footer": {
+    "socials": {
+      "github": "https://github.com/drake-nathan/js-style-kit"
+    }
+  },
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "name": "JS Style Kit",
+  "navbar": {
+    "links": [
+      {
+        "href": "https://github.com/drake-nathan/js-style-kit/issues",
+        "label": "Issues"
+      }
+    ],
+    "primary": {
+      "href": "https://github.com/drake-nathan/js-style-kit",
+      "label": "GitHub",
+      "type": "button"
+    }
+  },
+  "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "npm",
+          "href": "https://www.npmjs.com/package/js-style-kit",
+          "icon": "npm"
+        },
+        {
+          "anchor": "GitHub",
+          "href": "https://github.com/drake-nathan/js-style-kit",
+          "icon": "github"
+        }
+      ]
+    },
+    "tabs": [
+      {
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart", "development"]
+          },
+          {
+            "group": "Configuration",
+            "pages": [
+              "docs/eslint-config",
+              "docs/prettier-config",
+              "docs/typescript-config",
+              "docs/react-config",
+              "docs/jsdoc-config"
+            ]
+          }
+        ],
+        "tab": "Docs"
+      }
+    ]
+  },
+  "theme": "linden"
+}

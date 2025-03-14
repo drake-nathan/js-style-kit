@@ -1,0 +1,129 @@
+---
+title: "ESLint Configuration"
+description: "Detailed guide for configuring ESLint with JS Style Kit"
+---
+
+## Overview
+
+JS Style Kit provides a comprehensive ESLint configuration using the modern ESLint v9 flat config format. This configuration includes sensible defaults for JavaScript and TypeScript projects, with optional support for React, testing frameworks, and code organization.
+
+## Basic Setup
+
+Create an `eslint.config.js` file in your project root:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig();
+```
+
+If your project doesn't use ESM, create an `eslint.config.mjs` file instead:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig();
+```
+
+Add the linting scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix --max-warnings 0"
+  }
+}
+```
+
+## Configuration Options
+
+The `eslintConfig()` function accepts a configuration object with the following options:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  // All options shown with their default values
+  functionStyle: "arrow", // Controls function style: "arrow", "declaration", "expression", or "off"
+  ignores: [], // Additional paths to ignore (node_modules and dist already excluded)
+  jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
+  react: false, // Whether to include React rules
+  sorting: true, // Whether to include sorting rules from Perfectionist
+  typescript: true, // Boolean or string path to tsconfig.json
+  testing: true, // Testing configuration, see below for options
+});
+```
+
+## Function Style Configuration
+
+Controls how functions should be written throughout your codebase. Some configurations are auto-fixable, but some may require manual adjustment.
+
+```js
+// Enforce arrow functions (default)
+functionStyle: "arrow";
+
+// Enforce function declarations
+functionStyle: "declaration";
+
+// Enforce function expressions
+functionStyle: "expression";
+
+// Disable function style enforcement
+functionStyle: "off";
+```
+
+## Adding Ignores
+
+By default, JS Style Kit ignores `node_modules` and `dist` directories. You can add additional paths to ignore:
+
+```js
+export default eslintConfig({
+  ignores: ["build", ".cache", "coverage"],
+});
+```
+
+## Custom ESLint Configurations
+
+You can extend the base configuration by providing additional ESLint config objects as rest parameters:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig(
+  {
+    // Base configuration options
+    typescript: "tsconfig.eslint.json",
+    react: true,
+  },
+  // Additional custom ESLint configuration objects
+  {
+    name: "custom-globals",
+    languageOptions: {
+      globals: {
+        process: "readonly",
+        __dirname: "readonly",
+      },
+    },
+  },
+  {
+    name: "custom-rules",
+    rules: {
+      "no-console": "warn",
+      "prefer-const": "error",
+    },
+  },
+);
+```
+
+## Migrating from ESLint Legacy Config
+
+If you're coming from a legacy ESLint configuration (`.eslintrc.js` or other formats), you'll need to adapt to the new flat config format. Here are some key differences:
+
+1. The configuration file is now named `eslint.config.js` or `eslint.config.mjs`
+2. The format is different, using an array of configuration objects rather than a nested object
+3. Plugins, parsers, and other extensions are imported directly rather than being referenced by string names
+
+JS Style Kit handles most of this complexity for you, so you can focus on the configuration options that matter for your project.
+
+For more details on ESLint flat config, see the [ESLint documentation](https://eslint.org/docs/latest/use/configure/configuration-files-new).

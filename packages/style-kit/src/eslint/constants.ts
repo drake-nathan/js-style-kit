@@ -10,8 +10,10 @@ export const configNames = {
   jsdoc: "jsdoc-config",
   markdown: "markdown-config",
   perfectionist: "perfectionist-config",
+  preferArrowFunction: "prefer-arrow-function-config",
   react: "react-config",
   reactCompiler: "react-compiler-config",
+  testing: "testing-config",
   typescript: "tseslint-config",
   unicorn: "unicorn-config",
 } as const;

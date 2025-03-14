@@ -16,12 +16,15 @@ describe("eslintConfig", () => {
         configNames.jsdoc,
         configNames.typescript,
         configNames.perfectionist,
+        configNames.testing,
+        configNames.preferArrowFunction,
         configNames.disableTypeChecked,
         // the disable type checked config comes with an additional un-named config
         undefined,
       ];
 
       expect(config).toBeInstanceOf(Array);
+
       expectedConfigs.forEach((expectedName) => {
         expect(names).toContain(expectedName);
       });
@@ -33,18 +36,15 @@ describe("eslintConfig", () => {
       const config = eslintConfig();
       const baseConfig = config.find((c) => c.name === configNames.base);
 
-      expect(baseConfig?.rules?.["func-style"]).toEqual([
-        "warn",
-        "expression",
-        { allowArrowFunctions: true },
-      ]);
+      // it is enforced by prefer-arrow-functions when functionStyle is "arrow"
+      expect(baseConfig?.rules?.["func-style"]).toBe("off");
     });
 
     it("applies 'declaration' function style when specified", () => {
       const config = eslintConfig({ functionStyle: "declaration" });
       const baseConfig = config.find((c) => c.name === configNames.base);
 
-      expect(baseConfig?.rules?.["func-style"]).toEqual([
+      expect(baseConfig?.rules?.["func-style"]).toStrictEqual([
         "warn",
         "declaration",
         { allowArrowFunctions: true },
@@ -55,7 +55,7 @@ describe("eslintConfig", () => {
       const config = eslintConfig({ functionStyle: "expression" });
       const baseConfig = config.find((c) => c.name === configNames.base);
 
-      expect(baseConfig?.rules?.["func-style"]).toEqual([
+      expect(baseConfig?.rules?.["func-style"]).toStrictEqual([
         "warn",
         "expression",
         { allowArrowFunctions: true },
@@ -78,7 +78,7 @@ describe("eslintConfig", () => {
 
       expect(
         reactConfig?.rules?.["react/function-component-definition"],
-      ).toEqual([
+      ).toStrictEqual([
         "warn",
         {
           namedComponents: "function-declaration",
@@ -88,7 +88,7 @@ describe("eslintConfig", () => {
     });
   });
 
-  describe("React configuration", () => {
+  describe("react configuration", () => {
     it("includes React config when enabled", () => {
       const config = eslintConfig({ react: true });
 
@@ -104,15 +104,25 @@ describe("eslintConfig", () => {
     });
 
     it("excludes React compiler config when React is enabled but React compiler is not", () => {
-      const config = eslintConfig({ react: true, reactCompiler: false });
+      const config = eslintConfig({ react: { reactCompiler: false } });
 
       expect(config.some((c) => c.name === configNames.reactCompiler)).toBe(
         false,
       );
     });
+
+    it("enables React with Next.js support when next is true", () => {
+      const config = eslintConfig({ react: { next: true } });
+      const ignoresConfig = config[0];
+
+      expect(config.some((c) => c.name === configNames.react)).toBe(true);
+      expect(ignoresConfig?.ignores).toStrictEqual(
+        expect.arrayContaining([".next"]),
+      );
+    });
   });
 
-  describe("JSDoc configuration", () => {
+  describe("jSDoc configuration", () => {
     it("includes JSDoc config by default with requirements disabled", () => {
       const config = eslintConfig();
       const jsdocConfig = config.find((c) => c.name === configNames.jsdoc);
@@ -132,7 +142,7 @@ describe("eslintConfig", () => {
       const jsdocConfig = config.find((c) => c.name === configNames.jsdoc);
 
       expect(jsdocConfig).toBeDefined();
-      expect(jsdocConfig?.rules?.["jsdoc/require-jsdoc"]).toEqual(
+      expect(jsdocConfig?.rules?.["jsdoc/require-jsdoc"]).toStrictEqual(
         expect.arrayContaining(["warn"]),
       );
     });
@@ -167,7 +177,9 @@ describe("eslintConfig", () => {
       const customIgnores = ["*.test.ts", "*.spec.ts"];
       const config = eslintConfig({ ignores: customIgnores });
 
-      expect(config[0]?.ignores).toEqual(expect.arrayContaining(customIgnores));
+      expect(config[0]?.ignores).toStrictEqual(
+        expect.arrayContaining(customIgnores),
+      );
     });
 
     it("handles empty ignores array", () => {
@@ -176,8 +188,17 @@ describe("eslintConfig", () => {
 
       // Should still include default ignores
       expect(ignoresConfig?.ignores?.length).toBeGreaterThan(0);
-      expect(ignoresConfig?.ignores).toEqual(
+      expect(ignoresConfig?.ignores).toStrictEqual(
         expect.arrayContaining(["**/node_modules/", "**/dist/"]),
+      );
+    });
+
+    it("adds '.next' to ignores when `react.next` is true", () => {
+      const config = eslintConfig({ react: { next: true } });
+      const ignoresConfig = config[0];
+
+      expect(ignoresConfig?.ignores).toStrictEqual(
+        expect.arrayContaining([".next"]),
       );
     });
   });
@@ -231,12 +252,57 @@ describe("eslintConfig", () => {
     });
   });
 
+  describe("prefer arrow functions configuration", () => {
+    it("includes prefer-arrow-function config when function style is 'arrow'", () => {
+      const config = eslintConfig({ functionStyle: "arrow" });
+
+      expect(
+        config.some((c) => c.name === configNames.preferArrowFunction),
+      ).toBe(true);
+    });
+
+    it("excludes prefer-arrow-function config when function style is not 'arrow'", () => {
+      const config = eslintConfig({ functionStyle: "declaration" });
+
+      expect(
+        config.some((c) => c.name === configNames.preferArrowFunction),
+      ).toBe(false);
+    });
+
+    it("applies expected rules in prefer-arrow-function config", () => {
+      const config = eslintConfig({ functionStyle: "arrow" });
+      const arrowConfig = config.find(
+        (c) => c.name === configNames.preferArrowFunction,
+      );
+
+      expect(arrowConfig).toBeDefined();
+      expect(
+        arrowConfig?.rules?.["prefer-arrow-functions/prefer-arrow-functions"],
+      ).toStrictEqual([
+        "warn",
+        {
+          returnStyle: "unchanged",
+          singleReturnOnly: false,
+        },
+      ]);
+    });
+
+    it("includes prefer-arrow-function config by default", () => {
+      const config = eslintConfig();
+
+      expect(
+        config.some((c) => c.name === configNames.preferArrowFunction),
+      ).toBe(true);
+    });
+  });
+
   describe("edge cases", () => {
     it("works when all optional features are disabled", () => {
       const config = eslintConfig({
         jsdoc: false,
         react: false,
         sorting: false,
+        testing: false,
         typescript: false,
       });
 
@@ -251,6 +317,7 @@ describe("eslintConfig", () => {
       expect(names).not.toContain(configNames.reactCompiler);
       expect(names).not.toContain(configNames.jsdoc);
       expect(names).not.toContain(configNames.perfectionist);
+      expect(names).not.toContain(configNames.testing);
     });
 
     it("handles React options without TypeScript", () => {
@@ -265,6 +332,148 @@ describe("eslintConfig", () => {
       expect(reactConfig).toBeDefined();
       // React config should be initialized with typescript=false
       expect(reactConfig?.rules?.["react/prop-types"]).toBe("warn");
+    });
+  });
+
+  describe("testing configuration", () => {
+    it("includes vitest config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.testing)).toBe(true);
+    });
+
+    it("excludes testing config when testing is false", () => {
+      const config = eslintConfig({ testing: false });
+
+      expect(config.some((c) => c.name === configNames.testing)).toBe(false);
+    });
+
+    it("applies default testing configuration when testing is not provided", () => {
+      const config = eslintConfig();
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      expect(testingConfigObj?.files).toStrictEqual([
+        "**/*.{test,spec}.{ts,tsx,js,jsx}",
+      ]);
+      // Default framework should be vitest
+      expect(testingConfigObj?.languageOptions?.globals).toBeDefined();
+      // Default formattingRules should be true
+      expect(testingConfigObj?.rules?.["jest/padding-around-test-blocks"]).toBe(
+        "warn",
+      );
+    });
+
+    it("applies custom testing configuration when provided", () => {
+      const customFiles = ["**/*.spec.{ts,tsx}"];
+      const config = eslintConfig({
+        testing: {
+          filenamePattern: "spec",
+          files: customFiles,
+          framework: "vitest",
+          itOrTest: "test",
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      expect(testingConfigObj?.files).toStrictEqual(customFiles);
+    });
+
+    it("merges custom testing configuration with defaults", () => {
+      const config = eslintConfig({
+        testing: {
+          itOrTest: "test",
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Should still have default files pattern
+      expect(testingConfigObj?.files).toStrictEqual([
+        "**/*.{test,spec}.{ts,tsx,js,jsx}",
+      ]);
+    });
+
+    it("applies jest framework when specified", () => {
+      const config = eslintConfig({
+        testing: {
+          framework: "jest",
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Should have jest globals
+      expect(testingConfigObj?.languageOptions?.globals).toBeDefined();
+      // Should have jest rules
+      expect(testingConfigObj?.rules?.["jest/expect-expect"]).toBeDefined();
+    });
+
+    it("applies node framework when specified", () => {
+      const config = eslintConfig({
+        testing: {
+          framework: "node",
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Should have node:test settings
+      expect(testingConfigObj?.settings).toStrictEqual({
+        jest: {
+          globalPackage: "node:test",
+        },
+      });
+    });
+
+    it("applies bun framework when specified", () => {
+      const config = eslintConfig({
+        testing: {
+          framework: "bun",
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Should have bun:test settings
+      expect(testingConfigObj?.settings).toStrictEqual({
+        jest: {
+          globalPackage: "bun:test",
+        },
+      });
+    });
+
+    it("disables formatting rules when formattingRules is false", () => {
+      const config = eslintConfig({
+        testing: {
+          formattingRules: false,
+        },
+      });
+      const testingConfigObj = config.find(
+        (c) => c.name === configNames.testing,
+      );
+
+      expect(testingConfigObj).toBeDefined();
+      // Formatting rules should be undefined
+      expect(
+        testingConfigObj?.rules?.["jest/padding-around-test-blocks"],
+      ).toBeUndefined();
+      expect(
+        testingConfigObj?.rules?.["jest/padding-around-describe-blocks"],
+      ).toBeUndefined();
     });
   });
 });

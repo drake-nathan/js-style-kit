@@ -2,15 +2,27 @@
 
 A zero-configuration style guide for ESLint and Prettier that provides sensible default settings and flexible configuration options.
 
-## Features
+[![CI](https://github.com/drake-nathan/js-style-kit/actions/workflows/ci.yaml/badge.svg)](https://github.com/drake-nathan/js-style-kit/actions/workflows/ci.yaml)
+[![Release](https://github.com/drake-nathan/js-style-kit/actions/workflows/release.yaml/badge.svg)](https://github.com/drake-nathan/js-style-kit/actions/workflows/release.yaml)
+[![npm version](https://img.shields.io/npm/v/js-style-kit.svg)](https://www.npmjs.com/package/js-style-kit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/drake-nathan/js-style-kit/graph/badge.svg?token=C57D67JAE0)](https://codecov.io/gh/drake-nathan/js-style-kit)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/drake-nathan/js-style-kit?labelColor=5C5C5C&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit%20Reviews)
+
+## Overview
+
+JS Style Kit is a comprehensive, batteries-included linting and formatting solution for modern JavaScript and TypeScript projects.
 
 - ✅ All dependencies included (ESLint, Prettier, plugins) - no need to install extras
+- ✅ ESLint v9 flat config
 - ✅ TypeScript support out of the box
 - ✅ Optional React and React Compiler support
-- ✅ JSDoc validation with configurable requirements
+- ✅ JSDoc validation with configurable requirements for libraries
 - ✅ Automatic import, prop, and object sorting with Perfectionist
 - ✅ Tailwind CSS support for Prettier
 - ✅ Modern ESM-only package
+
+> **Note:** This is very much a work in progress. I want to know what configuration changes you make, so please open an issue!
 
 ## Requirements
 
@@ -68,8 +80,7 @@ export default eslintConfig({
   functionStyle: "arrow", // Controls function style: "arrow", "declaration", "expression", or "off"
   ignores: [], // Additional paths to ignore (node_modules and dist already excluded)
   jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
-  react: false, // Whether to include React rules
-  reactCompiler: undefined, // When react is true, controls React compiler rules
+  react: false, // Whether to include React rules, see below for options
   sorting: true, // Whether to include sorting rules from Perfectionist
   typescript: true, // Boolean or string path to tsconfig.json
 });
@@ -77,7 +88,7 @@ export default eslintConfig({
 
 #### Function Style Configuration
 
-Controls how functions should be written:
+Controls how functions should be written. Some configurations are auto-fixable, but some require manual adjustment.
 
 ```js
 // Enforce arrow functions (default)
@@ -110,16 +121,18 @@ typescript: "./tsconfig.json";
 
 #### React Configuration
 
-React support is disabled by default:
+React support is disabled by default.
 
 ```js
-// Enable React support
+// `true` enables standard react rules, react hook rules, and react compiler
 react: true
 
-// With React enabled, React Compiler is automatically included
-// Disable React Compiler explicitly:
-react: true,
-reactCompiler: false
+// you can also pass an object to control react compiler and next support
+react: {
+  reactCompiler: false,
+  next: true
+}
+// next simply adds ".next" to the ignores array, but I plan add the next plugin in the future
 ```
 
 #### JSDoc Configuration
@@ -133,6 +146,24 @@ jsdoc: false;
 // Enable JSDoc with requirement rules, ideal for libraries
 jsdoc: {
   requireJsdoc: true;
+}
+```
+
+#### Testing Configuration
+
+Testing support is enabled by default with Vitest configuration. You can customize it or disable it completely:
+
+```js
+// Disable testing configuration
+testing: false;
+
+// Enable with custom options
+testing: {
+  filenamePattern: "spec", // "test" (.test, default) or "spec" (.spec)
+  files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"], // Override file patterns
+  formattingRules: true, // Whether to include formatting rules like padding around blocks
+  framework: "vitest", // "vitest" (default), "jest", "node", or "bun"
+  itOrTest: "test", // "it" (default) or "test"
 }
 ```
 
@@ -155,7 +186,7 @@ import { eslintConfig } from "js-style-kit";
 export default eslintConfig(
   {
     // Base configuration options
-    typescript: "./tsconfig.json",
+    typescript: "tsconfig.eslint.json",
     react: true,
   },
   // Additional custom ESLint configuration objects
@@ -195,6 +226,17 @@ export default prettierConfig();
 
 > **Note:** If you're not using `"type": "module"` in your package.json, name your file `prettier.config.mjs` instead.
 
+Setup your `package.json` commands:
+
+```json
+{
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ." // run this one in your CI
+  }
+}
+```
+
 ### Configuration Options
 
 The `prettierConfig()` function accepts a configuration object with the following options:
@@ -204,6 +246,7 @@ import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
   // All options shown with their default values
+  cssOrderPlugin: true, // Enable CSS order plugin
   jsonSortPlugin: true, // Enable JSON sorting plugin
   packageJsonPlugin: true, // Enable package.json sorting plugin
   tailwindPlugin: false, // Enable Tailwind CSS plugin (boolean, string[], or options object)
@@ -231,6 +274,15 @@ tailwindPlugin: {
   tailwindFunctions: ["clsx", "cva", "myCustomFunction"],
   tailwindAttributes: ["tw"]
 }
+```
+
+#### CSS Order Plugin
+
+The CSS order plugin is enabled by default. It sorts CSS properties in a consistent order. You can disable it:
+
+```js
+// Disable CSS order plugin
+cssOrderPlugin: false;
 ```
 
 #### JSON Sorting
@@ -282,7 +334,7 @@ import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig(
   {
-    typescript: "./tsconfig.json",
+    typescript: "tsconfig.eslint.json",
     react: true,
     jsdoc: { requireJsdoc: true },
     functionStyle: "arrow",
@@ -303,6 +355,7 @@ import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
   tailwindPlugin: true,
+  cssOrderPlugin: true,
   printWidth: 100,
   singleQuote: true,
 });
