@@ -13,6 +13,7 @@ import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { testingConfig, type TestingConfig } from "./testing/config.js";
 import { tseslintConfig } from "./typescript/config.js";
+import { unicornConfig } from "./unicorn/config.js";
 
 export interface EslintConfigOptions {
   functionStyle?: "off" | FunctionStyle;
@@ -31,6 +32,7 @@ export interface EslintConfigOptions {
   sorting?: boolean;
   testing?: false | TestingConfig;
   typescript?: boolean | string;
+  unicorn?: boolean;
 }
 
 /**
@@ -50,6 +52,7 @@ export interface EslintConfigOptions {
  *                          - `formattingRules`: Whether to include formatting rules like padding around blocks.
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
+ * @param options.unicorn - Whether to include Unicorn rules. Defaults to true.
  * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
  * @returns An array of ESLint configuration objects.
  */
@@ -62,6 +65,7 @@ export const eslintConfig = (
     sorting = true,
     testing,
     typescript = true,
+    unicorn = true,
   }: EslintConfigOptions = {},
   ...additionalConfigs: Linter.Config[]
 ): Linter.Config[] => {
@@ -129,6 +133,10 @@ export const eslintConfig = (
 
   if (sorting) {
     configs.push(perfectionistConfig);
+  }
+
+  if (unicorn) {
+    configs.push(unicornConfig);
   }
 
   if (functionStyle === "arrow") {

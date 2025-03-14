@@ -15,6 +15,7 @@ export const configNames = {
   reactCompiler: "react-compiler-config",
   testing: "testing-config",
   typescript: "tseslint-config",
+  unicorn: "unicorn-config",
 } as const;
 
 export type ConfigName = (typeof configNames)[keyof typeof configNames];
