@@ -71,10 +71,10 @@ jobs:
       - name: Build
         run: turbo run build
 
-      - name: Format code
+      - name: Prettier --write
         run: turbo run format
 
-      - name: Commit formatting changes if needed
+      - name: Commit Prettier changes if needed
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -96,8 +96,11 @@ jobs:
             echo "No formatting changes needed"
           fi
 
-      - name: Lint
+      - name: ESLint
         run: turbo run lint -- --max-warnings 0
+
+      - name: Markdown lint
+        run: turbo run lint:md
 
       - name: Test and generate coverage reports
         id: test-coverage

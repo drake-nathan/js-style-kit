@@ -66,7 +66,7 @@ export default prettierConfig({
 
 This is a monorepo managed with Turborepo and bun.
 
-```
+```sh
 /
 ├── apps/
 │   └── docs/             # Documentation site built with Docusaurus (WIP)

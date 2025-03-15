@@ -17,6 +17,8 @@
     "format:check": "prettier --check . --ignore-path .prettierignore.ci",
     "lint": "eslint . --max-warnings 0 --ignore-pattern docs --ignore-pattern packages",
     "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages",
+    "lint:md": "markdownlint '**/*.md' --ignore node_modules",
+    "outdated": "bun outdated --filter \"js-style-kit-root\" --filter \"js-style-kit\" --filter \"js-style-kit-docs\"",
     "sherif": "sherif",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage"
@@ -25,6 +27,7 @@
     "@changesets/cli": "^2.28.1",
     "@types/bun": "^1.2.5",
     "js-style-kit": "workspace:*",
+    "markdownlint-cli": "^0.44.0",
     "sherif": "^1.4.0",
     "turbo": "^2.4.4",
     "typescript": "^5.8.2"
