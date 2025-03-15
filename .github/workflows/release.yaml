@@ -30,8 +30,8 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v4
         with:
-          path: node_modules # or the equivalent dependency folder for Bun
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          path: node_modules
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
@@ -51,7 +51,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: node_modules
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
 
       - name: Cache turbo build setup
         uses: actions/cache@v4

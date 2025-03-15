@@ -149,9 +149,7 @@ describe("isObject", () => {
 describe("isFunction", () => {
   it("returns true for function values", () => {
     expect(isFunction(() => null)).toBe(true);
-    expect(isFunction(() => null)).toBe(true);
-    expect(isFunction(() => null)).toBe(true);
-    expect(isFunction(() => null)).toBe(true);
+    expect(isFunction(String)).toBe(true);
   });
 
   it("returns false for non-function values", () => {
