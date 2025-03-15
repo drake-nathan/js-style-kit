@@ -61,8 +61,7 @@ export const testingConfig = (
         pattern: `.*\\.${filenamePattern}\\.[tj]sx?$`,
       },
     ],
-    ...(framework === "vitest" ? vitestRules(itOrTest) : {}),
-    ...(framework === "jest" ? jestRules(itOrTest) : {}),
+    ...(framework === "vitest" ? vitestRules(itOrTest) : jestRules(itOrTest)),
     ...(formattingRules ?
       {
         "jest/padding-around-after-all-blocks": "warn",
