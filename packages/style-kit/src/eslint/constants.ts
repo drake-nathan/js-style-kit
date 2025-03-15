@@ -14,6 +14,7 @@ export const configNames = {
   react: "react-config",
   reactCompiler: "react-compiler-config",
   testing: "testing-config",
+  turbo: "turbo-config",
   typescript: "tseslint-config",
   unicorn: "unicorn-config",
 } as const;
