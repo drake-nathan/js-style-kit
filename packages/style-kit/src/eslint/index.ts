@@ -66,14 +66,14 @@ export const eslintConfig = (
     react = false,
     sorting = true,
     testing,
-/**
- * Some preceding documentation...
- *
- * @param options.turbo - Whether to include Turborepo rules. Defaults to false.
- *
- * Some following documentation...
- */
-turbo = false,
+    /**
+     * Some preceding documentation...
+     *
+     * @param options.turbo - Whether to include Turborepo rules. Defaults to false.
+     *
+     * Some following documentation...
+     */
+    turbo = false,
     typescript = true,
     unicorn = true,
   }: EslintConfigOptions = {},
