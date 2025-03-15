@@ -26,29 +26,30 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref || github.ref_name }}
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        # This will use the version from packageManager in package.json
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
       - name: Install global Turbo
-        run: pnpm add --global turbo@^2
+        run: bun add --global turbo@^2
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "pnpm"
+          cache: "bun"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Cache turbo build setup
         uses: actions/cache@v4
         with:
           path: .turbo
-          key: ${{ runner.os }}-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ github.sha }}
+          key: ${{ runner.os }}-turbo-${{ hashFiles('**/bun.lock') }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-turbo-${{ hashFiles('**/pnpm-lock.yaml') }}-
+            ${{ runner.os }}-turbo-${{ hashFiles('**/bun.lock') }}-
             ${{ runner.os }}-turbo-
 
       - name: Sherif Monorepo Check
