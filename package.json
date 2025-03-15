@@ -2,6 +2,10 @@
   "name": "js-style-kit-root",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "docs",
+    "packages/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "build:stylekit": "turbo run build -F js-style-kit",
@@ -13,20 +17,19 @@
     "format:check": "prettier --check . --ignore-path .prettierignore.ci",
     "lint": "eslint . --max-warnings 0 --ignore-pattern docs --ignore-pattern packages",
     "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages",
-    "outdated": "pnpm outdated --recursive",
     "sherif": "sherif",
     "test": "turbo run test",
-    "test:coverage": "turbo run test:coverage",
-    "update": "pnpm update --recursive"
+    "test:coverage": "turbo run test:coverage"
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
+    "@types/bun": "^1.2.5",
     "js-style-kit": "workspace:*",
     "sherif": "^1.4.0",
     "turbo": "^2.4.4",
-    "typescript": "5.8.2"
+    "typescript": "^5.8.2"
   },
-  "packageManager": "pnpm@9.15.6",
+  "packageManager": "bun@1.2.5",
   "engines": {
     "node": ">=22"
   }

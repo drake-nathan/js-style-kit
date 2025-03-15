@@ -1,9 +1,8 @@
 import type { Linter } from "eslint";
 
-import { isObject, isString } from "is-type-of";
-
 import type { FunctionStyle } from "./types.js";
 
+import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
 import { ignoresConfig } from "./ignores.js";
 import { jsdocConfig } from "./jsdoc/config.js";

@@ -54,7 +54,7 @@
     },
     "sherif": {
       "cache": true,
-      "inputs": ["**/package.json", "pnpm-lock.yaml"],
+      "inputs": ["**/package.json", "bun.lock"],
       "outputs": []
     },
     "test": {
