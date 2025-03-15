@@ -8,17 +8,17 @@ Click on `Use this template` to copy the Mintlify starter kit. The starter kit c
 - API Reference pages
 - Use of popular components
 
-### Development
+## Development
 
 Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
 
-```
+```sh
 npm i -g mintlify
 ```
 
 Run the following command at the root of your documentation (where docs.json is)
 
-```
+```sh
 mintlify dev
 ```
 
