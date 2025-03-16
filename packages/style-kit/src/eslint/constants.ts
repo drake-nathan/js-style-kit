@@ -7,6 +7,7 @@ export const configNames = {
   base: "base-config",
   disableTypeChecked: "typescript-eslint/disable-type-checked",
   ignores: "ignores-config",
+  import: "import-config",
   jsdoc: "jsdoc-config",
   markdown: "markdown-config",
   perfectionist: "perfectionist-config",
