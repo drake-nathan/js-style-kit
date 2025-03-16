@@ -1,8 +1,23 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
+    "//#format": {
+      "dependsOn": ["^format"]
+    },
     "//#format:check": {
       "dependsOn": ["^format:check"]
+    },
+    "//#lint": {
+      "dependsOn": ["^lint"]
+    },
+    "//#lint:fix": {
+      "dependsOn": ["^lint:fix"]
+    },
+    "//#lint:md": {
+      "dependsOn": ["^lint:md"]
+    },
+    "//#sherif": {
+      "dependsOn": ["^sherif"]
     },
     "build": {
       "dependsOn": ["^build"],
@@ -17,25 +32,57 @@
       "persistent": true
     },
     "format": {
-      "dependsOn": ["^format"]
+      "cache": true,
+      "inputs": [
+        "**/*.{js,jsx,ts,tsx,json,md,mdx}",
+        "prettier.config.js",
+        ".prettierignore"
+      ]
     },
     "format:check": {
       "cache": true,
       "inputs": [
-        "**/*.{js,jsx,ts,tsx,json,md}",
-        ".prettierrc",
+        "**/*.{js,jsx,ts,tsx,json,md,mdx}",
+        "prettier.config.js",
         ".prettierignore"
+      ]
+    },
+    "lint": {
+      "dependsOn": ["^lint"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
+    },
+    "lint:md": {
+      "dependsOn": ["^lint:md"],
+      "inputs": ["**/*.md", "!**/node_modules/**", "!**/dist/**"]
+    },
+    "sherif": {
+      "cache": true,
+      "inputs": ["**/package.json", "bun.lock"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "**/*.{js,jsx,ts,tsx}",
+        "!**/node_modules/**",
+        "!**/dist/**"
       ],
       "outputs": []
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "test": {
-      "dependsOn": ["^test"]
-    },
     "test:coverage": {
-      "dependsOn": ["^test:coverage"]
+      "dependsOn": ["^test:coverage"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "**/*.{js,jsx,ts,tsx}",
+        "!**/node_modules/**",
+        "!**/dist/**"
+      ],
+      "outputs": ["coverage/**"]
     }
   }
 }

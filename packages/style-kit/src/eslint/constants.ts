@@ -14,7 +14,10 @@ export const configNames = {
   preferArrowFunction: "prefer-arrow-function-config",
   react: "react-config",
   reactCompiler: "react-compiler-config",
+  testing: "testing-config",
+  turbo: "turbo-config",
   typescript: "tseslint-config",
+  unicorn: "unicorn-config",
 } as const;
 
 export type ConfigName = (typeof configNames)[keyof typeof configNames];

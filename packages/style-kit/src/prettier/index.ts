@@ -2,9 +2,10 @@ import type { Config as PrettierConfig } from "prettier";
 import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-sort-json";
 import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
 
-import { isArray, isObject } from "is-type-of";
+import { isArray, isObject } from "../utils/is-type.js";
 
 interface PrettierConfigOptions extends PrettierConfig {
+  cssOrderPlugin?: boolean;
   jsonSortPlugin?: boolean | SortJsonPluginOptions;
   packageJsonPlugin?: boolean;
   tailwindPlugin?: boolean | string[] | TailwindPluginOptions;
@@ -19,12 +20,14 @@ export interface PrettierConfigWithPlugins
  * Creates a Prettier configuration object with optional Tailwind support
  *
  * @param options - Configuration options for Prettier
- * @param options.tailwind Tailwind CSS formatting support
- * @param options.jsonSort JSON sorting support
- * @param options.packageJson Package.json sorting support
+ * @param options.cssOrderPlugin CSS order sorting support
+ * @param options.jsonSortPlugin JSON sorting support
+ * @param options.packageJsonPlugin Package.json sorting support
+ * @param options.tailwindPlugin Tailwind CSS formatting support
  * @returns Prettier configuration object with:
  * - Default Prettier configuration
  * - Experimental ternaries enabled
+ * - CSS order plugin
  * - JSON sorting plugin
  * - Package.json sorting plugin
  * - Optional Tailwind plugin and functions
@@ -33,6 +36,7 @@ export const prettierConfig = (
   options: PrettierConfigOptions = {},
 ): PrettierConfigWithPlugins => {
   const {
+    cssOrderPlugin = true,
     jsonSortPlugin = true,
     packageJsonPlugin = true,
     tailwindPlugin = false,
@@ -44,6 +48,10 @@ export const prettierConfig = (
     experimentalTernaries: true,
     ...rest,
   };
+
+  if (cssOrderPlugin) {
+    plugins.push("prettier-plugin-css-order");
+  }
 
   if (jsonSortPlugin) {
     plugins.push("prettier-plugin-sort-json");

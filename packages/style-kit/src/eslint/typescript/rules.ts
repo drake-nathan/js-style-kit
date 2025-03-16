@@ -1,6 +1,4 @@
-import type { EslintRuleConfig } from "../types.js";
-
-type TypescriptRules = Record<`@typescript-eslint/${string}`, EslintRuleConfig>;
+import type { TypescriptRules } from "./types.js";
 
 export const tseslintRules: TypescriptRules = {
   "@typescript-eslint/adjacent-overload-signatures": "warn",

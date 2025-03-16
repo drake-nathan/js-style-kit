@@ -1,5 +1,41 @@
 # js-style-kit
 
+## 0.1.6
+
+### Patch Changes
+
+- f60afd4: Update testing config to includes jest rules
+
+## 0.1.5
+
+### Patch Changes
+
+- 87480a0: Add `eslint-plugin-vitest` with new config
+
+## 0.1.4
+
+### Patch Changes
+
+- 5f1685f: Refine docs for alpha release
+
+## 0.1.3
+
+### Patch Changes
+
+- e04635d: Change `react` to accept options, optimize "camelcase" rule.
+
+## 0.1.2
+
+### Patch Changes
+
+- ddfc826: Add prettier-plugin-css-order
+
+## 0.1.1
+
+### Patch Changes
+
+- d758c68: Add prefer-arrow-functions to autofix function preference
+
 ## 0.1.0
 
 ### Minor Changes
