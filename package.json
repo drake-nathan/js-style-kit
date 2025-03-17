@@ -19,7 +19,6 @@
     "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages",
     "lint:md": "markdownlint '**/*.md' --ignore node_modules",
     "outdated": "bun outdated --filter \"js-style-kit-root\" --filter \"js-style-kit\" --filter \"js-style-kit-docs\"",
-    "publish": "cd packages/style-kit && bun publish",
     "sherif": "sherif",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage"
