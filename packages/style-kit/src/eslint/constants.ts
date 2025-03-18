@@ -15,7 +15,9 @@ export const configNames = {
   reactCompiler: "react-compiler-config",
   tailwind: "tailwind-config",
   testing: "testing-config",
+  turbo: "turbo-config",
   typescript: "tseslint-config",
+  unicorn: "unicorn-config",
 } as const;
 
 export type ConfigName = (typeof configNames)[keyof typeof configNames];

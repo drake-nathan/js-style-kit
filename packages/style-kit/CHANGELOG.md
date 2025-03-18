@@ -1,5 +1,16 @@
 # js-style-kit
 
+## 0.2.0
+
+### Minor Changes
+
+- 4a94737: Add CLI tool to install style kit with proper settings
+
+### Patch Changes
+
+- c1ee66b: Add `eslint-plugin-unicorn`
+- e943525: Add support for `eslint-plugin-turbo`
+
 ## 0.1.6
 
 ### Patch Changes

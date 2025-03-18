@@ -1,6 +1,6 @@
 {
   "name": "js-style-kit",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "A zero configuration style guide for ESLint and Prettier",
   "keywords": [
     "eslint",
@@ -31,9 +31,12 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "postinstall": "node ./dist/scripts/postinstall.js",
+    "format": "prettier --write . --ignore-path .prettierignore.ci",
+    "format:check": "prettier --check . --ignore-path .prettierignore.ci",
     "lint": "eslint .",
     "lint:inspect": "eslint --inspect-config",
-    "test": "vitest"
+    "test": "bun test",
+    "test:coverage": "bun test --coverage --coverage-reporter=lcov"
   },
   "dependencies": {
     "eslint": "^9.22.0",
@@ -45,9 +48,10 @@
     "eslint-plugin-react-compiler": "19.0.0-beta-bafa41b-20250307",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-tailwindcss": "^3.18.0",
+    "eslint-plugin-turbo": "^2.4.4",
+    "eslint-plugin-unicorn": "^57.0.0",
     "eslint-plugin-vitest": "^0.5.4",
     "globals": "^16.0.0",
-    "is-type-of": "^2.2.0",
     "prettier": "^3.5.3",
     "prettier-plugin-css-order": "^2.1.2",
     "prettier-plugin-packagejson": "^2.5.10",
@@ -57,11 +61,11 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
+    "@types/bun": "^1.2.5",
     "@types/node": "^22.13.10",
-    "@vitest/coverage-v8": "^3.0.8",
     "commander": "^13.1.0",
     "tsup": "^8.4.0",
-    "vitest": "^3.0.8"
+    "typescript": "^5.8.2"
   },
   "engines": {
     "node": "^20.11.0 || >=21.2.0"

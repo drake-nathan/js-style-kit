@@ -4,8 +4,8 @@ import vitest from "eslint-plugin-vitest";
 import type { EslintConfigObject } from "../types.js";
 
 import { configNames } from "../constants.js";
-import { jestRules } from "./jestRules.js";
-import { vitestRules } from "./vitestRules.js";
+import { jestRules } from "./jest-rules.js";
+import { vitestRules } from "./vitest-rules.js";
 
 export interface TestingConfig {
   filenamePattern?: "spec" | "test";
@@ -61,8 +61,7 @@ export const testingConfig = (
         pattern: `.*\\.${filenamePattern}\\.[tj]sx?$`,
       },
     ],
-    ...(framework === "vitest" ? vitestRules(itOrTest) : {}),
-    ...(framework === "jest" ? jestRules(itOrTest) : {}),
+    ...(framework === "vitest" ? vitestRules(itOrTest) : jestRules(itOrTest)),
     ...(formattingRules ?
       {
         "jest/padding-around-after-all-blocks": "warn",

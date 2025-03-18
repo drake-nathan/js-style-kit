@@ -1,9 +1,8 @@
 import type { Linter } from "eslint";
 
-import { isObject, isString } from "is-type-of";
-
 import type { FunctionStyle } from "./types.js";
 
+import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
 import { ignoresConfig } from "./ignores.js";
 import { jsdocConfig } from "./jsdoc/config.js";
@@ -12,7 +11,9 @@ import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { testingConfig, type TestingConfig } from "./testing/config.js";
+import { turboConfig } from "./turbo/config.js";
 import { tseslintConfig } from "./typescript/config.js";
+import { unicornConfig } from "./unicorn/config.js";
 
 export interface EslintConfigOptions {
   functionStyle?: "off" | FunctionStyle;
@@ -30,7 +31,9 @@ export interface EslintConfigOptions {
       };
   sorting?: boolean;
   testing?: false | TestingConfig;
+  turbo?: boolean;
   typescript?: boolean | string;
+  unicorn?: boolean;
 }
 
 /**
@@ -50,6 +53,8 @@ export interface EslintConfigOptions {
  *                          - `formattingRules`: Whether to include formatting rules like padding around blocks.
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
+ * @param options.turbo - Whether to include Turborepo rules. Defaults to true.
+ * @param options.unicorn - Whether to include Unicorn rules. Defaults to true.
  * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
  * @returns An array of ESLint configuration objects.
  */
@@ -61,7 +66,16 @@ export const eslintConfig = (
     react = false,
     sorting = true,
     testing,
+    /**
+     * Some preceding documentation...
+     *
+     * @param options.turbo - Whether to include Turborepo rules. Defaults to false.
+     *
+     * Some following documentation...
+     */
+    turbo = false,
     typescript = true,
+    unicorn = true,
   }: EslintConfigOptions = {},
   ...additionalConfigs: Linter.Config[]
 ): Linter.Config[] => {
@@ -131,8 +145,16 @@ export const eslintConfig = (
     configs.push(perfectionistConfig);
   }
 
+  if (unicorn) {
+    configs.push(unicornConfig);
+  }
+
   if (functionStyle === "arrow") {
     configs.push(preferArrowFunctionConfig());
+  }
+
+  if (turbo) {
+    configs.push(turboConfig());
   }
 
   // Add any additional config objects provided by the user

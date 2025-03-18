@@ -170,6 +170,30 @@ describe("eslintConfig", () => {
         false,
       );
     });
+
+    it("includes unicorn config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.unicorn)).toBe(true);
+    });
+
+    it("excludes unicorn config when disabled", () => {
+      const config = eslintConfig({ unicorn: false });
+
+      expect(config.some((c) => c.name === configNames.unicorn)).toBe(false);
+    });
+
+    it("excludes turbo config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.turbo)).toBe(false);
+    });
+
+    it("includes turbo config when enabled", () => {
+      const config = eslintConfig({ turbo: true });
+
+      expect(config.some((c) => c.name === configNames.turbo)).toBe(true);
+    });
   });
 
   describe("ignore patterns", () => {

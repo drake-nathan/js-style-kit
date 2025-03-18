@@ -64,9 +64,9 @@ export default prettierConfig({
 
 ## Repository Structure
 
-This is a monorepo managed with Turborepo and pnpm.
+This is a monorepo managed with Turborepo and bun.
 
-```
+```sh
 /
 ├── apps/
 │   └── docs/             # Documentation site built with Docusaurus (WIP)
@@ -82,22 +82,22 @@ This is a monorepo managed with Turborepo and pnpm.
 
 ```bash
 # Install dependencies
-pnpm install
+bun i
 
 # Build all packages
-pnpm build
+bun run build
 
 # Run tests
-pnpm test
+bun run test
 
 # Format code
-pnpm format
+turbo run format
 
 # Lint code
-pnpm lint
+turbo run lint
 
 # Create a changeset
-pnpm changeset
+bun run changeset
 ```
 
 ## License

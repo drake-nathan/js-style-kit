@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
 import { spawn } from "node:child_process";
 
 const commands = [
-  { name: "format", command: "pnpm run format:check", color: "\x1b[36m" }, // Cyan
-  { name: "lint", command: "pnpm run lint", color: "\x1b[33m" }, // Yellow
-  { name: "test", command: "pnpm run test", color: "\x1b[35m" }, // Magenta
-  { name: "sherif", command: "pnpm run sherif", color: "\x1b[32m" }, // Green
-  { name: "build", command: "pnpm run build", color: "\x1b[34m" }, // Blue
+  { color: "\x1b[36m", command: "turbo run format:check", name: "format" }, // Cyan
+  { color: "\x1b[33m", command: "turbo run lint", name: "lint" }, // Yellow
+  { color: "\x1b[33m", command: "turbo run lint:md", name: "lint:md" }, // Yellow
+  { color: "\x1b[35m", command: "turbo run test", name: "test" }, // Magenta
+  { color: "\x1b[32m", command: "turbo run sherif", name: "sherif" }, // Green
+  { color: "\x1b[34m", command: "turbo run build", name: "build" }, // Blue
 ];
 
 // Clear the terminal
@@ -16,6 +18,7 @@ const getTerminalWidth = () => {
   try {
     const { columns } = process.stdout;
     return columns || 80;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return 80;
   }
@@ -29,17 +32,15 @@ const boldText = "\x1b[1m";
 const printHeader = () => {
   const header = "====== CI CHECKS ======";
   const padding = Math.floor((terminalWidth - header.length) / 2);
-  console.log(
-    "\n" + " ".repeat(padding) + boldText + header + resetColor + "\n",
-  );
+  console.log(`\n${" ".repeat(padding)}${boldText}${header}${resetColor}\n`);
 };
 
 // Track command status
 const status = commands.reduce((acc, cmd) => {
   acc[cmd.name] = {
-    status: "pending",
-    startTime: 0,
     endTime: 0,
+    startTime: 0,
+    status: "pending",
     turboCache: false,
   };
   return acc;
@@ -53,7 +54,7 @@ const printStatus = () => {
   const maxNameLength = Math.max(...commands.map((cmd) => cmd.name.length));
 
   commands.forEach((cmd) => {
-    const { status: cmdStatus, startTime, endTime } = status[cmd.name];
+    const { endTime, startTime, status: cmdStatus } = status[cmd.name];
     let statusText;
     let statusColor;
 
@@ -85,7 +86,7 @@ const printStatus = () => {
 
 // Run a single command with proper output handling
 const runCommand = async (cmd) => {
-  const { name, command, color } = cmd;
+  const { color, command, name } = cmd;
 
   // Update status to running
   status[name].status = "running";
@@ -164,6 +165,7 @@ const runAll = async () => {
 
 // Handle interruption
 process.on("SIGINT", () => {
+  // eslint-disable-next-line no-template-curly-in-string
   console.log("\n\x1b[31mProcess interrupted by user${resetColor}");
   process.exit(1);
 });

@@ -6,7 +6,7 @@ import type { EslintConfigObject } from "../types.js";
 
 import { configNames } from "../constants.js";
 import { testingConfig } from "./config.js";
-import { jestRules } from "./jestRules.js";
+import { jestRules } from "./jest-rules.js";
 
 describe("testingConfig", () => {
   it("returns an ESLint configuration object", () => {

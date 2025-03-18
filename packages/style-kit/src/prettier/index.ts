@@ -2,7 +2,7 @@ import type { Config as PrettierConfig } from "prettier";
 import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-sort-json";
 import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
 
-import { isObject, isString } from "is-type-of";
+import { isString, isObject } from "../utils/is-type.js";
 
 export interface PrettierConfigOptions extends PrettierConfig {
   cssOrderPlugin?: boolean;
@@ -66,7 +66,7 @@ export const prettierConfig = (
   if (packageJsonPlugin) {
     plugins.push("prettier-plugin-packagejson");
   }
-
+  
   if (tailwindPlugin) {
     plugins.push("prettier-plugin-tailwindcss");
     const defaultTailwindFunctions = ["clsx", "cva", "cn"];

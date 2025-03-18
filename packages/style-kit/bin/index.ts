@@ -56,7 +56,7 @@ const setupDependencies = (packageManager: PackageManager): void => {
     const overlappingDeps = ["eslint", "prettier"];
     console.info("Removing overlapping dependencies...");
 
-    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf-8"));
+    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
 
     // Ensure devDependencies exists
     packageJson.devDependencies = packageJson.devDependencies ?? {};
@@ -96,7 +96,7 @@ const setupScripts = (): void => {
   console.info("Setting up package.json scripts...");
 
   try {
-    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf-8"));
+    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
 
     // Add or update scripts
     packageJson.scripts = {
@@ -125,7 +125,7 @@ const setupConfigFiles = (): void => {
   console.info("Creating configuration files...");
 
   try {
-    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf-8"));
+    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
     const isEsm = packageJson.type === "module";
     const extension = isEsm ? ".mjs" : ".js";
 
@@ -174,11 +174,11 @@ const setupVSCodeSettings = (): void => {
     // Read existing settings or create new ones
     let settings: Record<string, unknown> = {};
     if (fs.existsSync(settingsPath)) {
-      settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+      settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
     }
 
     // Determine the file extension for nesting pattern
-    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf-8"));
+    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
     const isEsm = packageJson.type === "module";
     const extension = isEsm ? ".mjs" : ".js";
 

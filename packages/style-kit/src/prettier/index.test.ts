@@ -1,7 +1,7 @@
 import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-sort-json";
 import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 
 import { prettierConfig } from "../index.js";
 
