@@ -66,7 +66,7 @@ export const prettierConfig = (
   if (packageJsonPlugin) {
     plugins.push("prettier-plugin-packagejson");
   }
-  
+
   if (tailwindPlugin) {
     plugins.push("prettier-plugin-tailwindcss");
     const defaultTailwindFunctions = ["clsx", "cva", "cn"];

@@ -40,7 +40,7 @@ describe("prettierConfig", () => {
   it("should set custom tailwind functions", () => {
     const config = prettierConfig({
       tailwindPlugin: {
-        tailwindFunctions: ["customFn", "anotherFn"]
+        tailwindFunctions: ["customFn", "anotherFn"],
       },
     });
 
