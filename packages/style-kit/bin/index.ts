@@ -23,9 +23,15 @@ program
  */
 const detectPackageManager = (): PackageManager => {
   // Check for lockfiles to determine package manager
-  if (fs.existsSync("bun.lock") || fs.existsSync("bun.lockb")) return "bun";
-  if (fs.existsSync("pnpm-lock.yaml")) return "pnpm";
-  if (fs.existsSync("yarn.lock")) return "yarn";
+  if (fs.existsSync("bun.lock") || fs.existsSync("bun.lockb")) {
+    return "bun";
+  }
+  if (fs.existsSync("pnpm-lock.yaml")) {
+    return "pnpm";
+  }
+  if (fs.existsSync("yarn.lock")) {
+    return "yarn";
+  }
   // Default to npm for package.json or if no lockfile found
   return "npm";
 };
