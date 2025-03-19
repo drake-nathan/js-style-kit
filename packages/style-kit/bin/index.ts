@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 type PackageManager = "bun" | "npm" | "pnpm" | "yarn";
+type Extension = ".js" | ".mjs";
 
 const program = new Command();
 
@@ -22,7 +23,7 @@ program
  */
 const detectPackageManager = (): PackageManager => {
   // Check for lockfiles to determine package manager
-  if (fs.existsSync("bun.lock")) return "bun";
+  if (fs.existsSync("bun.lock") || fs.existsSync("bun.lockb")) return "bun";
   if (fs.existsSync("pnpm-lock.yaml")) return "pnpm";
   if (fs.existsSync("yarn.lock")) return "yarn";
   // Default to npm for package.json or if no lockfile found
@@ -120,16 +121,20 @@ const setupScripts = (): void => {
 
 /**
  * Creates configuration files based on whether the project uses ESM
+ *
+ * @returns The file extension used for configuration files
  */
-const setupConfigFiles = (): void => {
+const setupConfigFiles = (): Extension => {
   console.info("Creating configuration files...");
+
+  let extension: Extension = ".js";
 
   try {
     const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
     const isEsm = packageJson.type === "module";
-    const extension = isEsm ? ".mjs" : ".js";
+    extension = isEsm ? ".js" : ".mjs";
 
-    // Create style.config.js/mjs
+    // Create style-kit.config.js/mjs
     const styleConfigContent = `import { eslintConfig, prettierConfig } from "js-style-kit";
 
 export const eslint = eslintConfig({});
@@ -138,14 +143,14 @@ export const prettier = prettierConfig({});
 `;
 
     // Create prettier.config.js/mjs
-    const prettierConfigContent = `export { prettier as default } from "./style.config${extension}";
+    const prettierConfigContent = `export { prettier as default } from "./style-kit.config${extension}";
 `;
 
     // Create eslint.config.js/mjs
-    const eslintConfigContent = `export { eslint as default } from "./style.config${extension}";
+    const eslintConfigContent = `export { eslint as default } from "./style-kit.config${extension}";
 `;
 
-    fs.writeFileSync(`style.config${extension}`, styleConfigContent);
+    fs.writeFileSync(`style-kit.config${extension}`, styleConfigContent);
     fs.writeFileSync(`prettier.config${extension}`, prettierConfigContent);
     fs.writeFileSync(`eslint.config${extension}`, eslintConfigContent);
 
@@ -154,12 +159,16 @@ export const prettier = prettierConfig({});
     console.error("Failed to create configuration files:", error);
     process.exit(1);
   }
+
+  return extension;
 };
 
 /**
  * Sets up VS Code settings
+ *
+ * @param extension - The file extension to use for configuration files
  */
-const setupVSCodeSettings = (): void => {
+const setupVSCodeSettings = (extension: Extension): void => {
   console.info("Setting up VS Code settings...");
 
   try {
@@ -176,11 +185,6 @@ const setupVSCodeSettings = (): void => {
     if (fs.existsSync(settingsPath)) {
       settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
     }
-
-    // Determine the file extension for nesting pattern
-    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
-    const isEsm = packageJson.type === "module";
-    const extension = isEsm ? ".mjs" : ".js";
 
     // Update settings
     settings = {
@@ -204,7 +208,7 @@ const setupVSCodeSettings = (): void => {
       string,
       string
     >;
-    nestingPatterns[`style.config${extension}`] =
+    nestingPatterns[`style-kit.config${extension}`] =
       `eslint.config${extension}, prettier.config${extension}`;
 
     fs.writeFileSync(
@@ -238,8 +242,8 @@ program
 
       setupDependencies(packageManager);
       setupScripts();
-      setupConfigFiles();
-      setupVSCodeSettings();
+      const extension = setupConfigFiles();
+      setupVSCodeSettings(extension);
 
       const runCmd: Record<PackageManager, string> = {
         bun: "bun run",
