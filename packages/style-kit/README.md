@@ -247,6 +247,7 @@ import { prettierConfig } from "js-style-kit";
 export default prettierConfig({
   // All options shown with their default values
   cssOrderPlugin: true, // Enable CSS order plugin
+  curlyPlugin: true, // Enable curly braces enforcement for all control statements
   jsonSortPlugin: true, // Enable JSON sorting plugin
   packageJsonPlugin: true, // Enable package.json sorting plugin
   tailwindPlugin: false, // Enable Tailwind CSS plugin (boolean, string[], or options object)
@@ -283,6 +284,24 @@ The CSS order plugin is enabled by default. It sorts CSS properties in a consist
 ```js
 // Disable CSS order plugin
 cssOrderPlugin: false;
+```
+
+#### Curly Braces Enforcement
+
+The curly braces plugin is enabled by default. It enforces consistent use of curly braces for all control flow statements (`if`, `for`, `while`, etc.), even for single-line statements. This is equivalent to ESLint's `curly` rule with the `all` option, but applied at the Prettier formatting level:
+
+```diff
+- if (abc) def;
++ if (abc) {
++   def;
++ }
+```
+
+You can disable it:
+
+```js
+// Disable curly braces enforcement
+curlyPlugin: false;
 ```
 
 #### JSON Sorting

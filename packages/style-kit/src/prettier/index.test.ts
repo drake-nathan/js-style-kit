@@ -14,6 +14,7 @@ describe("prettierConfig", () => {
       jsonRecursiveSort: true,
       plugins: [
         "prettier-plugin-css-order",
+        "prettier-plugin-curly",
         "prettier-plugin-sort-json",
         "prettier-plugin-packagejson",
       ],
@@ -148,5 +149,17 @@ describe("prettierConfig", () => {
     const config = prettierConfig({ cssOrderPlugin: false });
 
     expect(config.plugins).not.toContain("prettier-plugin-css-order");
+  });
+
+  it("should include curly plugin by default", () => {
+    const config = prettierConfig();
+
+    expect(config.plugins).toContain("prettier-plugin-curly");
+  });
+
+  it("should disable curly plugin when specified", () => {
+    const config = prettierConfig({ curlyPlugin: false });
+
+    expect(config.plugins).not.toContain("prettier-plugin-curly");
   });
 });
