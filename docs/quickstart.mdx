@@ -21,7 +21,7 @@ pnpm add js-style-kit --save-dev
 bun add js-style-kit --dev
 ```
 
-## Basic Usage
+## Basic Manual Setup
 
 ### ESLint Configuration
 
@@ -58,13 +58,7 @@ import { prettierConfig } from "js-style-kit";
 export default prettierConfig();
 ```
 
-Or, if you're not using ESM, create a `.prettierrc.mjs` file:
-
-```js
-import { prettierConfig } from "js-style-kit";
-
-export default prettierConfig();
-```
+Or, if you're not using ESM, create a `.prettierrc.mjs` file.
 
 Add the formatting commands to your `package.json`:
 
@@ -77,55 +71,82 @@ Add the formatting commands to your `package.json`:
 }
 ```
 
-## Configuration Options
+## Using the CLI (Experimental)
+
+JS Style Kit includes a CLI to help set up your project quickly:
+
+```bash
+npx js-style-kit init
+```
+
+This will:
+
+1. Install js-style-kit as a dev dependency
+2. Create configuration files
+3. Set up package.json scripts
+4. Configure VS Code settings
+
+> **Note:** The CLI is still in beta and works best with new projects.
+
+## Configuration Overview
 
 ### ESLint Configuration Options
-
-The `eslintConfig()` function accepts a configuration object with various options:
 
 ```js
 import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig({
-  // All options shown with their default values
-  functionStyle: "arrow", // Controls function style: "arrow", "declaration", "expression", or "off"
-  ignores: [], // Additional paths to ignore (node_modules and dist already excluded)
-  jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
-  react: false, // Whether to include React rules, see below for options
-  sorting: true, // Whether to include sorting rules from Perfectionist
-  typescript: true, // Boolean or string path to tsconfig.json
+  // Function style: "arrow" (default), "declaration", "expression", or "off"
+  functionStyle: "arrow",
+
+  // Additional paths to ignore (node_modules and dist already excluded)
+  ignores: [],
+
+  // JSDoc configuration or false to disable
+  jsdoc: { requireJsdoc: false },
+
+  // React support: boolean or object with reactCompiler and next options
+  react: false,
+
+  // Enable sorting rules from Perfectionist
+  sorting: true,
+
+  // Testing configuration
+  testing: true,
+
+  // TypeScript support: boolean or path to tsconfig.json
+  typescript: true,
+
+  // Enable Turborepo rules
+  turbo: false,
+
+  // Enable Unicorn rules
+  unicorn: true,
 });
 ```
 
 ### Prettier Configuration Options
 
-The `prettierConfig()` function accepts optional configuration options:
-
 ```js
 import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
-  // All options shown with their default values
-  cssOrderPlugin: true, // Enable CSS order sorting
-  jsonSortPlugin: true, // Enable JSON sorting
-  packageJsonPlugin: true, // Enable package.json sorting
-  tailwindPlugin: false, // Enable Tailwind CSS support (boolean, string[], or object)
-  // Additional standard prettier options
+  // Enable CSS order sorting
+  cssOrderPlugin: true,
+
+  // Enable JSON sorting
+  jsonSortPlugin: true,
+
+  // Enable package.json sorting
+  packageJsonPlugin: true,
+
+  // Enable Tailwind CSS support (false by default)
+  tailwindPlugin: false,
+
+  // Standard Prettier options
+  printWidth: 80,
   tabWidth: 2,
-  semi: true,
   // etc...
-});
-```
-
-## TypeScript Setup
-
-TypeScript support is enabled by default. If your project uses TypeScript, no additional configuration is required.
-
-For custom TypeScript configurations, you can specify the path to your `tsconfig.json`:
-
-```js
-export default eslintConfig({
-  typescript: "./path/to/tsconfig.json",
 });
 ```
 
@@ -133,8 +154,9 @@ export default eslintConfig({
 
 Explore the Configuration section for detailed information on:
 
-- [ESLint Configuration](/essentials/eslint-config)
-- [Prettier Configuration](/essentials/prettier-config)
-- [TypeScript Configuration](/essentials/typescript-config)
-- [React Configuration](/essentials/react-config)
-- [JSDoc Configuration](/essentials/jsdoc-config)
+- [ESLint Configuration](/docs/eslint-config)
+- [Prettier Configuration](/docs/prettier-config)
+- [TypeScript Configuration](/docs/typescript-config)
+- [React Configuration](/docs/react-config)
+- [JSDoc Configuration](/docs/jsdoc-config)
+- [CLI Tool](/docs/cli)

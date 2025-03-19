@@ -1,0 +1,127 @@
+---
+title: "JSDoc Configuration"
+description: "Configure JSDoc validation with JS Style Kit"
+---
+
+## Overview
+
+JS Style Kit includes comprehensive JSDoc validation through the `eslint-plugin-jsdoc` plugin. This helps ensure consistent and well-documented code, which is particularly useful for library projects.
+
+## Basic Configuration
+
+JSDoc validation is enabled by default with relaxed requirements. To configure it, use the `jsdoc` option in your ESLint configuration:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  // Default: JSDoc enabled but not required
+  jsdoc: { requireJsdoc: false },
+});
+```
+
+## Configuration Options
+
+### Disabling JSDoc Validation
+
+To completely disable JSDoc validation:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  jsdoc: false,
+});
+```
+
+### Requiring JSDoc Comments
+
+For library projects or code bases where documentation is critical, you can require JSDoc comments:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  jsdoc: { requireJsdoc: true },
+});
+```
+
+When `requireJsdoc` is set to `true`, JSDoc comments are required for:
+
+- Function declarations
+- Function expressions
+- Arrow function expressions
+- Class declarations
+- Class expressions
+- Method definitions
+
+## TypeScript Integration
+
+When both JSDoc and TypeScript are enabled (TypeScript is enabled by default), JS Style Kit adjusts the JSDoc rules to work better with TypeScript:
+
+- Disables the `jsdoc/no-types` rule since TypeScript already provides type information
+- Disables the `jsdoc/no-undefined-types` rule to avoid conflicts with TypeScript types
+
+## JSDoc Rules
+
+JS Style Kit includes a comprehensive set of rules to validate JSDoc comments:
+
+### Structural Rules
+
+- Consistent tag alignment
+- Proper tag ordering
+- Correct tag spacing
+- Proper asterisk prefixing
+- Multiline block formatting
+
+### Content Rules
+
+- Require parameter descriptions
+- Require return descriptions
+- Require property descriptions
+- Check parameter names match function parameters
+- Check property names
+- Validate types
+- Check tag values
+
+### Example of Valid JSDoc
+
+Here's an example of a valid JSDoc comment under JS Style Kit's rules:
+
+```js
+/**
+ * Calculates the sum of two numbers.
+ *
+ * @param {number} a - The first number
+ * @param {number} b - The second number
+ * @returns {number} The sum of a and b
+ */
+function add(a, b) {
+  return a + b;
+}
+```
+
+### With TypeScript
+
+When using TypeScript, type annotations in JSDoc are discouraged since TypeScript already provides type information:
+
+```ts
+/**
+ * Calculates the sum of two numbers.
+ *
+ * @param a - The first number
+ * @param b - The second number
+ * @returns The sum of a and b
+ */
+function add(a: number, b: number): number {
+  return a + b;
+}
+```
+
+## Best Practices
+
+1. **Be Consistent**: Use JSDoc consistently throughout your codebase
+2. **Focus on Descriptions**: With TypeScript, focus on describing what parameters and returns mean, not their types
+3. **Enable Requirements for Libraries**: For libraries or packages intended for public consumption, enable `requireJsdoc: true`
+4. **Use Examples**: Add example usage with the `@example` tag for complex functions
+5. **Document Exceptions**: Use `@throws` to document exceptions that might be thrown
