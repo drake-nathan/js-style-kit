@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.2
+
+### Patch Changes
+
+- 0fb16b1: tweak ci and release gh action
+
 ## 0.2.1
 
 ### Patch Changes
