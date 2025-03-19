@@ -32,7 +32,7 @@
     "dev": "tsup --watch",
     "format": "prettier --write . --ignore-path .prettierignore.ci",
     "format:check": "prettier --check . --ignore-path .prettierignore.ci",
-    "postinstall": "node ./dist/scripts/postinstall.js",
+    "postinstall": "node ./dist/scripts/postinstall.cjs",
     "lint": "eslint .",
     "lint:inspect": "eslint --inspect-config",
     "test": "bun test",

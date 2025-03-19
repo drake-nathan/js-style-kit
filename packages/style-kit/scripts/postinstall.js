@@ -6,35 +6,50 @@ import * as path from "node:path";
  */
 const patchPrettierPluginTailwindcss = () => {
   try {
-    // Path to the declaration file with the unsafe declare statement
-    const pluginPath = path.join(
-      process.cwd(),
-      "node_modules/prettier-plugin-tailwindcss/dist/index.d.ts",
+    console.info("js-style-kit: Starting postinstall patch...");
+
+    // Find the location of prettier-plugin-tailwindcss
+    // This will work regardless of where js-style-kit is installed
+    let pluginPath;
+
+    // First try from the project root
+    const rootPath = path.join(
+      "node_modules",
+      "prettier-plugin-tailwindcss",
+      "dist",
+      "index.d.ts",
     );
 
-    if (!fs.existsSync(pluginPath)) {
-      console.warn("prettier-plugin-tailwindcss not found, skipping patch");
+    // Then try from js-style-kit's directory
+    const packagePath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "prettier-plugin-tailwindcss",
+      "dist",
+      "index.d.ts",
+    );
+
+    // Choose the path that exists
+    if (fs.existsSync(rootPath)) {
+      pluginPath = rootPath;
+    } else if (fs.existsSync(packagePath)) {
+      pluginPath = packagePath;
+    } else {
+      console.warn(
+        "js-style-kit: prettier-plugin-tailwindcss not found, skipping patch",
+      );
       return;
     }
 
-    // Verify plugin version to ensure patch is applicable
-    const packageJsonPath = path.join(
-      process.cwd(),
-      "node_modules/prettier-plugin-tailwindcss/package.json",
-    );
-    if (fs.existsSync(packageJsonPath)) {
-      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
-      console.info(
-        `Detected prettier-plugin-tailwindcss version: ${packageJson.version}`,
-      );
-    }
+    console.info(`js-style-kit: Found plugin at ${pluginPath}`);
 
-    // Create backup of original file
-    fs.writeFileSync(
-      `${pluginPath}.backup`,
-      fs.readFileSync(pluginPath, "utf8"),
-    );
-    console.info("Created backup of original declaration file");
+    // Create backup of original file if it doesn't exist already
+    const backupPath = `${pluginPath}.backup`;
+    if (!fs.existsSync(backupPath)) {
+      fs.writeFileSync(backupPath, fs.readFileSync(pluginPath, "utf8"));
+      console.info("js-style-kit: Created backup of original declaration file");
+    }
 
     // Read the file
     const content = fs.readFileSync(pluginPath, "utf8");
@@ -62,7 +77,7 @@ const patchPrettierPluginTailwindcss = () => {
       );
     } else {
       console.info(
-        "No patching needed, declaration block not found or already patched",
+        "js-style-kit: No patching needed, declaration block not found or already patched",
       );
     }
   } catch (error) {
