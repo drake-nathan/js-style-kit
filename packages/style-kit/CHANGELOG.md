@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.3
+
+### Patch Changes
+
+- 33bbab3: Patch tailwind postinstall script
+
 ## 0.2.2
 
 ### Patch Changes
