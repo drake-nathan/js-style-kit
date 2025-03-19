@@ -20,6 +20,16 @@ describe("prettierConfig", () => {
     });
   });
 
+  it("should accept tailwind stylesheet path as a string", () => {
+    const config = prettierConfig({
+      tailwindPlugin: "./path/to/stylesheet.css",
+    });
+
+    expect(config.plugins).toContain("prettier-plugin-tailwindcss");
+    expect(config.tailwindStylesheet).toBe("./path/to/stylesheet.css");
+    expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
+  });
+
   it("should include tailwind plugin when enabled", () => {
     const config = prettierConfig({ tailwindPlugin: true });
 
@@ -27,19 +37,15 @@ describe("prettierConfig", () => {
     expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
   });
 
-  it("should merge custom tailwind functions", () => {
+  it("should set custom tailwind functions", () => {
     const config = prettierConfig({
-      tailwindPlugin: ["customFn", "anotherFn"],
+      tailwindPlugin: {
+        tailwindFunctions: ["customFn", "anotherFn"],
+      },
     });
 
     expect(config.plugins).toContain("prettier-plugin-tailwindcss");
-    expect(config.tailwindFunctions).toStrictEqual([
-      "clsx",
-      "cva",
-      "cn",
-      "customFn",
-      "anotherFn",
-    ]);
+    expect(config.tailwindFunctions).toStrictEqual(["customFn", "anotherFn"]);
   });
 
   it("should accept tailwind plugin options as an object", () => {
@@ -53,6 +59,18 @@ describe("prettierConfig", () => {
 
     expect(config.plugins).toContain("prettier-plugin-tailwindcss");
     expect(config.tailwindFunctions).toStrictEqual(["customOnly"]);
+    expect(config.tailwindAttributes).toStrictEqual(["customAttr"]);
+  });
+
+  it("should preserve default tailwind functions when not specified in options object", () => {
+    const config = prettierConfig({
+      tailwindPlugin: {
+        tailwindAttributes: ["customAttr"],
+      },
+    });
+
+    expect(config.plugins).toContain("prettier-plugin-tailwindcss");
+    expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
     expect(config.tailwindAttributes).toStrictEqual(["customAttr"]);
   });
 
