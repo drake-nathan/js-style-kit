@@ -77,9 +77,20 @@ jobs:
       - name: Create GitHub Release
         if: steps.changesets.outputs.published == 'true'
         run: |
-          gh release create v${{ steps.changesets.outputs.publishedPackages[0].version }} \
-            --title "v${{ steps.changesets.outputs.publishedPackages[0].version }}" \
-            --notes "$(cat .changeset/*.md)" \
-            --draft=false
+          for pkg in $(echo '${{ toJSON(steps.changesets.outputs.publishedPackages) }}' | jq -r '.[] | @base64'); do
+            pkg_decoded=$(echo $pkg | base64 --decode)
+            pkg_name=$(echo $pkg_decoded | jq -r '.name')
+            pkg_version=$(echo $pkg_decoded | jq -r '.version')
+            
+            # Skip creating a GitHub release if one already exists with this tag
+            if ! gh release view $pkg_version &>/dev/null; then
+              gh release create $pkg_version \
+                --title "$pkg_name@$pkg_version" \
+                --notes "$(cat .changeset/*.md)" \
+                --draft=false
+            else
+              echo "Release $pkg_version already exists, skipping"
+            fi
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
