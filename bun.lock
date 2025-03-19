@@ -21,7 +21,7 @@
     },
     "packages/style-kit": {
       "name": "js-style-kit",
-      "version": "0.2.0",
+      "version": "0.2.3",
       "bin": "./dist/bin/index.js",
       "dependencies": {
         "eslint": "^9.22.0",
