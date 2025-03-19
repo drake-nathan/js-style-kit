@@ -13,7 +13,6 @@ export const configNames = {
   preferArrowFunction: "prefer-arrow-function-config",
   react: "react-config",
   reactCompiler: "react-compiler-config",
-  tailwind: "tailwind-config",
   testing: "testing-config",
   turbo: "turbo-config",
   typescript: "tseslint-config",

@@ -17,6 +17,25 @@ const patchPrettierPluginTailwindcss = () => {
       return;
     }
 
+    // Verify plugin version to ensure patch is applicable
+    const packageJsonPath = path.join(
+      process.cwd(),
+      "node_modules/prettier-plugin-tailwindcss/package.json",
+    );
+    if (fs.existsSync(packageJsonPath)) {
+      const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+      console.info(
+        `Detected prettier-plugin-tailwindcss version: ${packageJson.version}`,
+      );
+    }
+
+    // Create backup of original file
+    fs.writeFileSync(
+      `${pluginPath}.backup`,
+      fs.readFileSync(pluginPath, "utf8"),
+    );
+    console.info("Created backup of original declaration file");
+
     // Read the file
     const content = fs.readFileSync(pluginPath, "utf8");
 
@@ -34,11 +53,18 @@ const patchPrettierPluginTailwindcss = () => {
       "// Removed unsafe declare module statement",
     );
 
-    // Write the patched file back
-    fs.writeFileSync(pluginPath, patchedContent);
-    console.info(
-      "js-style-kit: Successfully patched prettier-plugin-tailwindcss declaration file",
-    );
+    // Only write if content has changed
+    if (content !== patchedContent) {
+      // Write the patched file back
+      fs.writeFileSync(pluginPath, patchedContent);
+      console.info(
+        "js-style-kit: Successfully patched prettier-plugin-tailwindcss declaration file",
+      );
+    } else {
+      console.info(
+        "No patching needed, declaration block not found or already patched",
+      );
+    }
   } catch (error) {
     console.error(
       "js-style-kit: Error patching prettier-plugin-tailwindcss:",
@@ -47,4 +73,5 @@ const patchPrettierPluginTailwindcss = () => {
   }
 };
 
+// Run the patch function
 patchPrettierPluginTailwindcss();

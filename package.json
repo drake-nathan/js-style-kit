@@ -35,5 +35,8 @@
   "packageManager": "bun@1.2.5",
   "engines": {
     "node": ">=22"
-  }
+  },
+  "trustedDependencies": [
+    "js-style-kit"
+  ]
 }
