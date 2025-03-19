@@ -25,7 +25,7 @@ export default defineConfig([
     clean: false,
     dts: false,
     entryPoints: ["scripts/postinstall.js"],
-    format: ["esm"],
+    format: ["esm", "cjs"],
     outDir: "dist/scripts",
     sourcemap: true,
   },
