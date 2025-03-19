@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.1
+
+### Patch Changes
+
+- 5416cf8: Fix bug in prettier-plugin-tailwind implementation
+
 ## 0.2.0
 
 ### Minor Changes
