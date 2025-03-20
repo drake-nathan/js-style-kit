@@ -6,6 +6,7 @@ import { isObject, isString } from "../utils/is-type.js";
 
 export interface PrettierConfigOptions extends PrettierConfig {
   cssOrderPlugin?: boolean;
+  curlyPlugin?: boolean;
   jsonSortPlugin?: boolean | SortJsonPluginOptions;
   packageJsonPlugin?: boolean;
   tailwindPlugin?: boolean | string | TailwindPluginOptions;
@@ -21,6 +22,7 @@ export interface PrettierConfigWithPlugins
  *
  * @param options - Configuration options for Prettier
  * @param options.cssOrderPlugin CSS order sorting support
+ * @param options.curlyPlugin Enforce curly braces for all control statements
  * @param options.jsonSortPlugin JSON sorting support
  * @param options.packageJsonPlugin Package.json sorting support
  * @param options.tailwindPlugin Tailwind CSS formatting support
@@ -28,6 +30,7 @@ export interface PrettierConfigWithPlugins
  * - Default Prettier configuration
  * - Experimental ternaries enabled
  * - CSS order plugin
+ * - Curly braces plugin
  * - JSON sorting plugin
  * - Package.json sorting plugin
  * - Optional Tailwind plugin and functions
@@ -37,6 +40,7 @@ export const prettierConfig = (
 ): PrettierConfigWithPlugins => {
   const {
     cssOrderPlugin = true,
+    curlyPlugin = true,
     jsonSortPlugin = true,
     packageJsonPlugin = true,
     tailwindPlugin = false,
@@ -51,6 +55,10 @@ export const prettierConfig = (
 
   if (cssOrderPlugin) {
     plugins.push("prettier-plugin-css-order");
+  }
+
+  if (curlyPlugin) {
+    plugins.push("prettier-plugin-curly");
   }
 
   if (jsonSortPlugin) {
