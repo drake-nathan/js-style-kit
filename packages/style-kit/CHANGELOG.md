@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.4
+
+### Patch Changes
+
+- e5629f1: Add `prettier-plugin-curly` to prettier config by default.
+
 ## 0.2.3
 
 ### Patch Changes
