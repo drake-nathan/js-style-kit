@@ -288,7 +288,7 @@ cssOrderPlugin: false;
 
 #### Curly Braces Enforcement
 
-The curly braces plugin is enabled by default. It enforces consistent use of curly braces for all control flow statements (`if`, `for`, `while`, etc.), even for single-line statements. This is equivalent to ESLint's `curly` rule with the `all` option, but applied at the Prettier formatting level:
+The curly braces plugin is disabled by default. It enforces consistent use of curly braces for all control flow statements (`if`, `for`, `while`, etc.), even for single-line statements. This is equivalent to ESLint's `curly` rule with the `all` option, but applied at the Prettier formatting level:
 
 ```diff
 - if (abc) def;
