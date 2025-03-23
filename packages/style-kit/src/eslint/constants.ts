@@ -18,6 +18,7 @@ export const configNames = {
   testing: "testing-config",
   turbo: "turbo-config",
   typescript: "tseslint-config",
+  typescriptTesting: "tseslint-testing-config",
   unicorn: "unicorn-config",
 } as const;
 
