@@ -187,8 +187,9 @@ storybook: true;
 ```
 
 When enabled, this configuration:
-- Applies best practices for Storybook files (*.stories.* and *.story.*)
-- Includes rules for Storybook configuration files (.storybook/main.*)
+
+- Applies best practices for Storybook files (_.stories._ and _.story._)
+- Includes rules for Storybook configuration files (.storybook/main.\*)
 - Ensures the .storybook directory is not ignored by ESLint (adds a negation pattern to ignores)
 
 ### Adding Custom ESLint Configurations
