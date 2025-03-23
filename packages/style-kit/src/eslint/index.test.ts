@@ -320,12 +320,47 @@ describe("eslintConfig", () => {
     });
   });
 
+  describe("storybook configuration", () => {
+    it("excludes storybook config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.storybook)).toBe(false);
+      expect(config.some((c) => c.name === configNames.storybookConfig)).toBe(
+        false,
+      );
+    });
+
+    it("includes storybook config when enabled", () => {
+      const config = eslintConfig({ storybook: true });
+
+      expect(config.some((c) => c.name === configNames.storybook)).toBe(true);
+      expect(config.some((c) => c.name === configNames.storybookConfig)).toBe(
+        true,
+      );
+    });
+
+    it("correctly configures ignores when storybook is enabled", () => {
+      const config = eslintConfig({ storybook: true });
+      const ignoresConfig = config.find((c) => c.name === configNames.ignores);
+
+      expect(ignoresConfig?.ignores).toContain("!.storybook");
+    });
+
+    it("does not include .storybook negation in ignores when storybook is disabled", () => {
+      const config = eslintConfig();
+      const ignoresConfig = config.find((c) => c.name === configNames.ignores);
+
+      expect(ignoresConfig?.ignores).not.toContain("!.storybook");
+    });
+  });
+
   describe("edge cases", () => {
     it("works when all optional features are disabled", () => {
       const config = eslintConfig({
         jsdoc: false,
         react: false,
         sorting: false,
+        storybook: false,
         testing: false,
         typescript: false,
       });
@@ -342,6 +377,8 @@ describe("eslintConfig", () => {
       expect(names).not.toContain(configNames.jsdoc);
       expect(names).not.toContain(configNames.perfectionist);
       expect(names).not.toContain(configNames.testing);
+      expect(names).not.toContain(configNames.storybook);
+      expect(names).not.toContain(configNames.storybookConfig);
     });
 
     it("handles React options without TypeScript", () => {
