@@ -10,6 +10,7 @@ import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactEslintConfig } from "./react/config.js";
+import { storybookConfig } from "./storybook/config.js";
 import { testingConfig, type TestingConfig } from "./testing/config.js";
 import { turboConfig } from "./turbo/config.js";
 import { tseslintConfig } from "./typescript/config.js";
@@ -30,6 +31,7 @@ export interface EslintConfigOptions {
         reactCompiler?: boolean | undefined;
       };
   sorting?: boolean;
+  storybook?: boolean;
   testing?: false | TestingConfig;
   turbo?: boolean;
   typescript?: boolean | string;
@@ -46,6 +48,7 @@ export interface EslintConfigOptions {
  * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
  *                        Can be configured with an object to control next.js support and reactCompiler.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
+ * @param options.storybook - Whether to include Storybook rules. Defaults to false.
  * @param options.testing - An object with the following properties:
  *                          - `filenamePattern`: One of "spec" or "test" to determine which filename pattern to use.
  *                          - `files`: Array of file patterns to include in the configuration.
@@ -65,6 +68,7 @@ export const eslintConfig = (
     jsdoc = { requireJsdoc: false },
     react = false,
     sorting = true,
+    storybook = false,
     testing,
     /**
      * Some preceding documentation...
@@ -82,6 +86,7 @@ export const eslintConfig = (
   const configs: Linter.Config[] = [
     ignoresConfig({
       next: isObject(react) && react.next,
+      storybook,
       userIgnores: ignores,
     }),
     baseEslintConfig(functionStyle),
@@ -151,6 +156,10 @@ export const eslintConfig = (
 
   if (functionStyle === "arrow") {
     configs.push(preferArrowFunctionConfig());
+  }
+
+  if (storybook) {
+    configs.push(...storybookConfig);
   }
 
   if (turbo) {
