@@ -548,7 +548,8 @@ describe("eslintConfig", () => {
       // Handle both running from root and from packages/style-kit
       const cwd = process.cwd();
       const isInPackageDir =
-        cwd.endsWith("packages/style-kit") || cwd.endsWith("packages/style-kit/");
+        cwd.endsWith("packages/style-kit") ||
+        cwd.endsWith("packages/style-kit/");
 
       const eslintDir = path.resolve(
         cwd,
