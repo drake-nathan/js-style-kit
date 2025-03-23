@@ -3,6 +3,7 @@ import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-s
 import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
 
 import { isObject, isString } from "../utils/is-type.js";
+import { patchTailwindPlugin } from "./patch-tailwind-plugin.js";
 
 export interface PrettierConfigOptions extends PrettierConfig {
   cssOrderPlugin?: boolean;
@@ -93,6 +94,9 @@ export const prettierConfig = (
     } else {
       config.tailwindFunctions = defaultTailwindFunctions;
     }
+
+    // Patch the Tailwind plugin declaration file to remove unsafe declare statement
+    patchTailwindPlugin();
   }
 
   // Set plugins after all configurations are done

@@ -537,4 +537,75 @@ describe("eslintConfig", () => {
       ).toBeUndefined();
     });
   });
+
+  describe("rule severity configuration", () => {
+    it("ensures no rules are configured with 'error' severity", async () => {
+      const path = await import("node:path");
+      const fs = await import("node:fs/promises");
+      const glob = await import("glob");
+
+      // Get all rules.ts and config.ts files
+      // Handle both running from root and from packages/style-kit
+      const cwd = process.cwd();
+      const isInPackageDir =
+        cwd.endsWith("packages/style-kit") ||
+        cwd.endsWith("packages/style-kit/");
+
+      const eslintDir = path.resolve(
+        cwd,
+        isInPackageDir ? "src/eslint" : "packages/style-kit/src/eslint",
+      );
+
+      const files = await glob.glob(["**/*rules.ts", "**/*config.ts"], {
+        absolute: true,
+        cwd: eslintDir,
+      });
+
+      expect(files.length).toBeGreaterThan(0);
+
+      // Check each file for "error" configurations
+      const errorRules: { file: string; rule: string }[] = [];
+
+      for (const file of files) {
+        const content = await fs.readFile(file, "utf8");
+
+        // Look for patterns like: "rule-name": "error" or "rule-name": ["error"
+        const errorMatches = content.matchAll(
+          /"(?<ruleName>[^"]+)":\s*"error"/g,
+        );
+        const arrayErrorMatches = content.matchAll(
+          /"(?<ruleName>[^"]+)":\s*\[\s*"error"/g,
+        );
+
+        for (const match of errorMatches) {
+          const ruleName = match.groups?.ruleName;
+          if (ruleName) {
+            errorRules.push({
+              file: path.relative(eslintDir, file),
+              rule: ruleName,
+            });
+          }
+        }
+
+        for (const match of arrayErrorMatches) {
+          const ruleName = match.groups?.ruleName;
+          if (ruleName) {
+            errorRules.push({
+              file: path.relative(eslintDir, file),
+              rule: ruleName,
+            });
+          }
+        }
+      }
+
+      if (errorRules.length > 0) {
+        console.error("Found rules configured with 'error' severity:");
+        errorRules.forEach(({ file, rule }) => {
+          console.error(`  - ${file}: ${rule}`);
+        });
+      }
+
+      expect(errorRules).toEqual([]);
+    });
+  });
 });

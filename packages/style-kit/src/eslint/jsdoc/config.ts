@@ -16,6 +16,8 @@ export const jsdocConfig = (
   requireJsdoc = false,
   typescript = true,
 ): EslintConfigObject => ({
+  files: ["**/*.{js,jsx,ts,tsx,cjs,mjs}"],
+  ignores: ["**/*.{test,spec}.{js,jsx,ts,tsx,cjs,mjs}"],
   name: configNames.jsdoc,
   plugins: {
     jsdoc,

@@ -54,6 +54,7 @@ export const testingConfig = (
   },
   rules: {
     // jest doesn't have a file name rule, so we'll use this one for both
+    "@typescript-eslint/unbound-method": "off",
     "vitest/consistent-test-filename": [
       "warn",
       {
