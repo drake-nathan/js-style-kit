@@ -50,6 +50,7 @@ export default eslintConfig({
   jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
   react: false, // Whether to include React rules, see below for options
   sorting: true, // Whether to include sorting rules from Perfectionist
+  storybook: false, // Whether to include Storybook rules
   testing: true, // Testing configuration, see below for options
   typescript: true, // Boolean or string path to tsconfig.json
   turbo: false, // Whether to include Turborepo rules
@@ -156,6 +157,18 @@ testing: {
   framework: "vitest", // "vitest" (default), "jest", "node", or "bun"
   itOrTest: "test", // "it" (default) or "test"
 }
+```
+
+## Storybook Configuration
+
+Storybook support is disabled by default.
+
+```js
+// Enable Storybook support with default options
+storybook: true;
+
+// Disable Storybook support
+storybook: false;
 ```
 
 ## Additional Rules

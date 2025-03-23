@@ -82,6 +82,7 @@ export default eslintConfig({
   jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
   react: false, // Whether to include React rules, see below for options
   sorting: true, // Whether to include sorting rules from Perfectionist
+  storybook: false, // Whether to include Storybook rules
   typescript: true, // Boolean or string path to tsconfig.json
 });
 ```
@@ -175,6 +176,20 @@ Sorting/organization rules from the Perfectionist plugin are enabled by default:
 // Disable sorting rules
 sorting: false;
 ```
+
+#### Storybook Configuration
+
+Storybook support is disabled by default, but can be enabled to provide linting rules specifically for Storybook files:
+
+```js
+// Enable Storybook rules
+storybook: true;
+```
+
+When enabled, this configuration:
+- Applies best practices for Storybook files (*.stories.* and *.story.*)
+- Includes rules for Storybook configuration files (.storybook/main.*)
+- Ensures the .storybook directory is not ignored by ESLint (adds a negation pattern to ignores)
 
 ### Adding Custom ESLint Configurations
 

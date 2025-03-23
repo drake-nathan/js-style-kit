@@ -58,6 +58,7 @@
               "docs/prettier-config",
               "docs/typescript-config",
               "docs/react-config",
+              "docs/storybook-config",
               "docs/jsdoc-config"
             ]
           },
