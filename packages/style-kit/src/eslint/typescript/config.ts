@@ -34,12 +34,5 @@ export const tseslintConfig = (tsconfigPath?: string): Config => {
       extends: [tseslint.configs.disableTypeChecked],
       files: ["**/*.js"],
     },
-    // {
-    //   files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
-    //   name: configNames.typescriptTesting,
-    //   rules: {
-    //     "@typescript-eslint/no-unbound-methods": "off",
-    //   },
-    // },
   );
 };

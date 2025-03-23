@@ -98,5 +98,3 @@ export const patchTailwindPlugin = (): boolean => {
     return false;
   }
 };
-
-patchTailwindPlugin();
