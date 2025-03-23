@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.5
+
+### Patch Changes
+
+- 18e4f60: Add `eslint-plugin-storybook` to ESLint config options.
+
 ## 0.2.4
 
 ### Patch Changes
