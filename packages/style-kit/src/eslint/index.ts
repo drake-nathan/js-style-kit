@@ -5,6 +5,7 @@ import type { FunctionStyle } from "./types.js";
 import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
 import { ignoresConfig } from "./ignores.js";
+import { importConfig } from "./import/config.js";
 import { jsdocConfig } from "./jsdoc/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
@@ -18,6 +19,7 @@ import { unicornConfig } from "./unicorn/config.js";
 export interface EslintConfigOptions {
   functionStyle?: "off" | FunctionStyle;
   ignores?: string[];
+  importPlugin?: boolean;
   jsdoc?:
     | false
     | {
@@ -42,6 +44,7 @@ export interface EslintConfigOptions {
  * @param options - The optional configuration object.
  * @param options.functionStyle - The function style to enforce. Defaults to "arrow".
  * @param options.ignores - Additional paths to ignore. Already excludes `node_modules` and `dist`.
+ * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
  * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
  * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
  *                        Can be configured with an object to control next.js support and reactCompiler.
@@ -62,6 +65,7 @@ export const eslintConfig = (
   {
     functionStyle = "arrow",
     ignores = [],
+    importPlugin = true,
     jsdoc = { requireJsdoc: false },
     react = false,
     sorting = true,
@@ -84,7 +88,7 @@ export const eslintConfig = (
       next: isObject(react) && react.next,
       userIgnores: ignores,
     }),
-    baseEslintConfig(functionStyle),
+    baseEslintConfig(functionStyle, Boolean(typescript)),
   ];
 
   if (jsdoc !== false) {
@@ -97,6 +101,10 @@ export const eslintConfig = (
         isString(typescript) ? typescript : undefined,
       ) as Linter.Config[]),
     );
+  }
+
+  if (importPlugin) {
+    configs.push(importConfig(Boolean(typescript)));
   }
 
   if (react) {

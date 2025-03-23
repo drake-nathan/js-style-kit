@@ -40,6 +40,8 @@
   },
   "dependencies": {
     "eslint": "^9.22.0",
+    "eslint-import-resolver-typescript": "^3.8.3",
+    "eslint-plugin-import-x": "^4.6.1",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.6.8",
     "eslint-plugin-perfectionist": "^4.10.1",
