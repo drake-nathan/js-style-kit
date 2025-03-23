@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.6
+
+### Patch Changes
+
+- 9edcf99: Move tailwind patch script from postinstall to run with prettier config init.
+
 ## 0.2.5
 
 ### Patch Changes
