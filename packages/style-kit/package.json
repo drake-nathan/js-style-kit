@@ -41,15 +41,15 @@
   "dependencies": {
     "eslint": "^9.23.0",
     "eslint-plugin-jest": "^28.11.0",
-    "eslint-plugin-jsdoc": "^50.6.8",
+    "eslint-plugin-jsdoc": "^50.6.9",
     "eslint-plugin-perfectionist": "^4.10.1",
     "eslint-plugin-prefer-arrow-functions": "^3.6.2",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-compiler": "19.0.0-beta-bafa41b-20250307",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-storybook": "^0.11.6",
+    "eslint-plugin-storybook": "^0.12.0",
     "eslint-plugin-turbo": "^2.4.4",
-    "eslint-plugin-unicorn": "^57.0.0",
+    "eslint-plugin-unicorn": "^58.0.0",
     "eslint-plugin-vitest": "^0.5.4",
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
@@ -58,12 +58,12 @@
     "prettier-plugin-packagejson": "^2.5.10",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "typescript-eslint": "^8.27.0"
+    "typescript-eslint": "^8.28.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/bun": "^1.2.5",
-    "@types/node": "^22.13.11",
+    "@types/bun": "^1.2.6",
+    "@types/node": "^22.13.13",
     "commander": "^13.1.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2"
