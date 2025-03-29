@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.8
+
+### Patch Changes
+
+- 984914e: Fix storybook plugin config
+
 ## 0.2.7
 
 ### Patch Changes
