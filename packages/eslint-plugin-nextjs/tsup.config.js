@@ -5,7 +5,7 @@ export default defineConfig([
     clean: true,
     dts: true,
     entryPoints: ["src/**/*", "!src/**/*.test.ts"],
-    format: ["esm"],
+    format: ["esm", "cjs"],
     outDir: "dist",
     sourcemap: true,
   },
