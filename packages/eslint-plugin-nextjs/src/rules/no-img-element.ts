@@ -1,41 +1,41 @@
-import path from 'node:path'
-import { defineRule } from '../utils/define-rule.js'
+import path from "node:path";
+import { defineRule } from "../utils/define-rule.js";
 
-const url = 'https://nextjs.org/docs/messages/no-img-element'
+const url = "https://nextjs.org/docs/messages/no-img-element";
 
 export const noImgElement = defineRule({
   meta: {
     docs: {
       description:
-        'Prevent usage of `<img>` element due to slower LCP and higher bandwidth.',
-      category: 'HTML',
+        "Prevent usage of `<img>` element due to slower LCP and higher bandwidth.",
+      category: "HTML",
       recommended: true,
       url,
     },
-    type: 'problem',
+    type: "problem",
     schema: [],
   },
   create(context: any) {
     // Get relative path of the file
     const relativePath = context.filename
-      .replace(path.sep, '/')
-      .replace(context.cwd, '')
-      .replace(/^\//, '')
+      .replace(path.sep, "/")
+      .replace(context.cwd, "")
+      .replace(/^\//, "");
 
-    const isAppDir = /^(src\/)?app\//.test(relativePath)
+    const isAppDir = /^(src\/)?app\//.test(relativePath);
 
     return {
       JSXOpeningElement(node: any) {
-        if (node.name.name !== 'img') {
-          return
+        if (node.name.name !== "img") {
+          return;
         }
 
         if (node.attributes.length === 0) {
-          return
+          return;
         }
 
-        if (node.parent?.parent?.openingElement?.name?.name === 'picture') {
-          return
+        if (node.parent?.parent?.openingElement?.name?.name === "picture") {
+          return;
         }
 
         // If is metadata route files, ignore
@@ -43,14 +43,15 @@ export const noImgElement = defineRule({
         if (
           isAppDir &&
           /\/opengraph-image|twitter-image|icon\.\w+$/.test(relativePath)
-        )
-          return
+        ) {
+          return;
+        }
 
         context.report({
           node,
           message: `Using \`<img>\` could result in slower LCP and higher bandwidth. Consider using \`<Image />\` from \`next/image\` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: ${url}`,
-        })
+        });
       },
-    }
+    };
   },
-})
+});
