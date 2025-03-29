@@ -1,5 +1,5 @@
 {
-  "name": "vite",
+  "name": "vite-test-app",
   "private": true,
   "type": "module",
   "scripts": {
