@@ -5,34 +5,34 @@ const url = "https://nextjs.org/docs/messages/google-font-preconnect";
 
 export const googleFontPreconnect = defineRule({
   create: (context: any) => ({
-      JSXOpeningElement: (node: any) => {
-        if (node.name.name !== "link") {
-          return;
-        }
+    JSXOpeningElement: (node: any) => {
+      if (node.name.name !== "link") {
+        return;
+      }
 
-        const attributes = new NodeAttributes(node);
-        if (!attributes.has("href") || !attributes.hasValue("href")) {
-          return;
-        }
+      const attributes = new NodeAttributes(node);
+      if (!attributes.has("href") || !attributes.hasValue("href")) {
+        return;
+      }
 
-        const hrefValue = attributes.value("href");
-        const preconnectMissing =
-          !attributes.has("rel") ||
-          !attributes.hasValue("rel") ||
-          attributes.value("rel") !== "preconnect";
+      const hrefValue = attributes.value("href");
+      const preconnectMissing =
+        !attributes.has("rel") ||
+        !attributes.hasValue("rel") ||
+        attributes.value("rel") !== "preconnect";
 
-        if (
-          typeof hrefValue === "string" &&
-          hrefValue.startsWith("https://fonts.gstatic.com") &&
-          preconnectMissing
-        ) {
-          context.report({
-            message: `\`rel="preconnect"\` is missing from Google Font. See: ${url}`,
-            node,
-          });
-        }
-      },
-    }),
+      if (
+        typeof hrefValue === "string" &&
+        hrefValue.startsWith("https://fonts.gstatic.com") &&
+        preconnectMissing
+      ) {
+        context.report({
+          message: `\`rel="preconnect"\` is missing from Google Font. See: ${url}`,
+          node,
+        });
+      }
+    },
+  }),
   meta: {
     docs: {
       description: "Ensure `preconnect` is used with Google Fonts.",

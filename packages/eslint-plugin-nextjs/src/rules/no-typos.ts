@@ -41,7 +41,6 @@ const minDistance = (a: string, b: string): number | undefined => {
   return previousRow[previousRow.length - 1];
 };
 
-/* eslint-disable eslint-plugin/require-meta-docs-url */
 export const noTypos = defineRule({
   create: (context: any) => {
     const checkTypos = (node: any, name: string) => {
@@ -94,7 +93,6 @@ export const noTypos = defineRule({
             break;
           }
         }
-        
       },
     };
   },

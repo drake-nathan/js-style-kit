@@ -33,9 +33,9 @@ export const noDuplicateHead = defineRule({
         if (
           node.argument &&
           "children" in node.argument &&
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           node.argument.children
         ) {
-          // @ts-expect-error - `node.argument` could be a `JSXElement` which has property `children`
           const headComponents = node.argument.children.filter(
             (childrenNode: any) =>
               childrenNode.openingElement?.name &&
@@ -46,6 +46,7 @@ export const noDuplicateHead = defineRule({
             for (let i = 1; i < headComponents.length; i++) {
               context.report({
                 message: `Do not include multiple instances of \`<Head/>\`. See: ${url}`,
+                // @ts-expect-error initial override, TODO: fix
                 node: headComponents[i],
               });
             }

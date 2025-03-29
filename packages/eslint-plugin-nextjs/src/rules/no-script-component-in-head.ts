@@ -10,10 +10,6 @@ export const noScriptComponentInHead = defineRule({
         if (node.source.value === "next/head") {
           isNextHead = node.source.value;
         }
-
-        if (node.source.value !== "next/script") {
-          
-        }
       },
       JSXElement: (node: any) => {
         if (!isNextHead) {

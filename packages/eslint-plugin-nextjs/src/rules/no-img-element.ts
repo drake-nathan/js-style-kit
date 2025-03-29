@@ -12,7 +12,7 @@ export const noImgElement = defineRule({
       .replace(context.cwd, "")
       .replace(/^\//, "");
 
-    const isAppDir = /^(src\/)?app\//.test(relativePath);
+    const isAppDir = /^(?<temp1>src\/)?app\//.test(relativePath);
 
     return {
       JSXOpeningElement: (node: any) => {

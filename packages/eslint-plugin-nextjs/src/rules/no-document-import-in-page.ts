@@ -6,28 +6,28 @@ const url = "https://nextjs.org/docs/messages/no-document-import-in-page";
 
 export const noDocumentImportInPage = defineRule({
   create: (context) => ({
-      ImportDeclaration: (node) => {
-        if (node.source.value !== "next/document") {
-          return;
-        }
+    ImportDeclaration: (node) => {
+      if (node.source.value !== "next/document") {
+        return;
+      }
 
-        const paths = context.filename.split("pages");
-        const page = paths[paths.length - 1];
+      const paths = context.filename.split("pages");
+      const page = paths[paths.length - 1];
 
-        if (
-          !page ||
-          page.startsWith(`${path.sep}_document`) ||
-          page.startsWith(`${path.posix.sep}_document`)
-        ) {
-          return;
-        }
+      if (
+        !page ||
+        page.startsWith(`${path.sep}_document`) ||
+        page.startsWith(`${path.posix.sep}_document`)
+      ) {
+        return;
+      }
 
-        context.report({
-          message: `\`<Document />\` from \`next/document\` should not be imported outside of \`pages/_document.js\`. See: ${url}`,
-          node,
-        });
-      },
-    }),
+      context.report({
+        message: `\`<Document />\` from \`next/document\` should not be imported outside of \`pages/_document.js\`. See: ${url}`,
+        node,
+      });
+    },
+  }),
   meta: {
     docs: {
       description:

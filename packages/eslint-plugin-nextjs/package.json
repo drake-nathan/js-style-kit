@@ -49,6 +49,7 @@
     "@types/bun": "^1.2.8",
     "@types/node": "^22.13.14",
     "eslint": "^9.23.0",
+    "eslint-v8": "npm:eslint@^8.57.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2"
   },

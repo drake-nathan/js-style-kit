@@ -40,10 +40,7 @@ export const noBeforeInteractiveScriptOutsideDocument = defineRule({
           (child: any) => child.name && child.name.name === "strategy",
         );
 
-        if (
-          !strategy?.value ||
-          strategy.value.value !== "beforeInteractive"
-        ) {
+        if (!strategy?.value || strategy.value.value !== "beforeInteractive") {
           return;
         }
 

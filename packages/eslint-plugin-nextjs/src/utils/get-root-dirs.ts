@@ -6,7 +6,7 @@ import fastGlob from "fast-glob";
  * Process a Next.js root directory glob.
  */
 const processRootDir = (rootDir: string): string[] => {
-  return fastGlob.globSync(rootDir.replaceAll('\\', "/"), {
+  return fastGlob.globSync(rootDir.replaceAll("\\", "/"), {
     onlyDirectories: true,
   });
 };
@@ -18,6 +18,7 @@ export const getRootDirs = (context: Rule.RuleContext) => {
   let rootDirs = [context.cwd];
 
   const nextSettings: { rootDir?: string | string[] } =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     context.settings.next || {};
   const rootDir = nextSettings.rootDir;
 

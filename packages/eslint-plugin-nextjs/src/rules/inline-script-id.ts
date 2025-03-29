@@ -13,7 +13,7 @@ export const inlineScriptId = defineRule({
         }
       },
       JSXElement: (node: any) => {
-        if (nextScriptImportName == null) {
+        if (nextScriptImportName === null) {
           return;
         }
 
@@ -49,6 +49,7 @@ export const inlineScriptId = defineRule({
 
         // https://github.com/vercel/next.js/issues/34030
         // If there is a non-checkable spread attribute, we simply ignore them
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (hasNonCheckableSpreadAttribute) {
           return;
         }

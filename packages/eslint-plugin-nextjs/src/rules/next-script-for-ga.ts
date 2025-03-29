@@ -21,49 +21,49 @@ const containsStr = (str: string, strList: string[]) => {
 
 export const nextScriptForGa = defineRule({
   create: (context: any) => ({
-      JSXOpeningElement: (node: any) => {
-        if (node.name.name !== "script") {
-          return;
-        }
-        if (node.attributes.length === 0) {
-          return;
-        }
-        const attributes = new NodeAttributes(node);
+    JSXOpeningElement: (node: any) => {
+      if (node.name.name !== "script") {
+        return;
+      }
+      if (node.attributes.length === 0) {
+        return;
+      }
+      const attributes = new NodeAttributes(node);
 
-        // Check if the Alternative async tag is being used to add GA.
-        // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
-        // https://developers.google.com/analytics/devguides/collection/gtagjs
+      // Check if the Alternative async tag is being used to add GA.
+      // https://developers.google.com/analytics/devguides/collection/analyticsjs#alternative_async_tag
+      // https://developers.google.com/analytics/devguides/collection/gtagjs
+      if (
+        typeof attributes.value("src") === "string" &&
+        containsStr(attributes.value("src"), SUPPORTED_SRCS)
+      ) {
+        return context.report({
+          message: ERROR_MSG,
+          node,
+        });
+      }
+
+      // Check if inline script is being used to add GA.
+      // https://developers.google.com/analytics/devguides/collection/analyticsjs#the_google_analytics_tag
+      // https://developers.google.com/tag-manager/quickstart
+      if (
+        attributes.value("dangerouslySetInnerHTML") &&
+        attributes.value("dangerouslySetInnerHTML").length > 0
+      ) {
+        const htmlContent = attributes.value("dangerouslySetInnerHTML")[0].value
+          .quasis?.[0].value.raw;
         if (
-          typeof attributes.value("src") === "string" &&
-          containsStr(attributes.value("src"), SUPPORTED_SRCS)
+          htmlContent &&
+          containsStr(htmlContent, SUPPORTED_HTML_CONTENT_URLS)
         ) {
-          return context.report({
+          context.report({
             message: ERROR_MSG,
             node,
           });
         }
-
-        // Check if inline script is being used to add GA.
-        // https://developers.google.com/analytics/devguides/collection/analyticsjs#the_google_analytics_tag
-        // https://developers.google.com/tag-manager/quickstart
-        if (
-          attributes.value("dangerouslySetInnerHTML") &&
-          attributes.value("dangerouslySetInnerHTML").length > 0
-        ) {
-          const htmlContent =
-            attributes.value("dangerouslySetInnerHTML")[0].value.quasis?.[0].value.raw;
-          if (
-            htmlContent &&
-            containsStr(htmlContent, SUPPORTED_HTML_CONTENT_URLS)
-          ) {
-            context.report({
-              message: ERROR_MSG,
-              node,
-            });
-          }
-        }
-      },
-    }),
+      }
+    },
+  }),
   meta: {
     docs: {
       description,

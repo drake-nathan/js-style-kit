@@ -7,7 +7,8 @@ import NodeAttributes from "../utils/node-attributes.js";
 
 const url = "https://nextjs.org/docs/messages/no-page-custom-font";
 
-const isIdentifierMatch = (id1: any, id2: any): boolean => (id1 === null && id2 === null) || (id1 && id2 && id1.name === id2.name);
+const isIdentifierMatch = (id1: any, id2: any): boolean =>
+  (id1 === null && id2 === null) || (id1 && id2 && id1.name === id2.name);
 
 export const noPageCustomFont = defineRule({
   create: (context: any): any => {
@@ -20,7 +21,8 @@ export const noPageCustomFont = defineRule({
       return {};
     }
 
-    const is_Document =
+    const isDocument =
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       page.startsWith(`${sep}_document`) ||
       page.startsWith(`${posix.sep}_document`);
 
@@ -130,7 +132,7 @@ export const noPageCustomFont = defineRule({
         });
 
         // file starts with _document and this <link /> is within the default export
-        if (is_Document && parentComponent) {
+        if (isDocument && parentComponent) {
           return;
         }
 
@@ -148,7 +150,7 @@ export const noPageCustomFont = defineRule({
           const end = `This is discouraged. See: ${url}`;
 
           const message =
-            is_Document ?
+            isDocument ?
               `Using \`<link />\` outside of \`<Head>\` will disable automatic font optimization. ${end}`
             : `Custom fonts not added in \`pages/_document.js\` will only load for a single page. ${end}`;
 

@@ -25,9 +25,7 @@ const memoize = <T = any>(fn: (...args: any[]) => T) => {
   const cache: Record<string, T> = {};
   return (...args: any[]): T => {
     const key = JSON.stringify(args);
-    if (cache[key] === undefined) {
-      cache[key] = fn(...args);
-    }
+    cache[key] ??= fn(...args);
     return cache[key];
   };
 };
@@ -42,6 +40,7 @@ export const noHtmlLinkForPages = defineRule({
    * Creates an ESLint rule listener.
    */
   create: (context) => {
+    // @ts-expect-error initial override, TODO: fix
     const ruleOptions: (string | string[])[] = context.options;
     const [customPagesDirectory] = ruleOptions;
 
@@ -56,9 +55,7 @@ export const noHtmlLinkForPages = defineRule({
         ])).flat();
 
     const foundPagesDirs = pagesDirs.filter((dir) => {
-      if (fsExistsSyncCache[dir] === undefined) {
-        fsExistsSyncCache[dir] = fs.existsSync(dir);
-      }
+      fsExistsSyncCache[dir] ??= fs.existsSync(dir);
       return fsExistsSyncCache[dir];
     });
 
@@ -67,9 +64,7 @@ export const noHtmlLinkForPages = defineRule({
       .flat();
 
     const foundAppDirs = appDirs.filter((dir) => {
-      if (fsExistsSyncCache[dir] === undefined) {
-        fsExistsSyncCache[dir] = fs.existsSync(dir);
-      }
+      fsExistsSyncCache[dir] ??= fs.existsSync(dir);
       return fsExistsSyncCache[dir];
     });
 
@@ -122,12 +117,13 @@ export const noHtmlLinkForPages = defineRule({
 
         const hrefPath = normalizeURL(href.value.value);
         // Outgoing links are ignored
-        if (/^(https?:\/\/|\/\/)/.test(hrefPath!)) {
+
+        if (/^(?<temp1>https?:\/\/|\/\/)/.test(hrefPath as string)) {
           return;
         }
 
         allUrlRegex.forEach((foundUrl) => {
-          if (hrefPath && foundUrl.test(normalizeURL(hrefPath)!)) {
+          if (hrefPath && foundUrl.test(normalizeURL(hrefPath) as string)) {
             context.report({
               message: `Do not use an \`<a>\` element to navigate to \`${hrefPath}\`. Use \`<Link />\` from \`next/link\` instead. See: ${url}`,
               node,

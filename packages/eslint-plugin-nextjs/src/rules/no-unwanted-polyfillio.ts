@@ -113,7 +113,7 @@ export const noUnwantedPolyfillio = defineRule({
           src.startsWith("https://cdnjs.cloudflare.com/polyfill/")
         ) {
           const featureQueryString = new URL(src).searchParams.get("features");
-          const featuresRequested = (featureQueryString || "").split(",");
+          const featuresRequested = (featureQueryString ?? "").split(",");
           const unwantedFeatures = featuresRequested.filter((feature) =>
             NEXT_POLYFILLED_FEATURES.includes(feature),
           );
