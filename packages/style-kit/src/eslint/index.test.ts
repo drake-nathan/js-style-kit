@@ -136,10 +136,7 @@ describe("eslintConfig", () => {
       expect(reactRefreshConfig).toBeDefined();
       expect(
         reactRefreshConfig?.rules?.["react-refresh/only-export-components"],
-      ).toStrictEqual([
-        "warn",
-        { allowConstantExport: true },
-      ]);
+      ).toStrictEqual(["warn", { allowConstantExport: true }]);
     });
 
     it("enables React with Next.js support when next is true", () => {

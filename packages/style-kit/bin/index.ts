@@ -205,9 +205,7 @@ const setupVSCodeSettings = (extension: Extension): void => {
     };
 
     // Add or update file nesting patterns
-    if (!settings["explorer.fileNesting.patterns"]) {
-      settings["explorer.fileNesting.patterns"] = {};
-    }
+    settings["explorer.fileNesting.patterns"] ??= {};
 
     // Type assertion to handle the nesting patterns
     const nestingPatterns = settings["explorer.fileNesting.patterns"] as Record<

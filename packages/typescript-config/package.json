@@ -4,8 +4,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "prettier --write . --cache",
+    "format:check": "prettier --check . --cache"
   },
   "publishConfig": {
     "access": "public"

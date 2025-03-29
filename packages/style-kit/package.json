@@ -30,10 +30,11 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "format": "prettier --write . --ignore-path .prettierignore.ci",
-    "format:check": "prettier --check . --ignore-path .prettierignore.ci",
+    "format": "prettier --write . --ignore-path .prettierignore.ci --cache",
+    "format:check": "prettier --check . --ignore-path .prettierignore.ci --cache",
     "postinstall": "node ./dist/scripts/postinstall.cjs",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "lint:inspect": "eslint --inspect-config",
     "test": "bun test",
     "test:coverage": "bun test --coverage --coverage-reporter=lcov"
@@ -63,8 +64,8 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/bun": "^1.2.6",
-    "@types/node": "^22.13.13",
+    "@types/bun": "^1.2.8",
+    "@types/node": "^22.13.14",
     "commander": "^13.1.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2"

@@ -14,10 +14,10 @@
     "changeset": "changeset",
     "ci": "node scripts/ci.js",
     "dev": "turbo run dev",
-    "format": "prettier --write . --ignore-path .prettierignore.ci",
-    "format:check": "prettier --check . --ignore-path .prettierignore.ci",
-    "lint": "eslint . --max-warnings 0 --ignore-pattern docs --ignore-pattern packages",
-    "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages",
+    "format": "prettier --write . --ignore-path .prettierignore.ci --cache",
+    "format:check": "prettier --check . --ignore-path .prettierignore.ci --cache",
+    "lint": "eslint . --max-warnings 0 --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
+    "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
     "lint:md": "markdownlint '**/*.md' --ignore node_modules",
     "outdated": "bun outdated --filter \"js-style-kit-root\" --filter \"js-style-kit\" --filter \"js-style-kit-docs\"",
     "sherif": "sherif",
@@ -26,14 +26,14 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
-    "@types/bun": "^1.2.6",
+    "@types/bun": "^1.2.8",
     "js-style-kit": "workspace:*",
     "markdownlint-cli": "^0.44.0",
     "sherif": "^1.4.0",
     "turbo": "^2.4.4",
     "typescript": "^5.8.2"
   },
-  "packageManager": "bun@1.2.6",
+  "packageManager": "bun@1.2.7",
   "engines": {
     "node": ">=22"
   },
