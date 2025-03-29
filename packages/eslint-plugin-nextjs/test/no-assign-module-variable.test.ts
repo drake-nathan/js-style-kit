@@ -1,19 +1,12 @@
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { describe } from "bun:test";
 import { RuleTester as ESLintTesterV9 } from "eslint";
-import { getRule } from "./utils/getRule";
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+
+import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-assign-module-variable");
 
 const tests = {
-  valid: [
-    `
-      let myModule = {};
-
-      export default function MyComponent() {
-        return <></>
-      }
-    `,
-  ],
   invalid: [
     {
       code: `
@@ -31,30 +24,39 @@ const tests = {
       ],
     },
   ],
+  valid: [
+    `
+      let myModule = {};
+
+      export default function MyComponent() {
+        return <></>
+      }
+    `,
+  ],
 };
 
 describe("no-assign-module-variable", () => {
   new ESLintTesterV8({
     parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
+      },
       ecmaVersion: 2018,
       sourceType: "module",
-      ecmaFeatures: {
-        modules: true,
-        jsx: true,
-      },
     },
   }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
-          modules: true,
           jsx: true,
+          modules: true,
         },
       },
+      sourceType: "module",
     },
   }).run("eslint-v9", NextESLintRule, tests);
 });

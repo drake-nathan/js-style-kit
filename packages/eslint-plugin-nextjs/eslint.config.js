@@ -16,4 +16,11 @@ export default eslintConfig(
       "no-param-reassign": "off",
     },
   },
+  {
+    files: ["test/**/*"],
+    name: "test-overrides",
+    rules: {
+      "@typescript-eslint/no-empty-function": "off",
+    },
+  },
 );

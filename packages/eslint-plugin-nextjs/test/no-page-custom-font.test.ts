@@ -1,12 +1,86 @@
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { describe } from "bun:test";
 import { RuleTester as ESLintTesterV9 } from "eslint";
-import { getRule } from "./utils/getRule";
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+
+import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-page-custom-font");
 
 const filename = "pages/_document.js";
 
 const tests = {
+  invalid: [
+    {
+      code: `
+      import Head from 'next/head'
+      export default function IndexPage() {
+        return (
+          <div>
+            <Head>
+              <link
+                href="https://fonts.googleapis.com/css2?family=Inter"
+                rel="stylesheet"
+              />
+            </Head>
+            <p>Hello world!</p>
+          </div>
+        )
+      }
+      `,
+      errors: [
+        {
+          message:
+            "Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
+          type: "JSXOpeningElement",
+        },
+      ],
+      filename: "pages/index.tsx",
+    },
+    {
+      code: `
+      import Head from 'next/head'
+
+
+      function Links() {
+        return (
+          <>
+            <link
+              href="https://fonts.googleapis.com/css2?family=Inter"
+              rel="stylesheet"
+            />
+            <link
+              href="https://fonts.googleapis.com/css2?family=Open+Sans"
+              rel="stylesheet"
+              />
+          </>
+        )
+      }
+
+      export default function IndexPage() {
+        return (
+          <div>
+            <Head>
+              <Links />
+            </Head>
+            <p>Hello world!</p>
+          </div>
+        )
+      }
+      `,
+      errors: [
+        {
+          message:
+            "Using `<link />` outside of `<Head>` will disable automatic font optimization. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
+        },
+        {
+          message:
+            "Using `<link />` outside of `<Head>` will disable automatic font optimization. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
+        },
+      ],
+      filename,
+    },
+  ],
+
   valid: [
     {
       code: `import Document, { Html, Head } from "next/document";
@@ -117,102 +191,30 @@ const tests = {
       filename,
     },
   ],
-
-  invalid: [
-    {
-      code: `
-      import Head from 'next/head'
-      export default function IndexPage() {
-        return (
-          <div>
-            <Head>
-              <link
-                href="https://fonts.googleapis.com/css2?family=Inter"
-                rel="stylesheet"
-              />
-            </Head>
-            <p>Hello world!</p>
-          </div>
-        )
-      }
-      `,
-      filename: "pages/index.tsx",
-      errors: [
-        {
-          message:
-            "Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
-          type: "JSXOpeningElement",
-        },
-      ],
-    },
-    {
-      code: `
-      import Head from 'next/head'
-
-
-      function Links() {
-        return (
-          <>
-            <link
-              href="https://fonts.googleapis.com/css2?family=Inter"
-              rel="stylesheet"
-            />
-            <link
-              href="https://fonts.googleapis.com/css2?family=Open+Sans"
-              rel="stylesheet"
-              />
-          </>
-        )
-      }
-
-      export default function IndexPage() {
-        return (
-          <div>
-            <Head>
-              <Links />
-            </Head>
-            <p>Hello world!</p>
-          </div>
-        )
-      }
-      `,
-      filename,
-      errors: [
-        {
-          message:
-            "Using `<link />` outside of `<Head>` will disable automatic font optimization. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
-        },
-        {
-          message:
-            "Using `<link />` outside of `<Head>` will disable automatic font optimization. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
-        },
-      ],
-    },
-  ],
 };
 
 describe("no-page-custom-font", () => {
   new ESLintTesterV8({
     parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
+      },
       ecmaVersion: 2018,
       sourceType: "module",
-      ecmaFeatures: {
-        modules: true,
-        jsx: true,
-      },
     },
   }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
-          modules: true,
           jsx: true,
+          modules: true,
         },
       },
+      sourceType: "module",
     },
   }).run("eslint-v9", NextESLintRule, tests);
 });

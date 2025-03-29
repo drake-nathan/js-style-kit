@@ -1,6 +1,8 @@
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { describe } from "bun:test";
 import { RuleTester as ESLintTesterV9 } from "eslint";
-import { getRule } from "./utils/getRule";
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+
+import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("next-script-for-ga");
 
@@ -8,81 +10,6 @@ const ERROR_MSG =
   "Prefer `next/script` component when using the inline script for Google Analytics. See: https://nextjs.org/docs/messages/next-script-for-ga";
 
 const tests = {
-  valid: [
-    `import Script from 'next/script'
-
-      export class Blah extends Head {
-        render() {
-          return (
-            <div>
-              <h1>Hello title</h1>
-              <Script
-                src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
-                strategy="lazyOnload"
-              />
-              <Script id="google-analytics">
-                {\`
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){window.dataLayer.push(arguments);}
-                  gtag('js', new Date());
-
-                  gtag('config', 'GA_MEASUREMENT_ID');
-                \`}
-              </Script>
-            </div>
-          );
-        }
-    }`,
-    `import Script from 'next/script'
-
-      export class Blah extends Head {
-        render() {
-          return (
-            <div>
-              <h1>Hello title</h1>
-              <Script id="google-analytics">
-                {\`(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-                    ga('create', 'UA-XXXXX-Y', 'auto');
-                    ga('send', 'pageview');
-                })\`}
-              </Script>
-            </div>
-          );
-        }
-    }`,
-    `import Script from 'next/script'
-
-        export class Blah extends Head {
-        render() {
-            return (
-            <div>
-                <h1>Hello title</h1>
-                <Script id="google-analytics">
-                    {\`window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-                    ga('create', 'UA-XXXXX-Y', 'auto');
-                    ga('send', 'pageview');
-                    })\`}
-                </Script>
-            </div>
-            );
-        }
-    }`,
-    `export class Blah extends Head {
-          render() {
-            return (
-              <div>
-                <h1>Hello title</h1>
-                <script dangerouslySetInnerHTML={{}} />
-              </div>
-            );
-          }
-      }`,
-  ],
-
   invalid: [
     {
       code: `
@@ -229,30 +156,105 @@ const tests = {
       ],
     },
   ],
+
+  valid: [
+    `import Script from 'next/script'
+
+      export class Blah extends Head {
+        render() {
+          return (
+            <div>
+              <h1>Hello title</h1>
+              <Script
+                src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
+                strategy="lazyOnload"
+              />
+              <Script id="google-analytics">
+                {\`
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){window.dataLayer.push(arguments);}
+                  gtag('js', new Date());
+
+                  gtag('config', 'GA_MEASUREMENT_ID');
+                \`}
+              </Script>
+            </div>
+          );
+        }
+    }`,
+    `import Script from 'next/script'
+
+      export class Blah extends Head {
+        render() {
+          return (
+            <div>
+              <h1>Hello title</h1>
+              <Script id="google-analytics">
+                {\`(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                    ga('create', 'UA-XXXXX-Y', 'auto');
+                    ga('send', 'pageview');
+                })\`}
+              </Script>
+            </div>
+          );
+        }
+    }`,
+    `import Script from 'next/script'
+
+        export class Blah extends Head {
+        render() {
+            return (
+            <div>
+                <h1>Hello title</h1>
+                <Script id="google-analytics">
+                    {\`window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+                    ga('create', 'UA-XXXXX-Y', 'auto');
+                    ga('send', 'pageview');
+                    })\`}
+                </Script>
+            </div>
+            );
+        }
+    }`,
+    `export class Blah extends Head {
+          render() {
+            return (
+              <div>
+                <h1>Hello title</h1>
+                <script dangerouslySetInnerHTML={{}} />
+              </div>
+            );
+          }
+      }`,
+  ],
 };
 
 describe("next-script-for-ga", () => {
   new ESLintTesterV8({
     parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
+      },
       ecmaVersion: 2018,
       sourceType: "module",
-      ecmaFeatures: {
-        modules: true,
-        jsx: true,
-      },
     },
   }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
-          modules: true,
           jsx: true,
+          modules: true,
         },
       },
+      sourceType: "module",
     },
   }).run("eslint-v9", NextESLintRule, tests);
 });
