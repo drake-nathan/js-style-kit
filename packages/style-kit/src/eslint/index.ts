@@ -118,9 +118,9 @@ export const eslintConfig = (
       configs.push(reactCompilerEslintConfig);
     }
 
-    // Apply reactRefresh by default if react is true or if react.reactRefresh isn't explicitly false
+    // Apply reactRefresh only if explicitly enabled via react.reactRefresh = true
     const shouldUseReactRefresh =
-      react === true || (isObject(react) && react.reactRefresh !== false);
+      isObject(react) && react.reactRefresh === true;
 
     if (shouldUseReactRefresh) {
       configs.push(reactRefreshEslintConfig());

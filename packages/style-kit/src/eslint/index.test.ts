@@ -111,24 +111,24 @@ describe("eslintConfig", () => {
       );
     });
 
-    it("includes React Refresh config by default when React is enabled", () => {
+    it("excludes React Refresh config by default when React is enabled", () => {
       const config = eslintConfig({ react: true });
-
-      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
-        true,
-      );
-    });
-
-    it("excludes React Refresh config when React is enabled but React Refresh is not", () => {
-      const config = eslintConfig({ react: { reactRefresh: false } });
 
       expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
         false,
       );
     });
 
+    it("includes React Refresh config when React is enabled and React Refresh is explicitly enabled", () => {
+      const config = eslintConfig({ react: { reactRefresh: true } });
+
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        true,
+      );
+    });
+
     it("applies correct React Refresh rules when enabled", () => {
-      const config = eslintConfig({ react: true });
+      const config = eslintConfig({ react: { reactRefresh: true } });
       const reactRefreshConfig = config.find(
         (c) => c.name === configNames.reactRefresh,
       );
