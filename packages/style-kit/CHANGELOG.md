@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.9
+
+### Patch Changes
+
+- a76d254: disable react refresh by default
+
 ## 0.2.8
 
 ### Patch Changes
