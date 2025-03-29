@@ -39,9 +39,6 @@ export const jsdocRules = (
   "jsdoc/no-undefined-types": typescript ? "off" : "warn",
   "jsdoc/require-asterisk-prefix": "warn",
   "jsdoc/require-description": requireJsdoc ? "warn" : "off",
-  "jsdoc/require-description-complete-sentence": "off",
-  "jsdoc/require-file-overview": "off",
-  "jsdoc/require-hyphen-before-param-description": "off",
   "jsdoc/require-jsdoc":
     requireJsdoc ?
       [
@@ -58,20 +55,17 @@ export const jsdocRules = (
         },
       ]
     : "off",
-  "jsdoc/require-param": "warn",
+  "jsdoc/require-param": requireJsdoc ? "warn" : "off",
   "jsdoc/require-param-description": "warn",
   "jsdoc/require-param-name": "warn",
-  "jsdoc/require-property": "warn",
+  "jsdoc/require-property": requireJsdoc ? "warn" : "off",
   "jsdoc/require-property-description": "warn",
   "jsdoc/require-property-name": "warn",
-  "jsdoc/require-returns": "warn",
+  "jsdoc/require-returns": requireJsdoc ? "warn" : "off",
   "jsdoc/require-returns-check": "warn",
   "jsdoc/require-returns-description": "warn",
-  "jsdoc/require-template": "off",
-  "jsdoc/require-throws": "off",
   "jsdoc/require-yields": "warn",
   "jsdoc/require-yields-check": "warn",
-  "jsdoc/sort-tags": "off",
   "jsdoc/tag-lines": [
     "warn",
     "never",

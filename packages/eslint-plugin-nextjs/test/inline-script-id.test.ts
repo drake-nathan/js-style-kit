@@ -1,0 +1,207 @@
+import { describe } from "bun:test";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+
+import { getRule } from "./utils/get-rule";
+
+const NextESLintRule = getRule("inline-script-id");
+
+const errorMessage =
+  "`next/script` components with inline content must specify an `id` attribute. See: https://nextjs.org/docs/messages/inline-script-id";
+
+const tests = {
+  invalid: [
+    {
+      code: `import Script from 'next/script';
+
+        export default function TestPage() {
+          return (
+            <Script>
+              {\`console.log('Hello world');\`}
+            </Script>
+          )
+        }`,
+      errors: [
+        {
+          message: errorMessage,
+          type: "JSXElement",
+        },
+      ],
+    },
+    {
+      code: `import Script from 'next/script';
+
+        export default function TestPage() {
+          return (
+            <Script
+              dangerouslySetInnerHTML={{
+                __html: \`console.log('Hello world');\`
+              }}
+            />
+          )
+        }`,
+      errors: [
+        {
+          message: errorMessage,
+          type: "JSXElement",
+        },
+      ],
+    },
+    {
+      code: `import MyScript from 'next/script';
+
+        export default function TestPage() {
+          return (
+            <MyScript>
+              {\`console.log('Hello world');\`}
+            </MyScript>
+          )
+        }`,
+      errors: [
+        {
+          message: errorMessage,
+          type: "JSXElement",
+        },
+      ],
+    },
+    {
+      code: `import MyScript from 'next/script';
+
+        export default function TestPage() {
+          return (
+            <MyScript
+              dangerouslySetInnerHTML={{
+                __html: \`console.log('Hello world');\`
+              }}
+            />
+          )
+        }`,
+      errors: [
+        {
+          message: errorMessage,
+          type: "JSXElement",
+        },
+      ],
+    },
+  ],
+  valid: [
+    {
+      code: `import Script from 'next/script';
+
+      export default function TestPage() {
+        return (
+          <Script id="test-script">
+            {\`console.log('Hello world');\`}
+          </Script>
+        )
+      }`,
+    },
+    {
+      code: `import Script from 'next/script';
+
+      export default function TestPage() {
+        return (
+          <Script
+            id="test-script"
+            dangerouslySetInnerHTML={{
+              __html: \`console.log('Hello world');\`
+            }}
+          />
+        )
+      }`,
+    },
+    {
+      code: `import Script from 'next/script';
+
+      export default function TestPage() {
+        return (
+          <Script src="https://example.com" />
+        )
+      }`,
+    },
+    {
+      code: `import MyScript from 'next/script';
+
+      export default function TestPage() {
+        return (
+          <MyScript id="test-script">
+            {\`console.log('Hello world');\`}
+          </MyScript>
+        )
+      }`,
+    },
+    {
+      code: `import MyScript from 'next/script';
+
+      export default function TestPage() {
+        return (
+          <MyScript
+            id="test-script"
+            dangerouslySetInnerHTML={{
+              __html: \`console.log('Hello world');\`
+            }}
+          />
+        )
+      }`,
+    },
+    {
+      code: `import Script from 'next/script';
+
+      export default function TestPage() {
+        return (
+          <Script {...{ strategy: "lazyOnload" }} id={"test-script"}>
+            {\`console.log('Hello world');\`}
+          </Script>
+        )
+      }`,
+    },
+    {
+      code: `import Script from 'next/script';
+
+      export default function TestPage() {
+        return (
+          <Script {...{ strategy: "lazyOnload", id: "test-script" }}>
+            {\`console.log('Hello world');\`}
+          </Script>
+        )
+      }`,
+    },
+    {
+      code: `import Script from 'next/script';
+      const spread = { strategy: "lazyOnload" }
+      export default function TestPage() {
+        return (
+          <Script {...spread} id={"test-script"}>
+            {\`console.log('Hello world');\`}
+          </Script>
+        )
+      }`,
+    },
+  ],
+};
+
+describe("inline-script-id", () => {
+  new ESLintTesterV8({
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
+      },
+      ecmaVersion: 2018,
+      sourceType: "module",
+    },
+  }).run("eslint-v8", NextESLintRule, tests);
+
+  new ESLintTesterV9({
+    languageOptions: {
+      ecmaVersion: 2018,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+          modules: true,
+        },
+      },
+      sourceType: "module",
+    },
+  }).run("eslint-v9", NextESLintRule, tests);
+});

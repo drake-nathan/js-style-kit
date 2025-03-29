@@ -18,7 +18,12 @@
   "author": "Nathan Drake <nathan@drakewest.dev>",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    }
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -36,12 +41,20 @@
     "test": "bun test",
     "test:coverage": "bun test --coverage --coverage-reporter=lcov"
   },
+  "dependencies": {
+    "fast-glob": "^3.3.3"
+  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/bun": "^1.2.8",
     "@types/node": "^22.13.14",
+    "eslint": "^9.23.0",
+    "eslint-v8": "npm:eslint@^8.57.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2"
+  },
+  "peerDependencies": {
+    "eslint": "^8.56.0 || ^9.0.0"
   },
   "engines": {
     "node": "^20.11.0 || >=21.2.0"

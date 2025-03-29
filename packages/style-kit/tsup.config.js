@@ -8,6 +8,7 @@ export default defineConfig([
     format: ["esm"],
     outDir: "dist",
     sourcemap: true,
+    splitting: false,
   },
   {
     banner: {
@@ -20,5 +21,6 @@ export default defineConfig([
     noExternal: ["commander"],
     outDir: "dist/bin",
     sourcemap: true,
+    splitting: false,
   },
 ]);
