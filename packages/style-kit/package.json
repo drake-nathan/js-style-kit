@@ -1,6 +1,6 @@
 {
   "name": "js-style-kit",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "A zero configuration style guide for ESLint and Prettier",
   "keywords": [
     "eslint",

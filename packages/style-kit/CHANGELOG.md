@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.7
+
+### Patch Changes
+
+- ef405c7: Add `eslint-plugin-react-refresh`
+
 ## 0.2.6
 
 ### Patch Changes
