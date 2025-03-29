@@ -25,7 +25,7 @@ import { noUnwantedPolyfillio } from "./rules/no-unwanted-polyfillio.js";
 /**
  * The namespace prefix for all rules in this plugin
  */
-const name = "@next/next";
+const name = "nextjs";
 
 interface PluginConfig extends ESLint.Plugin {
   configs: {
@@ -36,27 +36,27 @@ interface PluginConfig extends ESLint.Plugin {
   };
   name: string;
   rules: {
-    "@next/next/google-font-display": Rule.RuleModule;
-    "@next/next/google-font-preconnect": Rule.RuleModule;
-    "@next/next/inline-script-id": Rule.RuleModule;
-    "@next/next/next-script-for-ga": Rule.RuleModule;
-    "@next/next/no-assign-module-variable": Rule.RuleModule;
-    "@next/next/no-async-client-component": Rule.RuleModule;
-    "@next/next/no-before-interactive-script-outside-document": Rule.RuleModule;
-    "@next/next/no-css-tags": Rule.RuleModule;
-    "@next/next/no-document-import-in-page": Rule.RuleModule;
-    "@next/next/no-duplicate-head": Rule.RuleModule;
-    "@next/next/no-head-element": Rule.RuleModule;
-    "@next/next/no-head-import-in-document": Rule.RuleModule;
-    "@next/next/no-html-link-for-pages": Rule.RuleModule;
-    "@next/next/no-img-element": Rule.RuleModule;
-    "@next/next/no-page-custom-font": Rule.RuleModule;
-    "@next/next/no-script-component-in-head": Rule.RuleModule;
-    "@next/next/no-styled-jsx-in-document": Rule.RuleModule;
-    "@next/next/no-sync-scripts": Rule.RuleModule;
-    "@next/next/no-title-in-document-head": Rule.RuleModule;
-    "@next/next/no-typos": Rule.RuleModule;
-    "@next/next/no-unwanted-polyfillio": Rule.RuleModule;
+    "nextjs/google-font-display": Rule.RuleModule;
+    "nextjs/google-font-preconnect": Rule.RuleModule;
+    "nextjs/inline-script-id": Rule.RuleModule;
+    "nextjs/next-script-for-ga": Rule.RuleModule;
+    "nextjs/no-assign-module-variable": Rule.RuleModule;
+    "nextjs/no-async-client-component": Rule.RuleModule;
+    "nextjs/no-before-interactive-script-outside-document": Rule.RuleModule;
+    "nextjs/no-css-tags": Rule.RuleModule;
+    "nextjs/no-document-import-in-page": Rule.RuleModule;
+    "nextjs/no-duplicate-head": Rule.RuleModule;
+    "nextjs/no-head-element": Rule.RuleModule;
+    "nextjs/no-head-import-in-document": Rule.RuleModule;
+    "nextjs/no-html-link-for-pages": Rule.RuleModule;
+    "nextjs/no-img-element": Rule.RuleModule;
+    "nextjs/no-page-custom-font": Rule.RuleModule;
+    "nextjs/no-script-component-in-head": Rule.RuleModule;
+    "nextjs/no-styled-jsx-in-document": Rule.RuleModule;
+    "nextjs/no-sync-scripts": Rule.RuleModule;
+    "nextjs/no-title-in-document-head": Rule.RuleModule;
+    "nextjs/no-typos": Rule.RuleModule;
+    "nextjs/no-unwanted-polyfillio": Rule.RuleModule;
   };
 }
 
@@ -90,34 +90,34 @@ const plugin: ESLint.Plugin = {
 
 const recommendedRules: Linter.RulesRecord = {
   // warnings
-  "@next/next/google-font-display": "warn",
-  "@next/next/google-font-preconnect": "warn",
+  "nextjs/google-font-display": "warn",
+  "nextjs/google-font-preconnect": "warn",
   // errors
-  "@next/next/inline-script-id": "error",
-  "@next/next/next-script-for-ga": "warn",
-  "@next/next/no-assign-module-variable": "error",
-  "@next/next/no-async-client-component": "warn",
-  "@next/next/no-before-interactive-script-outside-document": "warn",
-  "@next/next/no-css-tags": "warn",
-  "@next/next/no-document-import-in-page": "error",
-  "@next/next/no-duplicate-head": "error",
-  "@next/next/no-head-element": "warn",
-  "@next/next/no-head-import-in-document": "error",
-  "@next/next/no-html-link-for-pages": "warn",
-  "@next/next/no-img-element": "warn",
-  "@next/next/no-page-custom-font": "warn",
-  "@next/next/no-script-component-in-head": "error",
-  "@next/next/no-styled-jsx-in-document": "warn",
-  "@next/next/no-sync-scripts": "warn",
-  "@next/next/no-title-in-document-head": "warn",
-  "@next/next/no-typos": "warn",
-  "@next/next/no-unwanted-polyfillio": "warn",
+  "nextjs/inline-script-id": "error",
+  "nextjs/next-script-for-ga": "warn",
+  "nextjs/no-assign-module-variable": "error",
+  "nextjs/no-async-client-component": "warn",
+  "nextjs/no-before-interactive-script-outside-document": "warn",
+  "nextjs/no-css-tags": "warn",
+  "nextjs/no-document-import-in-page": "error",
+  "nextjs/no-duplicate-head": "error",
+  "nextjs/no-head-element": "warn",
+  "nextjs/no-head-import-in-document": "error",
+  "nextjs/no-html-link-for-pages": "warn",
+  "nextjs/no-img-element": "warn",
+  "nextjs/no-page-custom-font": "warn",
+  "nextjs/no-script-component-in-head": "error",
+  "nextjs/no-styled-jsx-in-document": "warn",
+  "nextjs/no-sync-scripts": "warn",
+  "nextjs/no-title-in-document-head": "warn",
+  "nextjs/no-typos": "warn",
+  "nextjs/no-unwanted-polyfillio": "warn",
 };
 
 const coreWebVitalsRules: Linter.RulesRecord = {
   ...recommendedRules,
-  "@next/next/no-html-link-for-pages": "error",
-  "@next/next/no-sync-scripts": "error",
+  "nextjs/no-html-link-for-pages": "error",
+  "nextjs/no-sync-scripts": "error",
 };
 
 const createRuleConfig = (
