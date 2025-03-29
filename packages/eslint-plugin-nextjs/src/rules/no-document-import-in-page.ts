@@ -1,22 +1,12 @@
+import * as path from "node:path";
+
 import { defineRule } from "../utils/define-rule.js";
-import * as path from "path";
 
 const url = "https://nextjs.org/docs/messages/no-document-import-in-page";
 
 export const noDocumentImportInPage = defineRule({
-  meta: {
-    docs: {
-      description:
-        "Prevent importing `next/document` outside of `pages/_document.js`.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context) {
-    return {
-      ImportDeclaration(node) {
+  create: (context) => ({
+      ImportDeclaration: (node) => {
         if (node.source.value !== "next/document") {
           return;
         }
@@ -33,10 +23,19 @@ export const noDocumentImportInPage = defineRule({
         }
 
         context.report({
-          node,
           message: `\`<Document />\` from \`next/document\` should not be imported outside of \`pages/_document.js\`. See: ${url}`,
+          node,
         });
       },
-    };
+    }),
+  meta: {
+    docs: {
+      description:
+        "Prevent importing `next/document` outside of `pages/_document.js`.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

@@ -4,25 +4,12 @@ const url = "https://nextjs.org/docs/messages/no-async-client-component";
 const description = "Prevent client components from being async functions.";
 const message = `${description} See: ${url}`;
 
-function isCapitalized(str: string): boolean {
-  return /[A-Z]/.test(str?.[0] ?? "");
-}
+const isCapitalized = (str: string): boolean => /[A-Z]/.test(str[0] ?? "");
 
 export const noAsyncClientComponent = defineRule({
-  meta: {
-    docs: {
-      description,
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-
-  create(context: any) {
-    return {
-      Program(node: any) {
-        let isClientComponent: boolean = false;
+  create: (context: any) => ({
+      Program: (node: any) => {
+        let isClientComponent = false;
 
         for (const block of node.body) {
           if (
@@ -41,8 +28,8 @@ export const noAsyncClientComponent = defineRule({
               isCapitalized(block.declaration.id.name)
             ) {
               context.report({
-                node: block,
                 message,
+                node: block,
               });
             }
 
@@ -80,8 +67,8 @@ export const noAsyncClientComponent = defineRule({
                 functionDeclaration.async
               ) {
                 context.report({
-                  node: functionDeclaration,
                   message,
+                  node: functionDeclaration,
                 });
               }
 
@@ -97,8 +84,8 @@ export const noAsyncClientComponent = defineRule({
                   varDeclarator.init.async
                 ) {
                   context.report({
-                    node: functionDeclaration,
                     message,
+                    node: functionDeclaration,
                   });
                 }
               }
@@ -106,6 +93,15 @@ export const noAsyncClientComponent = defineRule({
           }
         }
       },
-    };
+    }),
+
+  meta: {
+    docs: {
+      description,
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

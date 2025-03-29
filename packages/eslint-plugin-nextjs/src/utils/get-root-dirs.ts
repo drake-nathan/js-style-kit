@@ -1,11 +1,12 @@
-import fastGlob from "fast-glob";
 import type { Rule } from "eslint";
+
+import fastGlob from "fast-glob";
 
 /**
  * Process a Next.js root directory glob.
  */
 const processRootDir = (rootDir: string): string[] => {
-  return fastGlob.globSync(rootDir.replace(/\\/g, "/"), {
+  return fastGlob.globSync(rootDir.replaceAll('\\', "/"), {
     onlyDirectories: true,
   });
 };
@@ -18,7 +19,7 @@ export const getRootDirs = (context: Rule.RuleContext) => {
 
   const nextSettings: { rootDir?: string | string[] } =
     context.settings.next || {};
-  let rootDir = nextSettings.rootDir;
+  const rootDir = nextSettings.rootDir;
 
   if (typeof rootDir === "string") {
     rootDirs = processRootDir(rootDir);

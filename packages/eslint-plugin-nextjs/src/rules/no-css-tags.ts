@@ -2,18 +2,8 @@ import { defineRule } from "../utils/define-rule.js";
 const url = "https://nextjs.org/docs/messages/no-css-tags";
 
 export const noCssTags = defineRule({
-  meta: {
-    docs: {
-      description: "Prevent manual stylesheet tags.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: any) {
-    return {
-      JSXOpeningElement(node: any) {
+  create: (context: any) => ({
+      JSXOpeningElement: (node: any) => {
         if (node.name.name !== "link") {
           return;
         }
@@ -37,11 +27,19 @@ export const noCssTags = defineRule({
           )
         ) {
           context.report({
-            node,
             message: `Do not include stylesheets manually. See: ${url}`,
+            node,
           });
         }
       },
-    };
+    }),
+  meta: {
+    docs: {
+      description: "Prevent manual stylesheet tags.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

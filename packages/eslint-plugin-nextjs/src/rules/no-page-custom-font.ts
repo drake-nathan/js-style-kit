@@ -1,27 +1,16 @@
+import type { AST } from "eslint";
+
+import { posix, sep } from "node:path";
+
 import { defineRule } from "../utils/define-rule.js";
 import NodeAttributes from "../utils/node-attributes.js";
-import { sep, posix } from "path";
-import type { AST } from "eslint";
 
 const url = "https://nextjs.org/docs/messages/no-page-custom-font";
 
-function isIdentifierMatch(id1: any, id2: any): boolean {
-  return (
-    (id1 === null && id2 === null) || (id1 && id2 && id1.name === id2.name)
-  );
-}
+const isIdentifierMatch = (id1: any, id2: any): boolean => (id1 === null && id2 === null) || (id1 && id2 && id1.name === id2.name);
 
 export const noPageCustomFont = defineRule({
-  meta: {
-    docs: {
-      description: "Prevent page-only custom fonts.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: any): any {
+  create: (context: any): any => {
     const { sourceCode } = context;
     const paths = context.filename.split("pages");
     const page = paths[paths.length - 1];
@@ -40,18 +29,7 @@ export const noPageCustomFont = defineRule({
     let exportDeclarationType: string | undefined;
 
     return {
-      ImportDeclaration(node: any): void {
-        if (node.source.value === "next/document") {
-          const documentImport = node.specifiers.find(
-            ({ type }: { type: string }) => type === "ImportDefaultSpecifier",
-          );
-          if (documentImport && documentImport.local) {
-            documentImportName = documentImport.local.name;
-          }
-        }
-      },
-
-      ExportDefaultDeclaration(node: any): void {
+      ExportDefaultDeclaration: (node: any): void => {
         exportDeclarationType = node.declaration.type;
 
         if (node.declaration.type === "FunctionDeclaration") {
@@ -69,7 +47,18 @@ export const noPageCustomFont = defineRule({
         }
       },
 
-      JSXOpeningElement(node: any): void {
+      ImportDeclaration: (node: any): void => {
+        if (node.source.value === "next/document") {
+          const documentImport = node.specifiers.find(
+            ({ type }: { type: string }) => type === "ImportDefaultSpecifier",
+          );
+          if (documentImport?.local) {
+            documentImportName = documentImport.local.name;
+          }
+        }
+      },
+
+      JSXOpeningElement: (node: any): void => {
         if (node.name.name !== "link") {
           return;
         }
@@ -164,11 +153,20 @@ export const noPageCustomFont = defineRule({
             : `Custom fonts not added in \`pages/_document.js\` will only load for a single page. ${end}`;
 
           context.report({
-            node,
             message,
+            node,
           });
         }
       },
     };
+  },
+  meta: {
+    docs: {
+      description: "Prevent page-only custom fonts.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

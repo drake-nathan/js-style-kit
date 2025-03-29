@@ -1,22 +1,12 @@
 import path from "node:path";
+
 import { defineRule } from "../utils/define-rule.js";
 
 const url = "https://nextjs.org/docs/messages/no-head-element";
 
 export const noHeadElement = defineRule({
-  meta: {
-    docs: {
-      description: "Prevent usage of `<head>` element.",
-      category: "HTML",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: any) {
-    return {
-      JSXOpeningElement(node: any) {
+  create: (context: any) => ({
+      JSXOpeningElement: (node: any) => {
         const paths = context.filename;
 
         const isInAppDir = () =>
@@ -28,10 +18,19 @@ export const noHeadElement = defineRule({
         }
 
         context.report({
-          node,
           message: `Do not use \`<head>\` element. Use \`<Head />\` from \`next/head\` instead. See: ${url}`,
+          node,
         });
       },
-    };
+    }),
+  meta: {
+    docs: {
+      category: "HTML",
+      description: "Prevent usage of `<head>` element.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

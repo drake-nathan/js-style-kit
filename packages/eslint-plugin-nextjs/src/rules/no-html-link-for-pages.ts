@@ -1,13 +1,13 @@
-import { defineRule } from "../utils/define-rule.js";
-import * as path from "path";
-import * as fs from "fs";
-import { getRootDirs } from "../utils/get-root-dirs.js";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
+import { defineRule } from "../utils/define-rule.js";
+import { getRootDirs } from "../utils/get-root-dirs.js";
 import {
-  getUrlFromPagesDirectories,
-  normalizeURL,
   execOnce,
   getUrlFromAppDirectory,
+  getUrlFromPagesDirectories,
+  normalizeURL,
 } from "../utils/url.js";
 
 const pagesDirWarning = execOnce((pagesDirs) => {
@@ -19,10 +19,10 @@ const pagesDirWarning = execOnce((pagesDirs) => {
 
 // Cache for fs.existsSync lookup.
 // Prevent multiple blocking IO requests that have already been calculated.
-const fsExistsSyncCache: { [key: string]: boolean } = {};
+const fsExistsSyncCache: Record<string, boolean> = {};
 
 const memoize = <T = any>(fn: (...args: any[]) => T) => {
-  const cache: { [key: string]: T } = {};
+  const cache: Record<string, T> = {};
   return (...args: any[]): T => {
     const key = JSON.stringify(args);
     if (cache[key] === undefined) {
@@ -38,37 +38,10 @@ const cachedGetUrlFromAppDirectory = memoize(getUrlFromAppDirectory);
 const url = "https://nextjs.org/docs/messages/no-html-link-for-pages";
 
 export const noHtmlLinkForPages = defineRule({
-  meta: {
-    docs: {
-      description:
-        "Prevent usage of `<a>` elements to navigate to internal Next.js pages.",
-      category: "HTML",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [
-      {
-        oneOf: [
-          {
-            type: "string",
-          },
-          {
-            type: "array",
-            uniqueItems: true,
-            items: {
-              type: "string",
-            },
-          },
-        ],
-      },
-    ],
-  },
-
   /**
    * Creates an ESLint rule listener.
    */
-  create(context) {
+  create: (context) => {
     const ruleOptions: (string | string[])[] = context.options;
     const [customPagesDirectory] = ruleOptions;
 
@@ -111,7 +84,7 @@ export const noHtmlLinkForPages = defineRule({
     const allUrlRegex = [...pageUrls, ...appDirUrls];
 
     return {
-      JSXOpeningElement(node: any) {
+      JSXOpeningElement: (node: any) => {
         if (node.name.name !== "a") {
           return;
         }
@@ -149,19 +122,46 @@ export const noHtmlLinkForPages = defineRule({
 
         const hrefPath = normalizeURL(href.value.value);
         // Outgoing links are ignored
-        if (/^(https?:\/\/|\/\/)/.test(hrefPath as string)) {
+        if (/^(https?:\/\/|\/\/)/.test(hrefPath!)) {
           return;
         }
 
         allUrlRegex.forEach((foundUrl) => {
-          if (hrefPath && foundUrl.test(normalizeURL(hrefPath) as string)) {
+          if (hrefPath && foundUrl.test(normalizeURL(hrefPath)!)) {
             context.report({
-              node,
               message: `Do not use an \`<a>\` element to navigate to \`${hrefPath}\`. Use \`<Link />\` from \`next/link\` instead. See: ${url}`,
+              node,
             });
           }
         });
       },
     };
+  },
+
+  meta: {
+    docs: {
+      category: "HTML",
+      description:
+        "Prevent usage of `<a>` elements to navigate to internal Next.js pages.",
+      recommended: true,
+      url,
+    },
+    schema: [
+      {
+        oneOf: [
+          {
+            type: "string",
+          },
+          {
+            items: {
+              type: "string",
+            },
+            type: "array",
+            uniqueItems: true,
+          },
+        ],
+      },
+    ],
+    type: "problem",
   },
 });

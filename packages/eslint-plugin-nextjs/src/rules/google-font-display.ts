@@ -1,6 +1,7 @@
+import type { Rule } from "eslint";
+
 import { defineRule } from "../utils/define-rule.js";
 import NodeAttributes from "../utils/node-attributes.js";
-import type { Rule } from "eslint";
 
 const url = "https://nextjs.org/docs/messages/google-font-display";
 
@@ -8,18 +9,8 @@ const url = "https://nextjs.org/docs/messages/google-font-display";
  * Rule to enforce font-display behavior with Google Fonts
  */
 export const googleFontDisplay = defineRule({
-  meta: {
-    docs: {
-      description: "Enforce font-display behavior with Google Fonts.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: Rule.RuleContext) {
-    return {
-      JSXOpeningElement(node: any) {
+  create: (context: Rule.RuleContext) => ({
+      JSXOpeningElement: (node: any) => {
         let message: string | undefined;
 
         if (node.name.name !== "link") {
@@ -56,11 +47,19 @@ export const googleFontDisplay = defineRule({
 
         if (message) {
           context.report({
-            node,
             message: `${message} See: ${url}`,
+            node,
           });
         }
       },
-    };
+    }),
+  meta: {
+    docs: {
+      description: "Enforce font-display behavior with Google Fonts.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

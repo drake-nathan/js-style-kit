@@ -1,21 +1,11 @@
 import path from "node:path";
+
 import { defineRule } from "../utils/define-rule.js";
 
 const url = "https://nextjs.org/docs/messages/no-img-element";
 
 export const noImgElement = defineRule({
-  meta: {
-    docs: {
-      description:
-        "Prevent usage of `<img>` element due to slower LCP and higher bandwidth.",
-      category: "HTML",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: any) {
+  create: (context: any) => {
     // Get relative path of the file
     const relativePath = context.filename
       .replace(path.sep, "/")
@@ -25,7 +15,7 @@ export const noImgElement = defineRule({
     const isAppDir = /^(src\/)?app\//.test(relativePath);
 
     return {
-      JSXOpeningElement(node: any) {
+      JSXOpeningElement: (node: any) => {
         if (node.name.name !== "img") {
           return;
         }
@@ -48,10 +38,21 @@ export const noImgElement = defineRule({
         }
 
         context.report({
-          node,
           message: `Using \`<img>\` could result in slower LCP and higher bandwidth. Consider using \`<Image />\` from \`next/image\` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: ${url}`,
+          node,
         });
       },
     };
+  },
+  meta: {
+    docs: {
+      category: "HTML",
+      description:
+        "Prevent usage of `<img>` element due to slower LCP and higher bandwidth.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

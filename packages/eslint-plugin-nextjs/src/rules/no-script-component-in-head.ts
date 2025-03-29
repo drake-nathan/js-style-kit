@@ -2,36 +2,26 @@ import { defineRule } from "../utils/define-rule.js";
 const url = "https://nextjs.org/docs/messages/no-script-component-in-head";
 
 export const noScriptComponentInHead = defineRule({
-  meta: {
-    docs: {
-      description: "Prevent usage of `next/script` in `next/head` component.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: any) {
-    let isNextHead: string | null = null;
+  create: (context: any) => {
+    let isNextHead: null | string = null;
 
     return {
-      ImportDeclaration(node: any) {
+      ImportDeclaration: (node: any) => {
         if (node.source.value === "next/head") {
           isNextHead = node.source.value;
         }
 
         if (node.source.value !== "next/script") {
-          return;
+          
         }
       },
-      JSXElement(node: any) {
+      JSXElement: (node: any) => {
         if (!isNextHead) {
           return;
         }
 
         if (
-          node.openingElement &&
-          node.openingElement.name &&
+          node.openingElement?.name &&
           node.openingElement.name.name !== "Head"
         ) {
           return;
@@ -39,18 +29,26 @@ export const noScriptComponentInHead = defineRule({
 
         const scriptTag = node.children.find(
           (child: any) =>
-            child.openingElement &&
-            child.openingElement.name &&
+            child.openingElement?.name &&
             child.openingElement.name.name === "Script",
         );
 
         if (scriptTag) {
           context.report({
-            node,
             message: `\`next/script\` should not be used in \`next/head\` component. Move \`<Script />\` outside of \`<Head>\` instead. See: ${url}`,
+            node,
           });
         }
       },
     };
+  },
+  meta: {
+    docs: {
+      description: "Prevent usage of `next/script` in `next/head` component.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

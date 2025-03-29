@@ -1,5 +1,6 @@
+import * as path from "node:path";
+
 import { defineRule } from "../utils/define-rule.js";
-import * as path from "path";
 
 const NEXT_EXPORT_FUNCTIONS = [
   "getStaticProps",
@@ -11,7 +12,7 @@ const NEXT_EXPORT_FUNCTIONS = [
 const THRESHOLD = 1;
 
 // the minimum number of operations required to convert string a to string b.
-function minDistance(a: string, b: string): number | undefined {
+const minDistance = (a: string, b: string): number | undefined => {
   const m = a.length;
   const n = b.length;
 
@@ -27,52 +28,43 @@ function minDistance(a: string, b: string): number | undefined {
 
   for (let i = 0; i < m; i++) {
     const s1 = a[i];
-    let currentRow = [i + 1];
+    const currentRow = [i + 1];
     for (let j = 0; j < n; j++) {
       const s2 = b[j];
-      const insertions = (previousRow?.[j + 1] as any) + 1;
-      const deletions = (currentRow?.[j] as any) + 1;
-      const substitutions = (previousRow?.[j] as any) + Number(s1 !== s2);
+      const insertions = (previousRow[j + 1] as any) + 1;
+      const deletions = (currentRow[j] as any) + 1;
+      const substitutions = (previousRow[j] as any) + Number(s1 !== s2);
       currentRow.push(Math.min(insertions, deletions, substitutions));
     }
     previousRow = currentRow;
   }
   return previousRow[previousRow.length - 1];
-}
+};
 
 /* eslint-disable eslint-plugin/require-meta-docs-url */
 export const noTypos = defineRule({
-  meta: {
-    docs: {
-      description: "Prevent common typos in Next.js data fetching functions.",
-      recommended: true,
-    },
-    type: "problem",
-    schema: [],
-  },
-
-  create(context: any) {
-    function checkTypos(node: any, name: string) {
+  create: (context: any) => {
+    const checkTypos = (node: any, name: string) => {
       if (NEXT_EXPORT_FUNCTIONS.includes(name)) {
         return;
       }
 
       const potentialTypos = NEXT_EXPORT_FUNCTIONS.map((o) => ({
-        option: o,
         distance: minDistance(o, name) ?? Infinity,
+        option: o,
       }))
         .filter(({ distance }) => distance <= THRESHOLD && distance > 0)
         .sort((a, b) => a.distance - b.distance);
 
       if (potentialTypos.length) {
         context.report({
-          node,
           message: `${name} may be a typo. Did you mean ${potentialTypos[0]?.option}?`,
+          node,
         });
       }
-    }
+    };
     return {
-      ExportNamedDeclaration(node: any) {
+      ExportNamedDeclaration: (node: any) => {
         const page = context.filename.split("pages", 2)[1];
         if (!page || path.parse(page).dir.startsWith("/api")) {
           return;
@@ -102,8 +94,17 @@ export const noTypos = defineRule({
             break;
           }
         }
-        return;
+        
       },
     };
+  },
+
+  meta: {
+    docs: {
+      description: "Prevent common typos in Next.js data fetching functions.",
+      recommended: true,
+    },
+    schema: [],
+    type: "problem",
   },
 });

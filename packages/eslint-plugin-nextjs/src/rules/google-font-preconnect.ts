@@ -4,18 +4,8 @@ import NodeAttributes from "../utils/node-attributes.js";
 const url = "https://nextjs.org/docs/messages/google-font-preconnect";
 
 export const googleFontPreconnect = defineRule({
-  meta: {
-    docs: {
-      description: "Ensure `preconnect` is used with Google Fonts.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: any) {
-    return {
-      JSXOpeningElement(node: any) {
+  create: (context: any) => ({
+      JSXOpeningElement: (node: any) => {
         if (node.name.name !== "link") {
           return;
         }
@@ -37,11 +27,19 @@ export const googleFontPreconnect = defineRule({
           preconnectMissing
         ) {
           context.report({
-            node,
             message: `\`rel="preconnect"\` is missing from Google Font. See: ${url}`,
+            node,
           });
         }
       },
-    };
+    }),
+  meta: {
+    docs: {
+      description: "Ensure `preconnect` is used with Google Fonts.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

@@ -20,18 +20,8 @@ const containsStr = (str: string, strList: string[]) => {
 };
 
 export const nextScriptForGa = defineRule({
-  meta: {
-    docs: {
-      description,
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: any) {
-    return {
-      JSXOpeningElement(node: any) {
+  create: (context: any) => ({
+      JSXOpeningElement: (node: any) => {
         if (node.name.name !== "script") {
           return;
         }
@@ -48,8 +38,8 @@ export const nextScriptForGa = defineRule({
           containsStr(attributes.value("src"), SUPPORTED_SRCS)
         ) {
           return context.report({
-            node,
             message: ERROR_MSG,
+            node,
           });
         }
 
@@ -61,20 +51,26 @@ export const nextScriptForGa = defineRule({
           attributes.value("dangerouslySetInnerHTML").length > 0
         ) {
           const htmlContent =
-            attributes.value("dangerouslySetInnerHTML")[0].value.quasis &&
-            attributes.value("dangerouslySetInnerHTML")[0].value.quasis[0].value
-              .raw;
+            attributes.value("dangerouslySetInnerHTML")[0].value.quasis?.[0].value.raw;
           if (
             htmlContent &&
             containsStr(htmlContent, SUPPORTED_HTML_CONTENT_URLS)
           ) {
             context.report({
-              node,
               message: ERROR_MSG,
+              node,
             });
           }
         }
       },
-    };
+    }),
+  meta: {
+    docs: {
+      description,
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

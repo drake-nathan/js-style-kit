@@ -74,27 +74,16 @@ const url = "https://nextjs.org/docs/messages/no-unwanted-polyfillio";
 // Rule Definition
 //------------------------------------------------------------------------------
 export const noUnwantedPolyfillio = defineRule({
-  meta: {
-    docs: {
-      description: "Prevent duplicate polyfills from Polyfill.io.",
-      category: "HTML",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-
-  create(context: any) {
-    let scriptImport: string | null = null;
+  create: (context: any) => {
+    let scriptImport: null | string = null;
 
     return {
-      ImportDeclaration(node: any) {
+      ImportDeclaration: (node: any) => {
         if (node.source && node.source.value === "next/script") {
           scriptImport = node.specifiers[0].local.name;
         }
       },
-      JSXOpeningElement(node: any) {
+      JSXOpeningElement: (node: any) => {
         if (
           node.name &&
           node.name.name !== "script" &&
@@ -130,16 +119,27 @@ export const noUnwantedPolyfillio = defineRule({
           );
           if (unwantedFeatures.length > 0) {
             context.report({
-              node,
               message: `No duplicate polyfills from Polyfill.io are allowed. ${unwantedFeatures.join(
                 ", ",
               )} ${
                 unwantedFeatures.length > 1 ? "are" : "is"
               } already shipped with Next.js. See: ${url}`,
+              node,
             });
           }
         }
       },
     };
+  },
+
+  meta: {
+    docs: {
+      category: "HTML",
+      description: "Prevent duplicate polyfills from Polyfill.io.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

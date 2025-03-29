@@ -2,19 +2,8 @@ import { defineRule } from "../utils/define-rule.js";
 const url = "https://nextjs.org/docs/messages/no-assign-module-variable";
 
 export const noAssignModuleVariable = defineRule({
-  meta: {
-    docs: {
-      description: "Prevent assignment to the `module` variable.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-
-  create(context: any) {
-    return {
-      VariableDeclaration(node: any) {
+  create: (context: any) => ({
+      VariableDeclaration: (node: any) => {
         // Checks node.declarations array for variable with id.name of `module`
         const moduleVariableFound = node.declarations.some(
           (declaration: any) => {
@@ -31,10 +20,19 @@ export const noAssignModuleVariable = defineRule({
         }
 
         context.report({
-          node,
           message: `Do not assign to the variable \`module\`. See: ${url}`,
+          node,
         });
       },
-    };
+    }),
+
+  meta: {
+    docs: {
+      description: "Prevent assignment to the `module` variable.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

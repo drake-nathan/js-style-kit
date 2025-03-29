@@ -3,33 +3,22 @@ import { defineRule } from "../utils/define-rule.js";
 const url = "https://nextjs.org/docs/messages/inline-script-id";
 
 export const inlineScriptId = defineRule({
-  meta: {
-    docs: {
-      description:
-        "Enforce `id` attribute on `next/script` components with inline content.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context) {
-    let nextScriptImportName: string | null = null;
+  create: (context) => {
+    let nextScriptImportName: null | string = null;
 
     return {
-      ImportDeclaration(node: any) {
+      ImportDeclaration: (node: any) => {
         if (node.source.value === "next/script") {
           nextScriptImportName = node.specifiers[0].local.name;
         }
       },
-      JSXElement(node: any) {
+      JSXElement: (node: any) => {
         if (nextScriptImportName == null) {
           return;
         }
 
         if (
-          node.openingElement &&
-          node.openingElement.name &&
+          node.openingElement?.name &&
           node.openingElement.name.name !== nextScriptImportName
         ) {
           return;
@@ -47,7 +36,7 @@ export const inlineScriptId = defineRule({
           if (attribute.type === "JSXAttribute") {
             attributeNames.add(attribute.name.name);
           } else if (attribute.type === "JSXSpreadAttribute") {
-            if (attribute.argument && attribute.argument.properties) {
+            if (attribute.argument?.properties) {
               attribute.argument.properties.forEach((property: any) => {
                 attributeNames.add(property.key.name);
               });
@@ -70,12 +59,22 @@ export const inlineScriptId = defineRule({
         ) {
           if (!attributeNames.has("id")) {
             context.report({
-              node,
               message: `\`next/script\` components with inline content must specify an \`id\` attribute. See: ${url}`,
+              node,
             });
           }
         }
       },
     };
+  },
+  meta: {
+    docs: {
+      description:
+        "Enforce `id` attribute on `next/script` components with inline content.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });

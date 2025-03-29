@@ -15,11 +15,11 @@ export default class NodeAttributes {
   attributes: Record<
     string,
     | {
-        hasValue?: false;
-      }
-    | {
         hasValue: true;
         value: any;
+      }
+    | {
+        hasValue?: false;
       }
   >;
 
@@ -30,7 +30,7 @@ export default class NodeAttributes {
         return;
       }
 
-      if (!!attribute.value) {
+      if (attribute.value) {
         // hasValue
         const value =
           typeof attribute.value.value === "string" ? attribute.value.value
@@ -50,16 +50,16 @@ export default class NodeAttributes {
     });
   }
 
-  hasAny(): boolean {
-    return !!Object.keys(this.attributes).length;
+  has(attrName: string): boolean {
+    return Boolean(this.attributes[attrName]);
   }
 
-  has(attrName: string): boolean {
-    return !!this.attributes[attrName];
+  hasAny(): boolean {
+    return Boolean(Object.keys(this.attributes).length);
   }
 
   hasValue(attrName: string): boolean {
-    return !!this.attributes[attrName]?.hasValue;
+    return Boolean(this.attributes[attrName]?.hasValue);
   }
 
   value(attrName: string): any {

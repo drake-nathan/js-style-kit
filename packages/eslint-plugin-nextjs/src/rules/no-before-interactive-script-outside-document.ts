@@ -1,25 +1,16 @@
+import * as path from "node:path";
+
 import { defineRule } from "../utils/define-rule.js";
-import * as path from "path";
 
 const url =
   "https://nextjs.org/docs/messages/no-before-interactive-script-outside-document";
 
 const convertToCorrectSeparator = (str: string) =>
-  str.replace(/[\\/]/g, path.sep);
+  str.replaceAll(/[/\\]/g, path.sep);
 
 export const noBeforeInteractiveScriptOutsideDocument = defineRule({
-  meta: {
-    docs: {
-      description:
-        "Prevent usage of `next/script`'s `beforeInteractive` strategy outside of `pages/_document.js`.",
-      recommended: true,
-      url,
-    },
-    type: "problem",
-    schema: [],
-  },
-  create(context: any) {
-    let scriptImportName: string | null = null;
+  create: (context: any) => {
+    let scriptImportName: null | string = null;
 
     return {
       'ImportDeclaration[source.value="next/script"] > ImportDefaultSpecifier'(
@@ -27,7 +18,7 @@ export const noBeforeInteractiveScriptOutsideDocument = defineRule({
       ) {
         scriptImportName = node.local.name;
       },
-      JSXOpeningElement(node: any) {
+      JSXOpeningElement: (node: any) => {
         const pathname = convertToCorrectSeparator(context.filename);
 
         const isInAppDir = pathname.includes(`${path.sep}app${path.sep}`);
@@ -50,8 +41,7 @@ export const noBeforeInteractiveScriptOutsideDocument = defineRule({
         );
 
         if (
-          !strategy ||
-          !strategy.value ||
+          !strategy?.value ||
           strategy.value.value !== "beforeInteractive"
         ) {
           return;
@@ -63,10 +53,20 @@ export const noBeforeInteractiveScriptOutsideDocument = defineRule({
         }
 
         context.report({
-          node,
           message: `\`next/script\`'s \`beforeInteractive\` strategy should not be used outside of \`pages/_document.js\`. See: ${url}`,
+          node,
         });
       },
     };
+  },
+  meta: {
+    docs: {
+      description:
+        "Prevent usage of `next/script`'s `beforeInteractive` strategy outside of `pages/_document.js`.",
+      recommended: true,
+      url,
+    },
+    schema: [],
+    type: "problem",
   },
 });
