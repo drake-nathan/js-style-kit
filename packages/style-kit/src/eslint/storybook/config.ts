@@ -41,6 +41,9 @@ export const storybookConfig: EslintConfigObject[] = [
   {
     files: [".storybook/main.@(js|cjs|mjs|ts)"],
     name: configNames.storybookConfig,
+    plugins: {
+      storybook: storybookPlugin as unknown as ESLint.Plugin,
+    },
     rules: {
       "storybook/no-uninstalled-addons": "warn",
     },
