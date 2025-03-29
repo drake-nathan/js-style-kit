@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-img-element')
+const NextESLintRule = getRule("no-img-element");
 
 const message =
-  'Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element'
+  "Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element";
 
 const tests = {
   valid: [
@@ -113,7 +113,7 @@ export default function Image() {
           );
         }
       }`,
-      errors: [{ message, type: 'JSXOpeningElement' }],
+      errors: [{ message, type: "JSXOpeningElement" }],
     },
     {
       code: `
@@ -129,7 +129,7 @@ export default function Image() {
           );
         }
       }`,
-      errors: [{ message, type: 'JSXOpeningElement' }],
+      errors: [{ message, type: "JSXOpeningElement" }],
     },
     {
       code: `\
@@ -150,27 +150,27 @@ return new ImageResponse(
 }
 `,
       filename: `some/non-metadata-route-image.tsx`,
-      errors: [{ message, type: 'JSXOpeningElement' }],
+      errors: [{ message, type: "JSXOpeningElement" }],
     },
   ],
-}
+};
 
-describe('no-img-element', () => {
+describe("no-img-element", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -178,5 +178,5 @@ describe('no-img-element', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

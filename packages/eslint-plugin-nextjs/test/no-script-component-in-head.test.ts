@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-script-component-in-head')
+const NextESLintRule = getRule("no-script-component-in-head");
 
 const message =
-  '`next/script` should not be used in `next/head` component. Move `<Script />` outside of `<Head>` instead. See: https://nextjs.org/docs/messages/no-script-component-in-head'
+  "`next/script` should not be used in `next/head` component. Move `<Script />` outside of `<Head>` instead. See: https://nextjs.org/docs/messages/no-script-component-in-head";
 
 const tests = {
   valid: [
@@ -35,28 +35,28 @@ const tests = {
             </Head>
         );
       }`,
-      filename: 'pages/index.js',
+      filename: "pages/index.js",
       errors: [{ message }],
     },
   ],
-}
+};
 
-describe('no-script-component-in-head', () => {
+describe("no-script-component-in-head", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -64,5 +64,5 @@ describe('no-script-component-in-head', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

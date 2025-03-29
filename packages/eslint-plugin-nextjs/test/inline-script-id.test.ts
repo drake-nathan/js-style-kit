@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('inline-script-id')
+const NextESLintRule = getRule("inline-script-id");
 
 const errorMessage =
-  '`next/script` components with inline content must specify an `id` attribute. See: https://nextjs.org/docs/messages/inline-script-id'
+  "`next/script` components with inline content must specify an `id` attribute. See: https://nextjs.org/docs/messages/inline-script-id";
 
 const tests = {
   valid: [
@@ -116,7 +116,7 @@ const tests = {
       errors: [
         {
           message: errorMessage,
-          type: 'JSXElement',
+          type: "JSXElement",
         },
       ],
     },
@@ -135,7 +135,7 @@ const tests = {
       errors: [
         {
           message: errorMessage,
-          type: 'JSXElement',
+          type: "JSXElement",
         },
       ],
     },
@@ -152,7 +152,7 @@ const tests = {
       errors: [
         {
           message: errorMessage,
-          type: 'JSXElement',
+          type: "JSXElement",
         },
       ],
     },
@@ -171,29 +171,29 @@ const tests = {
       errors: [
         {
           message: errorMessage,
-          type: 'JSXElement',
+          type: "JSXElement",
         },
       ],
     },
   ],
-}
+};
 
-describe('inline-script-id', () => {
+describe("inline-script-id", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -201,5 +201,5 @@ describe('inline-script-id', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

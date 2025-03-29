@@ -1,8 +1,8 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-title-in-document-head')
+const NextESLintRule = getRule("no-title-in-document-head");
 
 const tests = {
   valid: [
@@ -52,30 +52,30 @@ const tests = {
       errors: [
         {
           message:
-            'Do not use `<title>` element with `<Head />` component from `next/document`. Titles should defined at the page-level using `<Head />` from `next/head` instead. See: https://nextjs.org/docs/messages/no-title-in-document-head',
-          type: 'JSXElement',
+            "Do not use `<title>` element with `<Head />` component from `next/document`. Titles should defined at the page-level using `<Head />` from `next/head` instead. See: https://nextjs.org/docs/messages/no-title-in-document-head",
+          type: "JSXElement",
         },
       ],
     },
   ],
-}
+};
 
-describe('no-title-in-document-head', () => {
+describe("no-title-in-document-head", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -83,5 +83,5 @@ describe('no-title-in-document-head', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

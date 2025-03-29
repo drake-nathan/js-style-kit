@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-css-tags')
+const NextESLintRule = getRule("no-css-tags");
 
 const message =
-  'Do not include stylesheets manually. See: https://nextjs.org/docs/messages/no-css-tags'
+  "Do not include stylesheets manually. See: https://nextjs.org/docs/messages/no-css-tags";
 
 const tests = {
   valid: [
@@ -76,7 +76,7 @@ const tests = {
       errors: [
         {
           message,
-          type: 'JSXOpeningElement',
+          type: "JSXOpeningElement",
         },
       ],
     },
@@ -88,29 +88,29 @@ const tests = {
       errors: [
         {
           message,
-          type: 'JSXOpeningElement',
+          type: "JSXOpeningElement",
         },
       ],
     },
   ],
-}
+};
 
-describe('no-css-tags', () => {
+describe("no-css-tags", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -118,5 +118,5 @@ describe('no-css-tags', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-before-interactive-script-outside-document')
+const NextESLintRule = getRule("no-before-interactive-script-outside-document");
 
 const message =
-  "`next/script`'s `beforeInteractive` strategy should not be used outside of `pages/_document.js`. See: https://nextjs.org/docs/messages/no-before-interactive-script-outside-document"
+  "`next/script`'s `beforeInteractive` strategy should not be used outside of `pages/_document.js`. See: https://nextjs.org/docs/messages/no-before-interactive-script-outside-document";
 
 const tests = {
   valid: [
@@ -37,7 +37,7 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document.js',
+      filename: "pages/_document.js",
     },
     {
       code: `
@@ -67,7 +67,7 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document.tsx',
+      filename: "pages/_document.tsx",
     },
     {
       code: `
@@ -96,7 +96,7 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document.tsx',
+      filename: "pages/_document.tsx",
     },
     {
       code: `
@@ -113,7 +113,7 @@ const tests = {
           </html>
         );
       }`,
-      filename: '/Users/user_name/projects/project-name/app/layout.tsx',
+      filename: "/Users/user_name/projects/project-name/app/layout.tsx",
     },
     {
       code: `
@@ -130,7 +130,7 @@ const tests = {
           </html>
         );
       }`,
-      filename: 'C:\\Users\\username\\projects\\project-name\\app\\layout.tsx',
+      filename: "C:\\Users\\username\\projects\\project-name\\app\\layout.tsx",
     },
     {
       code: `
@@ -147,7 +147,7 @@ const tests = {
           </html>
         );
       }`,
-      filename: '/Users/user_name/projects/project-name/src/app/layout.tsx',
+      filename: "/Users/user_name/projects/project-name/src/app/layout.tsx",
     },
     {
       code: `
@@ -165,7 +165,7 @@ const tests = {
         );
       }`,
       filename:
-        'C:\\Users\\username\\projects\\project-name\\src\\app\\layout.tsx',
+        "C:\\Users\\username\\projects\\project-name\\src\\app\\layout.tsx",
     },
   ],
   invalid: [
@@ -183,7 +183,7 @@ const tests = {
           ></Script>
         );
       }`,
-      filename: 'pages/index.js',
+      filename: "pages/index.js",
       errors: [{ message }],
     },
     {
@@ -200,7 +200,7 @@ const tests = {
           ></Script>
         );
       }`,
-      filename: 'components/outside-known-dirs.js',
+      filename: "components/outside-known-dirs.js",
       errors: [{ message }],
     },
     {
@@ -218,7 +218,7 @@ const tests = {
           </html>
         );
       }`,
-      filename: '/Users/user_name/projects/project-name/pages/layout.tsx',
+      filename: "/Users/user_name/projects/project-name/pages/layout.tsx",
       errors: [{ message }],
     },
     {
@@ -237,7 +237,7 @@ const tests = {
         );
       }`,
       filename:
-        'C:\\Users\\username\\projects\\project-name\\pages\\layout.tsx',
+        "C:\\Users\\username\\projects\\project-name\\pages\\layout.tsx",
       errors: [{ message }],
     },
     {
@@ -255,7 +255,7 @@ const tests = {
           </html>
         );
       }`,
-      filename: '/Users/user_name/projects/project-name/src/pages/layout.tsx',
+      filename: "/Users/user_name/projects/project-name/src/pages/layout.tsx",
       errors: [{ message }],
     },
     {
@@ -274,28 +274,28 @@ const tests = {
         );
       }`,
       filename:
-        'C:\\Users\\username\\projects\\project-name\\src\\pages\\layout.tsx',
+        "C:\\Users\\username\\projects\\project-name\\src\\pages\\layout.tsx",
       errors: [{ message }],
     },
   ],
-}
+};
 
-describe('no-before-interactive-script-outside-document', () => {
+describe("no-before-interactive-script-outside-document", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -303,5 +303,5 @@ describe('no-before-interactive-script-outside-document', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

@@ -1,8 +1,8 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-head-import-in-document')
+const NextESLintRule = getRule("no-head-import-in-document");
 
 const tests = {
   valid: [
@@ -26,7 +26,7 @@ const tests = {
 
       export default MyDocument
     `,
-      filename: 'pages/_document.tsx',
+      filename: "pages/_document.tsx",
     },
     {
       code: `import Head from "next/head";
@@ -40,7 +40,7 @@ const tests = {
         );
       }
     `,
-      filename: 'pages/index.tsx',
+      filename: "pages/index.tsx",
     },
   ],
   invalid: [
@@ -65,12 +65,12 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document.js',
+      filename: "pages/_document.js",
       errors: [
         {
           message:
-            '`next/head` should not be imported in `pages/_document.js`. Use `<Head />` from `next/document` instead. See: https://nextjs.org/docs/messages/no-head-import-in-document',
-          type: 'ImportDeclaration',
+            "`next/head` should not be imported in `pages/_document.js`. Use `<Head />` from `next/document` instead. See: https://nextjs.org/docs/messages/no-head-import-in-document",
+          type: "ImportDeclaration",
         },
       ],
     },
@@ -95,12 +95,12 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document.page.tsx',
+      filename: "pages/_document.page.tsx",
       errors: [
         {
           message:
-            '`next/head` should not be imported in `pages/_document.page.tsx`. Use `<Head />` from `next/document` instead. See: https://nextjs.org/docs/messages/no-head-import-in-document',
-          type: 'ImportDeclaration',
+            "`next/head` should not be imported in `pages/_document.page.tsx`. Use `<Head />` from `next/document` instead. See: https://nextjs.org/docs/messages/no-head-import-in-document",
+          type: "ImportDeclaration",
         },
       ],
     },
@@ -125,12 +125,12 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document/index.js',
+      filename: "pages/_document/index.js",
       errors: [
         {
           message:
-            '`next/head` should not be imported in `pages/_document/index.js`. Use `<Head />` from `next/document` instead. See: https://nextjs.org/docs/messages/no-head-import-in-document',
-          type: 'ImportDeclaration',
+            "`next/head` should not be imported in `pages/_document/index.js`. Use `<Head />` from `next/document` instead. See: https://nextjs.org/docs/messages/no-head-import-in-document",
+          type: "ImportDeclaration",
         },
       ],
     },
@@ -155,34 +155,34 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document/index.tsx',
+      filename: "pages/_document/index.tsx",
       errors: [
         {
           message:
-            '`next/head` should not be imported in `pages/_document/index.tsx`. Use `<Head />` from `next/document` instead. See: https://nextjs.org/docs/messages/no-head-import-in-document',
-          type: 'ImportDeclaration',
+            "`next/head` should not be imported in `pages/_document/index.tsx`. Use `<Head />` from `next/document` instead. See: https://nextjs.org/docs/messages/no-head-import-in-document",
+          type: "ImportDeclaration",
         },
       ],
     },
   ],
-}
+};
 
-describe('no-head-import-in-document', () => {
+describe("no-head-import-in-document", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -190,5 +190,5 @@ describe('no-head-import-in-document', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

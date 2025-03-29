@@ -1,8 +1,8 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('google-font-display')
+const NextESLintRule = getRule("google-font-display");
 
 const tests = {
   valid: [
@@ -89,8 +89,8 @@ const tests = {
       errors: [
         {
           message:
-            'A font-display parameter is missing (adding `&display=optional` is recommended). See: https://nextjs.org/docs/messages/google-font-display',
-          type: 'JSXOpeningElement',
+            "A font-display parameter is missing (adding `&display=optional` is recommended). See: https://nextjs.org/docs/messages/google-font-display",
+          type: "JSXOpeningElement",
         },
       ],
     },
@@ -111,8 +111,8 @@ const tests = {
       errors: [
         {
           message:
-            'Block is not recommended. See: https://nextjs.org/docs/messages/google-font-display',
-          type: 'JSXOpeningElement',
+            "Block is not recommended. See: https://nextjs.org/docs/messages/google-font-display",
+          type: "JSXOpeningElement",
         },
       ],
     },
@@ -133,8 +133,8 @@ const tests = {
       errors: [
         {
           message:
-            'Auto is not recommended. See: https://nextjs.org/docs/messages/google-font-display',
-          type: 'JSXOpeningElement',
+            "Auto is not recommended. See: https://nextjs.org/docs/messages/google-font-display",
+          type: "JSXOpeningElement",
         },
       ],
     },
@@ -155,30 +155,30 @@ const tests = {
       errors: [
         {
           message:
-            'Fallback is not recommended. See: https://nextjs.org/docs/messages/google-font-display',
-          type: 'JSXOpeningElement',
+            "Fallback is not recommended. See: https://nextjs.org/docs/messages/google-font-display",
+          type: "JSXOpeningElement",
         },
       ],
     },
   ],
-}
+};
 
-describe('google-font-display', () => {
+describe("google-font-display", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2020,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2020,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -186,5 +186,5 @@ describe('google-font-display', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

@@ -1,13 +1,13 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-styled-jsx-in-document')
+const NextESLintRule = getRule("no-styled-jsx-in-document");
 
 const tests = {
   valid: [
     {
-      filename: 'pages/_document.js',
+      filename: "pages/_document.js",
       code: `import Document, { Html, Head, Main, NextScript } from 'next/document'
 
         export class MyDocument extends Document {
@@ -30,7 +30,7 @@ const tests = {
         }`,
     },
     {
-      filename: 'pages/_document.js',
+      filename: "pages/_document.js",
       code: `import Document, { Html, Head, Main, NextScript } from 'next/document'
 
         export class MyDocument extends Document {
@@ -59,7 +59,7 @@ const tests = {
         }`,
     },
     {
-      filename: 'pages/index.js',
+      filename: "pages/index.js",
       code: `
           export default function Page() {
             return (
@@ -79,7 +79,7 @@ const tests = {
 
   invalid: [
     {
-      filename: 'pages/_document.js',
+      filename: "pages/_document.js",
       code: `
             import Document, { Html, Head, Main, NextScript } from 'next/document'
 
@@ -113,24 +113,24 @@ const tests = {
       ],
     },
   ],
-}
+};
 
-describe('no-styled-jsx-in-document', () => {
+describe("no-styled-jsx-in-document", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -138,5 +138,5 @@ describe('no-styled-jsx-in-document', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

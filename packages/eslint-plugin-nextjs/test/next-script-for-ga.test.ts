@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('next-script-for-ga')
+const NextESLintRule = getRule("next-script-for-ga");
 
 const ERROR_MSG =
-  'Prefer `next/script` component when using the inline script for Google Analytics. See: https://nextjs.org/docs/messages/next-script-for-ga'
+  "Prefer `next/script` component when using the inline script for Google Analytics. See: https://nextjs.org/docs/messages/next-script-for-ga";
 
 const tests = {
   valid: [
@@ -110,7 +110,7 @@ const tests = {
       errors: [
         {
           message: ERROR_MSG,
-          type: 'JSXOpeningElement',
+          type: "JSXOpeningElement",
         },
       ],
     },
@@ -139,7 +139,7 @@ const tests = {
       errors: [
         {
           message: ERROR_MSG,
-          type: 'JSXOpeningElement',
+          type: "JSXOpeningElement",
         },
       ],
     },
@@ -168,7 +168,7 @@ const tests = {
       errors: [
         {
           message: ERROR_MSG,
-          type: 'JSXOpeningElement',
+          type: "JSXOpeningElement",
         },
       ],
     },
@@ -194,7 +194,7 @@ const tests = {
       errors: [
         {
           message: ERROR_MSG,
-          type: 'JSXOpeningElement',
+          type: "JSXOpeningElement",
         },
       ],
     },
@@ -224,29 +224,29 @@ const tests = {
       errors: [
         {
           message: ERROR_MSG,
-          type: 'JSXOpeningElement',
+          type: "JSXOpeningElement",
         },
       ],
     },
   ],
-}
+};
 
-describe('next-script-for-ga', () => {
+describe("next-script-for-ga", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -254,5 +254,5 @@ describe('next-script-for-ga', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

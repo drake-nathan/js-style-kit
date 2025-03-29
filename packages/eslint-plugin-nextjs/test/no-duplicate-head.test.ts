@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-duplicate-head')
+const NextESLintRule = getRule("no-duplicate-head");
 
 const message =
-  'Do not include multiple instances of `<Head/>`. See: https://nextjs.org/docs/messages/no-duplicate-head'
+  "Do not include multiple instances of `<Head/>`. See: https://nextjs.org/docs/messages/no-duplicate-head";
 
 const tests = {
   valid: [
@@ -28,7 +28,7 @@ const tests = {
 
       export default MyDocument
     `,
-      filename: 'pages/_document.js',
+      filename: "pages/_document.js",
     },
     {
       code: `import Document, { Html, Head, Main, NextScript } from 'next/document'
@@ -51,7 +51,7 @@ const tests = {
 
       export default MyDocument
     `,
-      filename: 'pages/_document.tsx',
+      filename: "pages/_document.tsx",
     },
   ],
   invalid: [
@@ -74,15 +74,15 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document.js',
+      filename: "pages/_document.js",
       errors: [
         {
           message,
-          type: 'JSXElement',
+          type: "JSXElement",
         },
         {
           message,
-          type: 'JSXElement',
+          type: "JSXElement",
         },
       ],
     },
@@ -120,33 +120,33 @@ const tests = {
 
       export default MyDocument
       `,
-      filename: 'pages/_document.page.tsx',
+      filename: "pages/_document.page.tsx",
       errors: [
         {
           message,
-          type: 'JSXElement',
+          type: "JSXElement",
         },
       ],
     },
   ],
-}
+};
 
-describe('no-duplicate-head', () => {
+describe("no-duplicate-head", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -154,5 +154,5 @@ describe('no-duplicate-head', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

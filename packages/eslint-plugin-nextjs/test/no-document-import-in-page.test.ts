@@ -1,8 +1,8 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-document-import-in-page')
+const NextESLintRule = getRule("no-document-import-in-page");
 
 const tests = {
   valid: [
@@ -18,7 +18,7 @@ const tests = {
       }
     }
     `,
-      filename: 'pages/_document.js',
+      filename: "pages/_document.js",
     },
     {
       code: `import Document from "next/document"
@@ -32,7 +32,7 @@ const tests = {
       }
     }
     `,
-      filename: 'pages/_document.page.tsx',
+      filename: "pages/_document.page.tsx",
     },
     {
       code: `import NDocument from "next/document"
@@ -46,7 +46,7 @@ const tests = {
       }
     }
     `,
-      filename: 'pages/_document/index.js',
+      filename: "pages/_document/index.js",
     },
     {
       code: `import NDocument from "next/document"
@@ -60,7 +60,7 @@ const tests = {
       }
     }
     `,
-      filename: 'pages/_document/index.tsx',
+      filename: "pages/_document/index.tsx",
     },
     {
       code: `import Document from "next/document"
@@ -74,7 +74,7 @@ const tests = {
       }
     }
     `,
-      filename: 'pagesapp/src/pages/_document.js',
+      filename: "pagesapp/src/pages/_document.js",
     },
   ],
   invalid: [
@@ -83,12 +83,12 @@ const tests = {
 
       export const Test = () => <p>Test</p>
       `,
-      filename: 'components/test.js',
+      filename: "components/test.js",
       errors: [
         {
           message:
-            '`<Document />` from `next/document` should not be imported outside of `pages/_document.js`. See: https://nextjs.org/docs/messages/no-document-import-in-page',
-          type: 'ImportDeclaration',
+            "`<Document />` from `next/document` should not be imported outside of `pages/_document.js`. See: https://nextjs.org/docs/messages/no-document-import-in-page",
+          type: "ImportDeclaration",
         },
       ],
     },
@@ -97,34 +97,34 @@ const tests = {
 
       export const Test = () => <p>Test</p>
       `,
-      filename: 'pages/test.js',
+      filename: "pages/test.js",
       errors: [
         {
           message:
-            '`<Document />` from `next/document` should not be imported outside of `pages/_document.js`. See: https://nextjs.org/docs/messages/no-document-import-in-page',
-          type: 'ImportDeclaration',
+            "`<Document />` from `next/document` should not be imported outside of `pages/_document.js`. See: https://nextjs.org/docs/messages/no-document-import-in-page",
+          type: "ImportDeclaration",
         },
       ],
     },
   ],
-}
+};
 
-describe('no-document-import-in-page', () => {
+describe("no-document-import-in-page", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -132,5 +132,5 @@ describe('no-document-import-in-page', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

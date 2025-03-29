@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-sync-scripts')
+const NextESLintRule = getRule("no-sync-scripts");
 
 const message =
-  'Synchronous scripts should not be used. See: https://nextjs.org/docs/messages/no-sync-scripts'
+  "Synchronous scripts should not be used. See: https://nextjs.org/docs/messages/no-sync-scripts";
 
 const tests = {
   valid: [
@@ -50,7 +50,7 @@ const tests = {
             );
           }
       }`,
-      errors: [{ message, type: 'JSXOpeningElement' }],
+      errors: [{ message, type: "JSXOpeningElement" }],
     },
     {
       code: `
@@ -66,27 +66,27 @@ const tests = {
             );
           }
       }`,
-      errors: [{ message, type: 'JSXOpeningElement' }],
+      errors: [{ message, type: "JSXOpeningElement" }],
     },
   ],
-}
+};
 
-describe('no-sync-scripts', () => {
+describe("no-sync-scripts", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -94,5 +94,5 @@ describe('no-sync-scripts', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

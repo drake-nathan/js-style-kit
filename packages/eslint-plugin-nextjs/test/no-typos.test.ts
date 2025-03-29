@@ -1,8 +1,8 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-typos')
+const NextESLintRule = getRule("no-typos");
 
 const tests = {
   valid: [
@@ -55,11 +55,11 @@ const tests = {
         export const getStaticpaths = async () => {};
         export const getStaticProps = async () => {};
       `,
-      filename: 'pages/index.js',
+      filename: "pages/index.js",
       errors: [
         {
-          message: 'getStaticpaths may be a typo. Did you mean getStaticPaths?',
-          type: 'ExportNamedDeclaration',
+          message: "getStaticpaths may be a typo. Did you mean getStaticPaths?",
+          type: "ExportNamedDeclaration",
         },
       ],
     },
@@ -71,17 +71,17 @@ const tests = {
         export async function getStaticPathss(){};
         export async function getStaticPropss(){};
       `,
-      filename: 'pages/index.js',
+      filename: "pages/index.js",
       errors: [
         {
           message:
-            'getStaticPathss may be a typo. Did you mean getStaticPaths?',
-          type: 'ExportNamedDeclaration',
+            "getStaticPathss may be a typo. Did you mean getStaticPaths?",
+          type: "ExportNamedDeclaration",
         },
         {
           message:
-            'getStaticPropss may be a typo. Did you mean getStaticProps?',
-          type: 'ExportNamedDeclaration',
+            "getStaticPropss may be a typo. Did you mean getStaticProps?",
+          type: "ExportNamedDeclaration",
         },
       ],
     },
@@ -92,12 +92,12 @@ const tests = {
         }
         export async function getServurSideProps(){};
       `,
-      filename: 'pages/index.js',
+      filename: "pages/index.js",
       errors: [
         {
           message:
-            'getServurSideProps may be a typo. Did you mean getServerSideProps?',
-          type: 'ExportNamedDeclaration',
+            "getServurSideProps may be a typo. Did you mean getServerSideProps?",
+          type: "ExportNamedDeclaration",
         },
       ],
     },
@@ -108,34 +108,34 @@ const tests = {
         }
         export const getServurSideProps = () => {};
       `,
-      filename: 'pages/index.js',
+      filename: "pages/index.js",
       errors: [
         {
           message:
-            'getServurSideProps may be a typo. Did you mean getServerSideProps?',
-          type: 'ExportNamedDeclaration',
+            "getServurSideProps may be a typo. Did you mean getServerSideProps?",
+          type: "ExportNamedDeclaration",
         },
       ],
     },
   ],
-}
+};
 
-describe('no-typos', () => {
+describe("no-typos", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -143,5 +143,5 @@ describe('no-typos', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});

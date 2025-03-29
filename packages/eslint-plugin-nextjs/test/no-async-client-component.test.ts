@@ -1,11 +1,11 @@
-import { RuleTester as ESLintTesterV8 } from 'eslint-v8'
-import { RuleTester as ESLintTesterV9 } from 'eslint'
-import { getRule } from './utils/getRule'
+import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester as ESLintTesterV9 } from "eslint";
+import { getRule } from "./utils/getRule";
 
-const NextESLintRule = getRule('no-async-client-component')
+const NextESLintRule = getRule("no-async-client-component");
 
 const message =
-  'Prevent client components from being async functions. See: https://nextjs.org/docs/messages/no-async-client-component'
+  "Prevent client components from being async functions. See: https://nextjs.org/docs/messages/no-async-client-component";
 
 const tests = {
   valid: [
@@ -115,24 +115,24 @@ const tests = {
       errors: [{ message }],
     },
   ],
-}
+};
 
-describe('no-async-client-component', () => {
+describe("no-async-client-component", () => {
   new ESLintTesterV8({
     parserOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       ecmaFeatures: {
         modules: true,
         jsx: true,
       },
     },
-  }).run('eslint-v8', NextESLintRule, tests)
+  }).run("eslint-v8", NextESLintRule, tests);
 
   new ESLintTesterV9({
     languageOptions: {
       ecmaVersion: 2018,
-      sourceType: 'module',
+      sourceType: "module",
       parserOptions: {
         ecmaFeatures: {
           modules: true,
@@ -140,5 +140,5 @@ describe('no-async-client-component', () => {
         },
       },
     },
-  }).run('eslint-v9', NextESLintRule, tests)
-})
+  }).run("eslint-v9", NextESLintRule, tests);
+});
