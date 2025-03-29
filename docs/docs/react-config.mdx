@@ -120,6 +120,36 @@ export default eslintConfig({
 });
 ```
 
+## React Fast Refresh Support
+
+[React Fast Refresh](https://www.npmjs.com/package/react-refresh) is a feature that provides instant feedback on component changes without losing component state. JS Style Kit includes support for validating that your components can safely be updated with Fast Refresh through the `eslint-plugin-react-refresh` plugin.
+
+React Fast Refresh validation is **enabled by default** when React support is enabled. To explicitly control it:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    // Disable React Fast Refresh validation
+    reactRefresh: false,
+  },
+});
+```
+
+The plugin enforces that your components are structured in a way that integrations like `react-refresh` expect, helping you avoid issues with Fast Refresh in development.
+
+### What the Plugin Validates
+
+The plugin validates that:
+
+- Components are properly exported (not mixed with non-component exports)
+- Anonymous function components are not used
+- Export patterns are compatible with Fast Refresh
+- Components are not nested inside other components
+
+By default, the configuration allows constant exports alongside components, which is supported by most bundlers including Vite.
+
 ## Next.js Support
 
 For Next.js projects, enable the `next` option:

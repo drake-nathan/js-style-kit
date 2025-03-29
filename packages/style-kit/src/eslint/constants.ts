@@ -13,6 +13,7 @@ export const configNames = {
   preferArrowFunction: "prefer-arrow-function-config",
   react: "react-config",
   reactCompiler: "react-compiler-config",
+  reactRefresh: "react-refresh-config",
   storybook: "storybook:stories",
   storybookConfig: "storybook:config",
   testing: "testing-config",
