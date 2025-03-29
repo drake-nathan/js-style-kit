@@ -9,6 +9,7 @@ import { jsdocConfig } from "./jsdoc/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
+import { reactRefreshEslintConfig } from "./react-refresh/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { storybookConfig } from "./storybook/config.js";
 import { testingConfig, type TestingConfig } from "./testing/config.js";
@@ -29,6 +30,7 @@ export interface EslintConfigOptions {
     | {
         next?: boolean | undefined;
         reactCompiler?: boolean | undefined;
+        reactRefresh?: boolean | undefined;
       };
   sorting?: boolean;
   storybook?: boolean;
@@ -47,6 +49,7 @@ export interface EslintConfigOptions {
  * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
  * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
  *                        Can be configured with an object to control next.js support and reactCompiler.
+ *                        Also controls reactRefresh, which is enabled by default when react is true.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
  * @param options.storybook - Whether to include Storybook rules. Defaults to false.
  * @param options.testing - An object with the following properties:
@@ -56,7 +59,7 @@ export interface EslintConfigOptions {
  *                          - `formattingRules`: Whether to include formatting rules like padding around blocks.
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
- * @param options.turbo - Whether to include Turborepo rules. Defaults to true.
+ * @param options.turbo - Whether to include Turborepo rules. Defaults to false.
  * @param options.unicorn - Whether to include Unicorn rules. Defaults to true.
  * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
  * @returns An array of ESLint configuration objects.
@@ -113,6 +116,14 @@ export const eslintConfig = (
 
     if (shouldUseReactCompiler) {
       configs.push(reactCompilerEslintConfig);
+    }
+
+    // Apply reactRefresh by default if react is true or if react.reactRefresh isn't explicitly false
+    const shouldUseReactRefresh =
+      react === true || (isObject(react) && react.reactRefresh !== false);
+
+    if (shouldUseReactRefresh) {
+      configs.push(reactRefreshEslintConfig());
     }
   }
 

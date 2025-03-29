@@ -131,6 +131,7 @@ react: true
 // you can also pass an object to control react compiler and next support
 react: {
   reactCompiler: false,
+  reactRefresh: false, // Controls React Fast Refresh validation (default: true when react is enabled)
   next: true
 }
 // next simply adds ".next" to the ignores array, but I plan add the next plugin in the future
