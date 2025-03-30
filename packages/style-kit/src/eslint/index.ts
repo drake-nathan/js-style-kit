@@ -94,7 +94,8 @@ export const eslintConfig = (
 ): Linter.Config[] => {
   const configs: Linter.Config[] = [
     ignoresConfig({
-      next: isObject(react) && (react.framework === "next" || react.next === true),
+      next:
+        isObject(react) && (react.framework === "next" || react.next === true),
       storybook,
       userIgnores: ignores,
     }),
@@ -125,11 +126,10 @@ export const eslintConfig = (
     }
 
     // Determine if we should use Next.js config
-    const isNextFramework = 
-      isObject(react) && (
-        react.framework === "next" || 
-        (react.next === true && react.framework === undefined)
-      );
+    const isNextFramework =
+      isObject(react) &&
+      (react.framework === "next" ||
+        (react.next === true && react.framework === undefined));
 
     if (isNextFramework) {
       configs.push(nextjsConfig());
@@ -139,10 +139,10 @@ export const eslintConfig = (
     // Apply reactRefresh based on framework setting or explicit override
     const shouldUseReactRefresh =
       // Explicit setting takes precedence
-      (isObject(react) && react.reactRefresh === true) || 
+      (isObject(react) && react.reactRefresh === true) ||
       // Framework-based default (vite/none use reactRefresh by default)
-      (isObject(react) && 
-        (react.framework === "vite" || react.framework === "none") && 
+      (isObject(react) &&
+        (react.framework === "vite" || react.framework === "none") &&
         react.reactRefresh !== false);
 
     if (shouldUseReactRefresh) {
