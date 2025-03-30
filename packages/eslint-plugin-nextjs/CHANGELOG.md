@@ -1,5 +1,11 @@
 # eslint-plugin-nextjs
 
+## 0.1.2
+
+### Patch Changes
+
+- 9228672: Fix plugin rule naming
+
 ## 0.1.1
 
 ### Patch Changes
