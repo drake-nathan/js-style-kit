@@ -1,4 +1,4 @@
-import type { ESLint, Linter, Rule } from "eslint";
+import type { ESLint, Linter } from "eslint";
 
 import { googleFontDisplay } from "./rules/google-font-display.js";
 import { googleFontPreconnect } from "./rules/google-font-preconnect.js";
@@ -22,127 +22,76 @@ import { noTitleInDocumentHead } from "./rules/no-title-in-document-head.js";
 import { noTypos } from "./rules/no-typos.js";
 import { noUnwantedPolyfillio } from "./rules/no-unwanted-polyfillio.js";
 
-/**
- * The namespace prefix for all rules in this plugin
- */
-const name = "nextjs";
-
-interface PluginConfig extends ESLint.Plugin {
-  configs: {
-    "core-web-vitals": Linter.LegacyConfig;
-    "core-web-vitals/flat": Linter.Config;
-    recommended: Linter.LegacyConfig;
-    "recommended/flat": Linter.Config;
-  };
-  name: string;
-  rules: {
-    "nextjs/google-font-display": Rule.RuleModule;
-    "nextjs/google-font-preconnect": Rule.RuleModule;
-    "nextjs/inline-script-id": Rule.RuleModule;
-    "nextjs/next-script-for-ga": Rule.RuleModule;
-    "nextjs/no-assign-module-variable": Rule.RuleModule;
-    "nextjs/no-async-client-component": Rule.RuleModule;
-    "nextjs/no-before-interactive-script-outside-document": Rule.RuleModule;
-    "nextjs/no-css-tags": Rule.RuleModule;
-    "nextjs/no-document-import-in-page": Rule.RuleModule;
-    "nextjs/no-duplicate-head": Rule.RuleModule;
-    "nextjs/no-head-element": Rule.RuleModule;
-    "nextjs/no-head-import-in-document": Rule.RuleModule;
-    "nextjs/no-html-link-for-pages": Rule.RuleModule;
-    "nextjs/no-img-element": Rule.RuleModule;
-    "nextjs/no-page-custom-font": Rule.RuleModule;
-    "nextjs/no-script-component-in-head": Rule.RuleModule;
-    "nextjs/no-styled-jsx-in-document": Rule.RuleModule;
-    "nextjs/no-sync-scripts": Rule.RuleModule;
-    "nextjs/no-title-in-document-head": Rule.RuleModule;
-    "nextjs/no-typos": Rule.RuleModule;
-    "nextjs/no-unwanted-polyfillio": Rule.RuleModule;
-  };
-}
-
 const plugin: ESLint.Plugin = {
-  name,
   rules: {
-    [`${name}/google-font-display`]: googleFontDisplay,
-    [`${name}/google-font-preconnect`]: googleFontPreconnect,
-    [`${name}/inline-script-id`]: inlineScriptId,
-    [`${name}/next-script-for-ga`]: nextScriptForGa,
-    [`${name}/no-assign-module-variable`]: noAssignModuleVariable,
-    [`${name}/no-async-client-component`]: noAsyncClientComponent,
-    [`${name}/no-before-interactive-script-outside-document`]:
+    "google-font-display": googleFontDisplay,
+    "google-font-preconnect": googleFontPreconnect,
+    "inline-script-id": inlineScriptId,
+    "next-script-for-ga": nextScriptForGa,
+    "no-assign-module-variable": noAssignModuleVariable,
+    "no-async-client-component": noAsyncClientComponent,
+    "no-before-interactive-script-outside-document":
       noBeforeInteractiveScriptOutsideDocument,
-    [`${name}/no-css-tags`]: noCssTags,
-    [`${name}/no-document-import-in-page`]: noDocumentImportInPage,
-    [`${name}/no-duplicate-head`]: noDuplicateHead,
-    [`${name}/no-head-element`]: noHeadElement,
-    [`${name}/no-head-import-in-document`]: noHeadImportInDocument,
-    [`${name}/no-html-link-for-pages`]: noHtmlLinkForPages,
-    [`${name}/no-img-element`]: noImgElement,
-    [`${name}/no-page-custom-font`]: noPageCustomFont,
-    [`${name}/no-script-component-in-head`]: noScriptComponentInHead,
-    [`${name}/no-styled-jsx-in-document`]: noStyledJsxInDocument,
-    [`${name}/no-sync-scripts`]: noSyncScripts,
-    [`${name}/no-title-in-document-head`]: noTitleInDocumentHead,
-    [`${name}/no-typos`]: noTypos,
-    [`${name}/no-unwanted-polyfillio`]: noUnwantedPolyfillio,
+    "no-css-tags": noCssTags,
+    "no-document-import-in-page": noDocumentImportInPage,
+    "no-duplicate-head": noDuplicateHead,
+    "no-head-element": noHeadElement,
+    "no-head-import-in-document": noHeadImportInDocument,
+    "no-html-link-for-pages": noHtmlLinkForPages,
+    "no-img-element": noImgElement,
+    "no-page-custom-font": noPageCustomFont,
+    "no-script-component-in-head": noScriptComponentInHead,
+    "no-styled-jsx-in-document": noStyledJsxInDocument,
+    "no-sync-scripts": noSyncScripts,
+    "no-title-in-document-head": noTitleInDocumentHead,
+    "no-typos": noTypos,
+    "no-unwanted-polyfillio": noUnwantedPolyfillio,
   },
 };
 
 const recommendedRules: Linter.RulesRecord = {
   // warnings
-  "nextjs/google-font-display": "warn",
-  "nextjs/google-font-preconnect": "warn",
+  "google-font-display": "warn",
+  "google-font-preconnect": "warn",
   // errors
-  "nextjs/inline-script-id": "error",
-  "nextjs/next-script-for-ga": "warn",
-  "nextjs/no-assign-module-variable": "error",
-  "nextjs/no-async-client-component": "warn",
-  "nextjs/no-before-interactive-script-outside-document": "warn",
-  "nextjs/no-css-tags": "warn",
-  "nextjs/no-document-import-in-page": "error",
-  "nextjs/no-duplicate-head": "error",
-  "nextjs/no-head-element": "warn",
-  "nextjs/no-head-import-in-document": "error",
-  "nextjs/no-html-link-for-pages": "warn",
-  "nextjs/no-img-element": "warn",
-  "nextjs/no-page-custom-font": "warn",
-  "nextjs/no-script-component-in-head": "error",
-  "nextjs/no-styled-jsx-in-document": "warn",
-  "nextjs/no-sync-scripts": "warn",
-  "nextjs/no-title-in-document-head": "warn",
-  "nextjs/no-typos": "warn",
-  "nextjs/no-unwanted-polyfillio": "warn",
+  "inline-script-id": "error",
+  "next-script-for-ga": "warn",
+  "no-assign-module-variable": "error",
+  "no-async-client-component": "warn",
+  "no-before-interactive-script-outside-document": "warn",
+  "no-css-tags": "warn",
+  "no-document-import-in-page": "error",
+  "no-duplicate-head": "error",
+  "no-head-element": "warn",
+  "no-head-import-in-document": "error",
+  "no-html-link-for-pages": "warn",
+  "no-img-element": "warn",
+  "no-page-custom-font": "warn",
+  "no-script-component-in-head": "error",
+  "no-styled-jsx-in-document": "warn",
+  "no-sync-scripts": "warn",
+  "no-title-in-document-head": "warn",
+  "no-typos": "warn",
+  "no-unwanted-polyfillio": "warn",
 };
 
 const coreWebVitalsRules: Linter.RulesRecord = {
   ...recommendedRules,
-  "nextjs/no-html-link-for-pages": "error",
-  "nextjs/no-sync-scripts": "error",
+  "no-html-link-for-pages": "error",
+  "no-sync-scripts": "error",
 };
 
-const createRuleConfig = (
-  pluginName: string,
-  rules: Linter.RulesRecord,
-  isFlat = false,
-) => {
+const createRuleConfig = (rules: Linter.RulesRecord, isFlat = false) => {
   return {
-    plugins: isFlat ? { [pluginName]: plugin } : [pluginName],
+    plugins: isFlat ? { nextjs: plugin } : ["nextjs"],
     rules,
   };
 };
 
-const recommendedFlatConfig = createRuleConfig(name, recommendedRules, true);
-const recommendedLegacyConfig = createRuleConfig(name, recommendedRules, false);
-const coreWebVitalsFlatConfig = createRuleConfig(
-  name,
-  coreWebVitalsRules,
-  true,
-);
-const coreWebVitalsLegacyConfig = createRuleConfig(
-  name,
-  coreWebVitalsRules,
-  false,
-);
+const recommendedFlatConfig = createRuleConfig(recommendedRules, true);
+const recommendedLegacyConfig = createRuleConfig(recommendedRules, false);
+const coreWebVitalsFlatConfig = createRuleConfig(coreWebVitalsRules, true);
+const coreWebVitalsLegacyConfig = createRuleConfig(coreWebVitalsRules, false);
 
 /**
  * ESLint plugin for Next.js projects
@@ -167,6 +116,7 @@ export default {
      */
     "recommended/flat": recommendedFlatConfig,
   },
-} as PluginConfig;
+  name: "nextjs",
+} as ESLint.Plugin;
 
 export const rules = plugin.rules;
