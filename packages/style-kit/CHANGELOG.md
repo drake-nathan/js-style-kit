@@ -1,5 +1,13 @@
 # js-style-kit
 
+## 0.2.10
+
+### Patch Changes
+
+- 1f2b572: Implement `eslint-plugin-nextjs` in eslint config
+- Updated dependencies [1f2b572]
+  - eslint-plugin-nextjs@0.1.1
+
 ## 0.2.9
 
 ### Patch Changes

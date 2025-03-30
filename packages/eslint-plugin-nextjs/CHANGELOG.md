@@ -1,5 +1,11 @@
 # eslint-plugin-nextjs
 
+## 0.1.1
+
+### Patch Changes
+
+- 1f2b572: Refine README
+
 ## 0.1.0
 
 ### Minor Changes

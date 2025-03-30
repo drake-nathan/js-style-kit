@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-nextjs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A fork of @next/eslint-plugin-next that's been upgraded for TypeScript and ESLint V9.",
   "keywords": [
     "eslint",
