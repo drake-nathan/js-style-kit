@@ -117,6 +117,6 @@ export default {
     "recommended/flat": recommendedFlatConfig,
   },
   name: "nextjs",
-};
+} as ESLint.Plugin;
 
 export const rules = plugin.rules;
