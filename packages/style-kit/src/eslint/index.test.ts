@@ -144,7 +144,91 @@ describe("eslintConfig", () => {
       const ignoresConfig = config[0];
 
       expect(config.some((c) => c.name === configNames.react)).toBe(true);
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(true);
       expect(ignoresConfig?.ignores).toStrictEqual(
+        expect.arrayContaining([".next"]),
+      );
+    });
+
+    it("includes Next.js config when framework is 'next'", () => {
+      const config = eslintConfig({ react: { framework: "next" } });
+
+      // Should include Next.js config
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(true);
+      // Should exclude React Refresh config by default
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        false,
+      );
+      // Should include .next in ignores
+      expect(config[0]?.ignores).toStrictEqual(
+        expect.arrayContaining([".next"]),
+      );
+    });
+
+    it("includes React Refresh config when framework is 'vite'", () => {
+      const config = eslintConfig({ react: { framework: "vite" } });
+
+      // Should include React Refresh config
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        true,
+      );
+      // Should exclude Next.js config
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(false);
+    });
+
+    it("includes React Refresh config when framework is 'none'", () => {
+      const config = eslintConfig({ react: { framework: "none" } });
+
+      // Should include React Refresh config
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        true,
+      );
+      // Should exclude Next.js config
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(false);
+    });
+
+    it("allows reactRefresh to override framework-based behavior", () => {
+      // With Next.js framework but explicitly enabling React Refresh
+      const configWithNext = eslintConfig({
+        react: {
+          framework: "next",
+          reactRefresh: true,
+        },
+      });
+
+      // Should include both Next.js and React Refresh configs
+      expect(configWithNext.some((c) => c.name === configNames.nextjs)).toBe(
+        true,
+      );
+      expect(
+        configWithNext.some((c) => c.name === configNames.reactRefresh),
+      ).toBe(true);
+
+      // With Vite framework but explicitly disabling React Refresh
+      const configWithVite = eslintConfig({
+        react: {
+          framework: "vite",
+          reactRefresh: false,
+        },
+      });
+
+      // Should exclude React Refresh config
+      expect(
+        configWithVite.some((c) => c.name === configNames.reactRefresh),
+      ).toBe(false);
+    });
+
+    it("prioritizes explicit next setting over framework setting for ignores", () => {
+      // With next: false but framework: "next"
+      const config = eslintConfig({
+        react: {
+          framework: "next",
+          next: false,
+        },
+      });
+
+      // Should still include .next in ignores because framework is "next"
+      expect(config[0]?.ignores).toStrictEqual(
         expect.arrayContaining([".next"]),
       );
     });

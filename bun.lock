@@ -36,7 +36,7 @@
     },
     "packages/eslint-plugin-nextjs": {
       "name": "eslint-plugin-nextjs",
-      "version": "0.0.1",
+      "version": "0.1.0",
       "dependencies": {
         "fast-glob": "^3.3.3",
       },
@@ -61,6 +61,7 @@
         "eslint": "^9.23.0",
         "eslint-plugin-jest": "^28.11.0",
         "eslint-plugin-jsdoc": "^50.6.9",
+        "eslint-plugin-nextjs": "^0.1.0",
         "eslint-plugin-perfectionist": "^4.10.1",
         "eslint-plugin-prefer-arrow-functions": "^3.6.2",
         "eslint-plugin-react": "^7.37.4",

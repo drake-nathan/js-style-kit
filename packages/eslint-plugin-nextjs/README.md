@@ -9,7 +9,7 @@
 
 ## Overview
 
-This is a unofficial fork of `@next/eslint-plugin-next` with TypeScript and ESLint v9 support. I have no association with Vercel or the Next.js team. I just needed an updated version of the plugin for my style guide, `js-style-kit`.
+This is a unofficial fork of [`@next/eslint-plugin-next`](https://www.npmjs.com/package/@next/eslint-plugin-next) with TypeScript and ESLint v9 support. I have no association with Vercel or the Next.js team. I just needed an updated version of the plugin for my style guide, [`js-style-kit`](https://js-style-kit.mintlify.app/introduction).
 
 If you're using `eslint-config-next`, you _do not_ need this plugin.
 You only need this plugin if you're rolling your own ESLint config.
@@ -21,11 +21,64 @@ You only need this plugin if you're rolling your own ESLint config.
 ## Installation
 
 ```bash
-npm i eslint-plugin-nextjs -D
+npm i eslint eslint-plugin-nextjs -D
 # or
-yarn add eslint-plugin-nextjs -D
+yarn add eslint eslint-plugin-nextjs -D
 # or
-pnpm add eslint-plugin-nextjs -D
+pnpm add eslint eslint-plugin-nextjs -D
 # or
-bun add eslint-plugin-nextjs -d
+bun add eslint eslint-plugin-nextjs -d
 ```
+
+## Usage
+
+> **Note**: The API _will_ break in v1. I want to clean up this API follow ESLint standards.
+
+This plugin ships two configs for both legacy and flat ESLint configuration formats:
+
+- "recommended" or "recommended/flat" - includes most rules from Next.js
+- "core-web-vitals" or "core-web-vitals/flat" - same thing but two rules get upgraded to errors 🤷‍♂️
+
+You probably want Core Web Vitals (that's what ships inside of `eslint-config-next`), but you never need both.
+
+### Legacy Config
+
+```js
+{
+  extends: ["nextjs/core-web-vitals"],
+}
+```
+
+### Flat Config
+
+```js
+import nextjs from "eslint-plugin-nextjs";
+
+export default [
+  // ... other configs
+  nextjs.configs["core-web-vitals/flat"],
+];
+```
+
+### Custom Config
+
+```js
+import nextjs from "eslint-plugin-nextjs";
+
+export default [
+  // ... other configs
+  {
+    plugins: {
+      nextjs,
+    },
+    rules: {
+      "nextjs/google-font-display": "warn",
+      "nextjs/no-img-element": "warn",
+    },
+  },
+];
+```
+
+## Rules
+
+See Vercel's [documentation](https://nextjs.org/docs/app/api-reference/config/eslint#rules) for rule details. I'll add a proper rule table here in the future.

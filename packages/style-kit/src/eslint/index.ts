@@ -6,6 +6,7 @@ import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
 import { ignoresConfig } from "./ignores.js";
 import { jsdocConfig } from "./jsdoc/config.js";
+import { nextjsConfig } from "./nextjs/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
@@ -28,6 +29,7 @@ export interface EslintConfigOptions {
   react?:
     | boolean
     | {
+        framework?: "next" | "none" | "vite";
         next?: boolean | undefined;
         reactCompiler?: boolean | undefined;
         reactRefresh?: boolean | undefined;
@@ -50,6 +52,10 @@ export interface EslintConfigOptions {
  * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
  *                        Can be configured with an object to control next.js support and reactCompiler.
  *                        Also controls reactRefresh, which is enabled by default when react is true.
+ *                        Can specify framework as "next", "none", or "vite" to control related configs:
+ *                        - "next": Includes Next.js config, excludes React Refresh.
+ *                        - "vite" or "none": Includes React Refresh, excludes Next.js.
+ *                        - The reactRefresh property can override this framework-based behavior.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
  * @param options.storybook - Whether to include Storybook rules. Defaults to false.
  * @param options.testing - An object with the following properties:
@@ -88,7 +94,8 @@ export const eslintConfig = (
 ): Linter.Config[] => {
   const configs: Linter.Config[] = [
     ignoresConfig({
-      next: isObject(react) && react.next,
+      next:
+        isObject(react) && (react.framework === "next" || react.next === true),
       storybook,
       userIgnores: ignores,
     }),
@@ -118,9 +125,25 @@ export const eslintConfig = (
       configs.push(reactCompilerEslintConfig);
     }
 
-    // Apply reactRefresh only if explicitly enabled via react.reactRefresh = true
+    // Determine if we should use Next.js config
+    const isNextFramework =
+      isObject(react) &&
+      (react.framework === "next" ||
+        (react.next === true && react.framework === undefined));
+
+    if (isNextFramework) {
+      configs.push(nextjsConfig());
+    }
+
+    // Determine if we should use React Refresh
+    // Apply reactRefresh based on framework setting or explicit override
     const shouldUseReactRefresh =
-      isObject(react) && react.reactRefresh === true;
+      // Explicit setting takes precedence
+      (isObject(react) && react.reactRefresh === true) ||
+      // Framework-based default (vite/none use reactRefresh by default)
+      (isObject(react) &&
+        (react.framework === "vite" || react.framework === "none") &&
+        react.reactRefresh !== false);
 
     if (shouldUseReactRefresh) {
       configs.push(reactRefreshEslintConfig());
