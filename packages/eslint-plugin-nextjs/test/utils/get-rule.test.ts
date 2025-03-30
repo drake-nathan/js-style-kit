@@ -26,10 +26,10 @@ describe("getRule", () => {
   it("should return the rule when it exists", () => {
     // Arrange
     const ruleName = "google-font-display";
-    
+
     // Act
     const result = getRule(ruleName);
-    
+
     // Assert
     expect(result).toBeDefined();
     expect(result).toStrictEqual(mockRules[ruleName]);
@@ -38,10 +38,10 @@ describe("getRule", () => {
   it("should return another valid rule", () => {
     // Arrange
     const ruleName = "no-img-element";
-    
+
     // Act
     const result = getRule(ruleName);
-    
+
     // Assert
     expect(result).toBeDefined();
     expect(result).toStrictEqual(mockRules[ruleName]);
@@ -50,7 +50,7 @@ describe("getRule", () => {
   it("should throw an error when rule does not exist", () => {
     // Arrange
     const ruleName = "non-existent-rule";
-    
+
     // Act & Assert
     expect(() => getRule(ruleName)).toThrow(`Rule ${ruleName} not found`);
   });
