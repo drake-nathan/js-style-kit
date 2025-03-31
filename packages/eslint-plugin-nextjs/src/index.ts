@@ -1,5 +1,7 @@
 import type { ESLint, Linter } from "eslint";
 
+import fs from "node:fs";
+
 import { googleFontDisplay } from "./rules/google-font-display.js";
 import { googleFontPreconnect } from "./rules/google-font-preconnect.js";
 import { inlineScriptId } from "./rules/inline-script-id.js";
@@ -22,7 +24,16 @@ import { noTitleInDocumentHead } from "./rules/no-title-in-document-head.js";
 import { noTypos } from "./rules/no-typos.js";
 import { noUnwantedPolyfillio } from "./rules/no-unwanted-polyfillio.js";
 
+const pkg = JSON.parse(
+  fs.readFileSync(new URL("./package.json", import.meta.url), "utf8"),
+);
+
 const plugin: ESLint.Plugin = {
+  meta: {
+    name: pkg.name,
+    version: pkg.version,
+  },
+  // rule definitions
   rules: {
     "google-font-display": googleFontDisplay,
     "google-font-preconnect": googleFontPreconnect,
@@ -49,25 +60,26 @@ const plugin: ESLint.Plugin = {
   },
 };
 
+/**
+ * Same as `@next/eslint-plugin-next` but only warnings.
+ */
 const recommendedRules: Linter.RulesRecord = {
-  // warnings
   "google-font-display": "warn",
   "google-font-preconnect": "warn",
-  // errors
-  "inline-script-id": "error",
+  "inline-script-id": "warn",
   "next-script-for-ga": "warn",
-  "no-assign-module-variable": "error",
+  "no-assign-module-variable": "warn",
   "no-async-client-component": "warn",
   "no-before-interactive-script-outside-document": "warn",
   "no-css-tags": "warn",
-  "no-document-import-in-page": "error",
-  "no-duplicate-head": "error",
+  "no-document-import-in-page": "warn",
+  "no-duplicate-head": "warn",
   "no-head-element": "warn",
-  "no-head-import-in-document": "error",
+  "no-head-import-in-document": "warn",
   "no-html-link-for-pages": "warn",
   "no-img-element": "warn",
   "no-page-custom-font": "warn",
-  "no-script-component-in-head": "error",
+  "no-script-component-in-head": "warn",
   "no-styled-jsx-in-document": "warn",
   "no-sync-scripts": "warn",
   "no-title-in-document-head": "warn",
@@ -75,48 +87,23 @@ const recommendedRules: Linter.RulesRecord = {
   "no-unwanted-polyfillio": "warn",
 };
 
-const coreWebVitalsRules: Linter.RulesRecord = {
-  ...recommendedRules,
-  "no-html-link-for-pages": "error",
-  "no-sync-scripts": "error",
+/**
+ * The only config we need because we're only using warnings.
+ */
+const recommendedConfig: Linter.Config = {
+  files: ["**/*.{js,jsx,ts,tsx}"],
+  plugins: {
+    nextjs: plugin,
+  },
+  rules: recommendedRules,
 };
-
-const createRuleConfig = (rules: Linter.RulesRecord, isFlat = false) => {
-  return {
-    plugins: isFlat ? { nextjs: plugin } : ["nextjs"],
-    rules,
-  };
-};
-
-const recommendedFlatConfig = createRuleConfig(recommendedRules, true);
-const recommendedLegacyConfig = createRuleConfig(recommendedRules, false);
-const coreWebVitalsFlatConfig = createRuleConfig(coreWebVitalsRules, true);
-const coreWebVitalsLegacyConfig = createRuleConfig(coreWebVitalsRules, false);
 
 /**
- * ESLint plugin for Next.js projects
+ * ESLint V9 plugin for Next.js projects
  */
 export default {
   ...plugin,
   configs: {
-    /**
-     * Legacy config (ESLint < v9) with Core Web Vitals rules (recommended with some warnings upgrade to errors)
-     */
-    "core-web-vitals": coreWebVitalsLegacyConfig,
-    /**
-     * Flat config (ESLint v9+) with Core Web Vitals rules (recommended with some warnings upgrade to errors)
-     */
-    "core-web-vitals/flat": coreWebVitalsFlatConfig,
-    /**
-     * Legacy config (ESLint < v9) with recommended rules
-     */
-    recommended: recommendedLegacyConfig,
-    /**
-     * Flat config (ESLint v9+) with recommended rules
-     */
-    "recommended/flat": recommendedFlatConfig,
+    recommended: recommendedConfig,
   },
-  name: "nextjs",
-} as ESLint.Plugin;
-
-export const rules = plugin.rules;
+} satisfies ESLint.Plugin;

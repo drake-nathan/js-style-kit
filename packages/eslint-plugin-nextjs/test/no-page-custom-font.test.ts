@@ -1,6 +1,5 @@
 import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
@@ -78,6 +77,90 @@ const tests = {
         },
       ],
       filename,
+    },
+    {
+      code: `
+      import Head from 'next/head'
+      
+      const CustomPage = () => {
+        return (
+          <div>
+            <Head>
+              <link
+                href="https://fonts.googleapis.com/css2?family=Inter"
+                rel="stylesheet"
+              />
+            </Head>
+          </div>
+        )
+      }
+      
+      export default CustomPage
+      `,
+      errors: [
+        {
+          message:
+            "Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
+        },
+      ],
+      filename: "pages/custom.js",
+    },
+    {
+      code: `
+      import Head from 'next/head'
+      
+      export default class CustomPage {
+        render() {
+          return (
+            <div>
+              <Head>
+                <link
+                  href="https://fonts.googleapis.com/css2?family=Inter"
+                  rel="stylesheet"
+                />
+              </Head>
+            </div>
+          )
+        }
+      }
+      `,
+      errors: [
+        {
+          message:
+            "Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
+        },
+      ],
+      filename: "pages/class-page.js",
+    },
+    // Test case for when we cannot find a default export identifier
+    // This covers lines 47-48 in no-page-custom-font.ts
+    {
+      code: `
+      import Head from 'next/head'
+      
+      function MyComponent() {
+        return (
+          <div>
+            <Head>
+              <link
+                href="https://fonts.googleapis.com/css2?family=Inter"
+                rel="stylesheet"
+              />
+            </Head>
+          </div>
+        )
+      }
+      
+      // Export default but not immediately identifiable
+      export default (props) => <MyComponent {...props} />
+      `,
+      errors: [
+        {
+          message:
+            "Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font",
+        },
+      ],
+      filename: "pages/complex-export.js",
     },
   ],
 
@@ -190,22 +273,52 @@ const tests = {
     }`,
       filename,
     },
+    // Test case for a non-Google Font link href
+    {
+      code: `
+      import Document, { Html, Head } from "next/document";
+      class MyDocument extends Document {
+        render() {
+          return (
+            <Html>
+              <Head>
+                <link
+                  href="/styles.css"
+                  rel="stylesheet"
+                />
+              </Head>
+            </Html>
+          );
+        }
+      }
+      export default MyDocument;
+      `,
+      filename,
+    },
+    // Test case for a link without href attribute
+    {
+      code: `
+      import Document, { Html, Head } from "next/document";
+      class MyDocument extends Document {
+        render() {
+          return (
+            <Html>
+              <Head>
+                <link rel="stylesheet" />
+              </Head>
+            </Html>
+          );
+        }
+      }
+      export default MyDocument;
+      `,
+      filename,
+    },
   ],
 };
 
 describe("no-page-custom-font", () => {
-  new ESLintTesterV8({
-    parserOptions: {
-      ecmaFeatures: {
-        jsx: true,
-        modules: true,
-      },
-      ecmaVersion: 2018,
-      sourceType: "module",
-    },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
+  new RuleTester({
     languageOptions: {
       ecmaVersion: 2018,
       parserOptions: {
@@ -216,5 +329,5 @@ describe("no-page-custom-font", () => {
       },
       sourceType: "module",
     },
-  }).run("eslint-v9", NextESLintRule, tests);
+  }).run("eslint", NextESLintRule, tests);
 });

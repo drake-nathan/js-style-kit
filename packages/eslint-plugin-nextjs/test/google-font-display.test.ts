@@ -1,6 +1,5 @@
 import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
@@ -166,18 +165,7 @@ const tests = {
 };
 
 describe("google-font-display", () => {
-  new ESLintTesterV8({
-    parserOptions: {
-      ecmaFeatures: {
-        jsx: true,
-        modules: true,
-      },
-      ecmaVersion: 2020,
-      sourceType: "module",
-    },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
+  new RuleTester({
     languageOptions: {
       ecmaVersion: 2020,
       parserOptions: {
@@ -188,5 +176,5 @@ describe("google-font-display", () => {
       },
       sourceType: "module",
     },
-  }).run("eslint-v9", NextESLintRule, tests);
+  }).run("eslint", NextESLintRule, tests);
 });

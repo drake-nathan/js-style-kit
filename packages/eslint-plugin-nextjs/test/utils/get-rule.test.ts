@@ -1,57 +1,32 @@
-import type { Rule } from "eslint";
-
 import { describe, expect, it } from "bun:test";
-import { mock } from "bun:test";
 
 import { getRule } from "./get-rule";
 
-// Create a mock version of the rules object with proper Rule.RuleModule structure
-const mockRules: Record<string, Rule.RuleModule> = {
-  "google-font-display": {
-    create: () => ({}),
-    meta: { docs: { description: "Test rule" } },
-  },
-  "no-img-element": {
-    create: () => ({}),
-    meta: { docs: { description: "Another test rule" } },
-  },
-};
-
-// Setup the mock before tests
-void mock.module("../../src", () => ({
-  rules: mockRules,
-}));
-
 describe("getRule", () => {
-  it("should return the rule when it exists", () => {
-    // Arrange
-    const ruleName = "google-font-display";
-
-    // Act
-    const result = getRule(ruleName);
-
-    // Assert
-    expect(result).toBeDefined();
-    expect(result).toStrictEqual(mockRules[ruleName]);
+  it("should return real rules when they exist", () => {
+    // Test with a few common rules
+    const rules = [
+      "google-font-display",
+      "no-img-element", 
+      "inline-script-id"
+    ];
+    
+    for (const ruleName of rules) {
+      const rule = getRule(ruleName);
+      
+      // All real rules should have these properties
+      expect(rule).toBeDefined();
+      expect(rule).toHaveProperty("create");
+      expect(rule).toHaveProperty("meta");
+      expect(rule).toHaveProperty("meta.docs");
+    }
   });
 
-  it("should return another valid rule", () => {
-    // Arrange
-    const ruleName = "no-img-element";
-
-    // Act
-    const result = getRule(ruleName);
-
-    // Assert
-    expect(result).toBeDefined();
-    expect(result).toStrictEqual(mockRules[ruleName]);
-  });
-
-  it("should throw an error when rule does not exist", () => {
+  it("should throw an error for non-existent rules", () => {
     // Arrange
     const ruleName = "non-existent-rule";
 
     // Act & Assert
-    expect(() => getRule(ruleName)).toThrow(`Rule ${ruleName} not found`);
+    expect(() => getRule(ruleName)).toThrow("Rule non-existent-rule not found");
   });
 });

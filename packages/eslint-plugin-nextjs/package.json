@@ -4,7 +4,12 @@
   "description": "A fork of @next/eslint-plugin-next that's been upgraded for TypeScript and ESLint V9.",
   "keywords": [
     "eslint",
-    "nextjs"
+    "eslintplugin",
+    "eslint-plugin",
+    "next",
+    "nextjs",
+    "eslint-plugin-next",
+    "@next/eslint-plugin-next"
   ],
   "homepage": "https://github.com/drake-nathan/js-style-kit#readme",
   "bugs": {
@@ -49,12 +54,13 @@
     "@types/bun": "^1.2.8",
     "@types/node": "^22.13.14",
     "eslint": "^9.23.0",
-    "eslint-v8": "npm:eslint@^8.57.0",
+    "eslint-plugin-eslint-plugin": "^6.4.0",
+    "js-style-kit": "workspace:*",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2"
   },
   "peerDependencies": {
-    "eslint": "^8.56.0 || ^9.0.0"
+    "eslint": "^8.56.0 || >=9.0.0"
   },
   "engines": {
     "node": "^20.11.0 || >=21.2.0"
