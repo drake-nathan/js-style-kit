@@ -43,7 +43,7 @@
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.6.9",
     "eslint-plugin-nextjs": "^0.1.2",
-    "eslint-plugin-perfectionist": "^4.10.1",
+    "eslint-plugin-perfectionist": "^4.11.0",
     "eslint-plugin-prefer-arrow-functions": "^3.6.2",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-compiler": "19.0.0-beta-bafa41b-20250307",
@@ -60,12 +60,12 @@
     "prettier-plugin-packagejson": "^2.5.10",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "typescript-eslint": "^8.28.0"
+    "typescript-eslint": "^8.29.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/bun": "^1.2.8",
-    "@types/node": "^22.13.14",
+    "@types/node": "^22.14.0",
     "commander": "^13.1.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2"
