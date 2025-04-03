@@ -1,30 +1,58 @@
+import {
+  AST_NODE_TYPES,
+  ESLintUtils,
+  type TSESTree,
+} from "@typescript-eslint/utils";
 import path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
+const name = "no-head-element";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-const url = "https://nextjs.org/docs/messages/no-head-element";
+interface Docs {
+  /**
+   * Category of the rule
+   */
+  category: string;
+  /**
+   * Whether the rule is included in the recommended config.
+   */
+  recommended: boolean;
+}
 
-export const noHeadElement = defineRule({
-  create: (context: any) => ({
-    JSXOpeningElement: (node: any) => {
+const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
+
+type Options = [];
+type MessageId = "noHeadElement";
+
+/**
+ * Rule to prevent usage of <head> element
+ */
+export const noHeadElement = createRule<Options, MessageId>({
+  create: (context) => ({
+    JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
       const paths = context.filename;
 
       const isInAppDir = () =>
-        // TODO: fix
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        // Check if we're in the app directory using either platform separator
         paths.includes(`app${path.sep}`) ||
         paths.includes(`app${path.posix.sep}`);
       // Only lint the <head> element in pages directory
-      if (node.name.name !== "head" || isInAppDir()) {
+      if (
+        node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
+        node.name.name !== "head" ||
+        isInAppDir()
+      ) {
         return;
       }
 
       context.report({
-        message: `Do not use \`<head>\` element. Use \`<Head />\` from \`next/head\` instead. See: ${url}`,
+        data: { url },
+        messageId: "noHeadElement",
         node,
       });
     },
   }),
+  defaultOptions: [],
   meta: {
     docs: {
       category: "HTML",
@@ -32,7 +60,12 @@ export const noHeadElement = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noHeadElement:
+        "Do not use `<head>` element. Use `<Head />` from `next/head` instead. See: {{url}}",
+    },
     schema: [],
     type: "problem",
   },
+  name,
 });

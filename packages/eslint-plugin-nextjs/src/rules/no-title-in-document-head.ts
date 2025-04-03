@@ -1,49 +1,74 @@
-import { defineRule } from "../utils/define-rule.js";
-const url = "https://nextjs.org/docs/messages/no-title-in-document-head";
+import {
+  AST_NODE_TYPES,
+  ESLintUtils,
+  type TSESTree,
+} from "@typescript-eslint/utils";
 
-export const noTitleInDocumentHead = defineRule({
-  create: (context: any) => {
+const name = "no-title-in-document-head";
+const url = `https://nextjs.org/docs/messages/${name}`;
+
+interface Docs {
+  /**
+   * Whether the rule is included in the recommended config.
+   */
+  recommended: boolean;
+}
+
+const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
+
+type Options = [];
+type MessageId = "noTitleInDocumentHead";
+
+/**
+ * Rule to prevent usage of <title> with Head component from next/document
+ */
+export const noTitleInDocumentHead = createRule<Options, MessageId>({
+  create: (context) => {
     let headFromNextDocument = false;
     return {
-      ImportDeclaration: (node: any) => {
+      ImportDeclaration: (node: TSESTree.ImportDeclaration) => {
         if (node.source.value === "next/document") {
           if (
             node.specifiers.some(
-              ({ local }: { local: any }) => local.name === "Head",
+              (specifier) =>
+                specifier.type === AST_NODE_TYPES.ImportSpecifier &&
+                specifier.local.name === "Head",
             )
           ) {
             headFromNextDocument = true;
           }
         }
       },
-      JSXElement: (node: any) => {
+      JSXElement: (node: TSESTree.JSXElement) => {
         if (!headFromNextDocument) {
           return;
         }
 
         if (
-          node.openingElement?.name &&
+          node.openingElement.name.type !== AST_NODE_TYPES.JSXIdentifier ||
           node.openingElement.name.name !== "Head"
         ) {
           return;
         }
 
         const titleTag = node.children.find(
-          (child: any) =>
-            child.openingElement?.name &&
-            child.openingElement.name.type === "JSXIdentifier" &&
+          (child): child is TSESTree.JSXElement =>
+            child.type === AST_NODE_TYPES.JSXElement &&
+            child.openingElement.name.type === AST_NODE_TYPES.JSXIdentifier &&
             child.openingElement.name.name === "title",
         );
 
         if (titleTag) {
           context.report({
-            message: `Do not use \`<title>\` element with \`<Head />\` component from \`next/document\`. Titles should defined at the page-level using \`<Head />\` from \`next/head\` instead. See: ${url}`,
+            data: { url },
+            messageId: "noTitleInDocumentHead",
             node: titleTag,
           });
         }
       },
     };
   },
+  defaultOptions: [],
   meta: {
     docs: {
       description:
@@ -51,7 +76,12 @@ export const noTitleInDocumentHead = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noTitleInDocumentHead:
+        "Do not use `<title>` element with `<Head />` component from `next/document`. Titles should defined at the page-level using `<Head />` from `next/head` instead. See: {{url}}",
+    },
     schema: [],
     type: "problem",
   },
+  name,
 });

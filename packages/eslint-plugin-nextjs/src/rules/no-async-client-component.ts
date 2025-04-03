@@ -1,58 +1,82 @@
-import { defineRule } from "../utils/define-rule.js";
+import {
+  AST_NODE_TYPES,
+  ESLintUtils,
+  type TSESTree,
+} from "@typescript-eslint/utils";
 
-const url = "https://nextjs.org/docs/messages/no-async-client-component";
+const name = "no-async-client-component";
+const url = `https://nextjs.org/docs/messages/${name}`;
 const description = "Prevent client components from being async functions.";
-const message = `${description} See: ${url}`;
 
 const isCapitalized = (str: string): boolean => /[A-Z]/.test(str[0] ?? "");
 
-export const noAsyncClientComponent = defineRule({
-  create: (context: any) => ({
-    Program: (node: any) => {
+interface Docs {
+  /**
+   * Whether the rule is included in the recommended config.
+   */
+  recommended: boolean;
+}
+
+const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
+
+type Options = [];
+type MessageId = "noAsyncClientComponent";
+
+/**
+ * Rule to prevent client components from being async functions
+ */
+export const noAsyncClientComponent = createRule<Options, MessageId>({
+  create: (context) => ({
+    Program: (node: TSESTree.Program) => {
       let isClientComponent = false;
 
       for (const block of node.body) {
         if (
-          block.type === "ExpressionStatement" &&
-          block.expression.type === "Literal" &&
+          block.type === AST_NODE_TYPES.ExpressionStatement &&
+          block.expression.type === AST_NODE_TYPES.Literal &&
           block.expression.value === "use client"
         ) {
           isClientComponent = true;
         }
 
-        if (block.type === "ExportDefaultDeclaration" && isClientComponent) {
+        if (
+          block.type === AST_NODE_TYPES.ExportDefaultDeclaration &&
+          isClientComponent
+        ) {
           // export default async function MyComponent() {...}
           if (
-            block.declaration?.type === "FunctionDeclaration" &&
+            block.declaration.type === AST_NODE_TYPES.FunctionDeclaration &&
             block.declaration.async &&
+            block.declaration.id &&
             isCapitalized(block.declaration.id.name)
           ) {
             context.report({
-              message,
+              data: { url },
+              messageId: "noAsyncClientComponent",
               node: block,
             });
           }
 
           // async function MyComponent() {...}; export default MyComponent;
           if (
-            block.declaration.type === "Identifier" &&
+            block.declaration.type === AST_NODE_TYPES.Identifier &&
             isCapitalized(block.declaration.name)
           ) {
             const targetName = block.declaration.name;
 
-            const functionDeclaration = node.body.find((localBlock: any) => {
+            const functionDeclaration = node.body.find((localBlock) => {
               if (
-                localBlock.type === "FunctionDeclaration" &&
+                localBlock.type === AST_NODE_TYPES.FunctionDeclaration &&
                 localBlock.id.name === targetName
               ) {
                 return true;
               }
 
               if (
-                localBlock.type === "VariableDeclaration" &&
+                localBlock.type === AST_NODE_TYPES.VariableDeclaration &&
                 localBlock.declarations.find(
-                  (declaration: any) =>
-                    declaration.id?.type === "Identifier" &&
+                  (declaration) =>
+                    declaration.id.type === AST_NODE_TYPES.Identifier &&
                     declaration.id.name === targetName,
                 )
               ) {
@@ -63,28 +87,34 @@ export const noAsyncClientComponent = defineRule({
             });
 
             if (
-              functionDeclaration?.type === "FunctionDeclaration" &&
+              functionDeclaration?.type ===
+                AST_NODE_TYPES.FunctionDeclaration &&
               functionDeclaration.async
             ) {
               context.report({
-                message,
+                data: { url },
+                messageId: "noAsyncClientComponent",
                 node: functionDeclaration,
               });
             }
 
-            if (functionDeclaration?.type === "VariableDeclaration") {
+            if (
+              functionDeclaration?.type === AST_NODE_TYPES.VariableDeclaration
+            ) {
               const varDeclarator = functionDeclaration.declarations.find(
-                (declaration: any) =>
-                  declaration.id?.type === "Identifier" &&
+                (declaration) =>
+                  declaration.id.type === AST_NODE_TYPES.Identifier &&
                   declaration.id.name === targetName,
               );
 
               if (
-                varDeclarator?.init?.type === "ArrowFunctionExpression" &&
+                varDeclarator?.init?.type ===
+                  AST_NODE_TYPES.ArrowFunctionExpression &&
                 varDeclarator.init.async
               ) {
                 context.report({
-                  message,
+                  data: { url },
+                  messageId: "noAsyncClientComponent",
                   node: functionDeclaration,
                 });
               }
@@ -95,13 +125,19 @@ export const noAsyncClientComponent = defineRule({
     },
   }),
 
+  defaultOptions: [],
   meta: {
     docs: {
       description,
       recommended: true,
       url,
     },
+    messages: {
+      noAsyncClientComponent:
+        "Prevent client components from being async functions. See: {{url}}",
+    },
     schema: [],
     type: "problem",
   },
+  name,
 });

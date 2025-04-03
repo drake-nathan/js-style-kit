@@ -1,17 +1,38 @@
-import type { AST } from "eslint";
-
+import {
+  AST_NODE_TYPES,
+  ESLintUtils,
+  type TSESTree,
+} from "@typescript-eslint/utils";
 import { posix, sep } from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
 import NodeAttributes from "../utils/node-attributes.js";
 
-const url = "https://nextjs.org/docs/messages/no-page-custom-font";
+const name = "no-page-custom-font";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-const isIdentifierMatch = (id1: any, id2: any): boolean =>
+const isIdentifierMatch = (
+  id1: null | TSESTree.Identifier,
+  id2: null | TSESTree.Identifier,
+): boolean | null =>
   (id1 === null && id2 === null) || (id1 && id2 && id1.name === id2.name);
 
-export const noPageCustomFont = defineRule({
-  create: (context: any): any => {
+interface Docs {
+  /**
+   * Whether the rule is included in the recommended config.
+   */
+  recommended: boolean;
+}
+
+const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
+
+type Options = [];
+type MessageId = "noPageCustomFont" | "noPageCustomFontOutsideHead";
+
+/**
+ * Rule to prevent page-only custom fonts
+ */
+export const noPageCustomFont = createRule<Options, MessageId>({
+  create: (context) => {
     const { sourceCode } = context;
     const paths = context.filename.split("pages");
     const page = paths[paths.length - 1];
@@ -22,37 +43,39 @@ export const noPageCustomFont = defineRule({
     }
 
     const isDocument =
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       page.startsWith(`${sep}_document`) ||
       page.startsWith(`${posix.sep}_document`);
 
     let documentImportName: string | undefined;
-    let localDefaultExportId: any;
-    let exportDeclarationType: string | undefined;
+    let localDefaultExportId: null | TSESTree.Identifier = null;
+    let exportDeclarationType: AST_NODE_TYPES | undefined;
 
     return {
-      ExportDefaultDeclaration: (node: any): void => {
+      ExportDefaultDeclaration: (
+        node: TSESTree.ExportDefaultDeclaration,
+      ): void => {
         exportDeclarationType = node.declaration.type;
 
-        if (node.declaration.type === "FunctionDeclaration") {
+        if (node.declaration.type === AST_NODE_TYPES.FunctionDeclaration) {
           localDefaultExportId = node.declaration.id;
           return;
         }
 
         if (
-          node.declaration.type === "ClassDeclaration" &&
+          node.declaration.type === AST_NODE_TYPES.ClassDeclaration &&
           node.declaration.superClass &&
-          "name" in node.declaration.superClass &&
+          node.declaration.superClass.type === AST_NODE_TYPES.Identifier &&
           node.declaration.superClass.name === documentImportName
         ) {
           localDefaultExportId = node.declaration.id;
         }
       },
 
-      ImportDeclaration: (node: any): void => {
+      ImportDeclaration: (node: TSESTree.ImportDeclaration): void => {
         if (node.source.value === "next/document") {
           const documentImport = node.specifiers.find(
-            ({ type }: { type: string }) => type === "ImportDefaultSpecifier",
+            (specifier): specifier is TSESTree.ImportDefaultSpecifier =>
+              specifier.type === AST_NODE_TYPES.ImportDefaultSpecifier,
           );
           if (documentImport?.local) {
             documentImportName = documentImport.local.name;
@@ -60,8 +83,11 @@ export const noPageCustomFont = defineRule({
         }
       },
 
-      JSXOpeningElement: (node: any): void => {
-        if (node.name.name !== "link") {
+      JSXOpeningElement: (node: TSESTree.JSXOpeningElement): void => {
+        if (
+          node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
+          node.name.name !== "link"
+        ) {
           return;
         }
 
@@ -73,8 +99,13 @@ export const noPageCustomFont = defineRule({
         if (!localDefaultExportId) {
           // find the top level of the module
           const program = ancestors.find(
-            (ancestor: any) => ancestor.type === "Program",
-          ) as AST.Program;
+            (ancestor): ancestor is TSESTree.Program =>
+              ancestor.type === AST_NODE_TYPES.Program,
+          );
+
+          if (!program?.tokens) {
+            return;
+          }
 
           // go over each token to find the combination of `export default <n>`
           for (let i = 0; i <= program.tokens.length - 1; i++) {
@@ -84,39 +115,53 @@ export const noPageCustomFont = defineRule({
 
             const token = program.tokens[i];
 
+            // TODO: fix
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
             if (token?.type === "Keyword" && token.value === "export") {
               const nextToken = program.tokens[i + 1];
 
-              if (
-                nextToken &&
-                nextToken.type === "Keyword" &&
-                nextToken.value === "default"
-              ) {
+              if (nextToken && nextToken.value === "default") {
                 const maybeIdentifier = program.tokens[i + 2];
 
+                // TODO: fix
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
                 if (maybeIdentifier && maybeIdentifier.type === "Identifier") {
-                  localDefaultExportId = { name: maybeIdentifier.value };
+                  // Create a simple identifier with the name
+                  // This is a simplification and may not be fully type-safe
+                  // but works for our comparison purposes
+                  localDefaultExportId = {
+                    decorators: [],
+                    loc: {
+                      end: { column: 0, line: 0 },
+                      start: { column: 0, line: 0 },
+                    },
+                    name: maybeIdentifier.value,
+                    optional: false,
+                    range: [0, 0],
+                    type: AST_NODE_TYPES.Identifier,
+                    // TODO: fix
+                  } as unknown as TSESTree.Identifier;
                 }
               }
             }
           }
         }
 
-        const parentComponent = ancestors.find((ancestor: any) => {
+        const parentComponent = ancestors.find((ancestor) => {
           // export default class ... extends ...
-          if (exportDeclarationType === "ClassDeclaration") {
+          if (exportDeclarationType === AST_NODE_TYPES.ClassDeclaration) {
             return (
               ancestor.type === exportDeclarationType &&
               "superClass" in ancestor &&
               ancestor.superClass &&
-              "name" in ancestor.superClass &&
+              ancestor.superClass.type === AST_NODE_TYPES.Identifier &&
               ancestor.superClass.name === documentImportName
             );
           }
 
           if ("id" in ancestor) {
             // export default function ...
-            if (exportDeclarationType === "FunctionDeclaration") {
+            if (exportDeclarationType === AST_NODE_TYPES.FunctionDeclaration) {
               return (
                 ancestor.type === exportDeclarationType &&
                 isIdentifierMatch(ancestor.id, localDefaultExportId)
@@ -125,6 +170,7 @@ export const noPageCustomFont = defineRule({
 
             // function ...() {} export default ...
             // class ... extends ...; export default ...
+            // @ts-expect-error TODO: fix this
             return isIdentifierMatch(ancestor.id, localDefaultExportId);
           }
 
@@ -147,28 +193,35 @@ export const noPageCustomFont = defineRule({
           hrefValue.startsWith("https://fonts.googleapis.com/css");
 
         if (isGoogleFont) {
-          const end = `This is discouraged. See: ${url}`;
+          // No longer needed as we use messageId
 
-          const message =
-            isDocument ?
-              `Using \`<link />\` outside of \`<Head>\` will disable automatic font optimization. ${end}`
-            : `Custom fonts not added in \`pages/_document.js\` will only load for a single page. ${end}`;
+          // Determine which message to use based on context
 
           context.report({
-            message,
+            data: { url },
+            messageId:
+              isDocument ? "noPageCustomFontOutsideHead" : "noPageCustomFont",
             node,
           });
         }
       },
     };
   },
+  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent page-only custom fonts.",
       recommended: true,
       url,
     },
+    messages: {
+      noPageCustomFont:
+        "Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: {{url}}",
+      noPageCustomFontOutsideHead:
+        "Using `<link />` outside of `<Head>` will disable automatic font optimization. This is discouraged. See: {{url}}",
+    },
     schema: [],
     type: "problem",
   },
+  name,
 });

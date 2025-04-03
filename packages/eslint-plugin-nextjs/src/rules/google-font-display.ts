@@ -1,19 +1,40 @@
-import type { Rule } from "eslint";
+import {
+  AST_NODE_TYPES,
+  ESLintUtils,
+  type TSESTree,
+} from "@typescript-eslint/utils";
+import { URLSearchParams } from "node:url";
 
-import { defineRule } from "../utils/define-rule.js";
 import NodeAttributes from "../utils/node-attributes.js";
 
-const url = "https://nextjs.org/docs/messages/google-font-display";
+const name = "google-font-display";
+const url = `https://nextjs.org/docs/messages/${name}`;
+
+interface Docs {
+  /**
+   * Whether the rule is included in the recommended config.
+   */
+  recommended: boolean;
+}
+
+const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
+
+type Options = [];
+type MessageId = "missingFontDisplay" | "notRecommendedFontDisplay";
 
 /**
  * Rule to enforce font-display behavior with Google Fonts
  */
-export const googleFontDisplay = defineRule({
-  create: (context: Rule.RuleContext) => ({
-    JSXOpeningElement: (node: any) => {
-      let message: string | undefined;
+export const googleFontDisplay = createRule<Options, MessageId>({
+  create: (context) => ({
+    JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
+      let messageId: MessageId | undefined;
+      let data: Record<string, string> | undefined;
 
-      if (node.name.name !== "link") {
+      if (
+        node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
+        node.name.name !== "link"
+      ) {
         return;
       }
 
@@ -28,39 +49,48 @@ export const googleFontDisplay = defineRule({
         hrefValue.startsWith("https://fonts.googleapis.com/css");
 
       if (isGoogleFont) {
-        // @ts-expect-error initial override, TODO: fix
         const params = new URLSearchParams(hrefValue.split("?", 2)[1]);
         const displayValue = params.get("display");
 
         if (!params.has("display")) {
-          message =
-            "A font-display parameter is missing (adding `&display=optional` is recommended).";
+          messageId = "missingFontDisplay";
+          data = { url };
         } else if (
           displayValue === "auto" ||
           displayValue === "block" ||
           displayValue === "fallback"
         ) {
-          message = `${
-            displayValue[0]?.toUpperCase() + displayValue.slice(1)
-          } is not recommended.`;
+          messageId = "notRecommendedFontDisplay";
+          data = {
+            display: displayValue[0]?.toUpperCase() + displayValue.slice(1),
+            url,
+          };
         }
       }
 
-      if (message) {
+      if (messageId) {
         context.report({
-          message: `${message} See: ${url}`,
+          data,
+          messageId,
           node,
         });
       }
     },
   }),
+  defaultOptions: [],
   meta: {
     docs: {
       description: "Enforce font-display behavior with Google Fonts.",
       recommended: true,
       url,
     },
+    messages: {
+      missingFontDisplay:
+        "A font-display parameter is missing (adding `&display=optional` is recommended). See: {{url}}",
+      notRecommendedFontDisplay: "{{display}} is not recommended. See: {{url}}",
+    },
     schema: [],
     type: "problem",
   },
+  name,
 });

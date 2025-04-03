@@ -1,12 +1,31 @@
+import {
+  AST_NODE_TYPES,
+  ESLintUtils,
+  type TSESTree,
+} from "@typescript-eslint/utils";
 import * as path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
+const name = "no-styled-jsx-in-document";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-const url = "https://nextjs.org/docs/messages/no-styled-jsx-in-document";
+interface Docs {
+  /**
+   * Whether the rule is included in the recommended config.
+   */
+  recommended: boolean;
+}
 
-export const noStyledJsxInDocument = defineRule({
-  create: (context: any) => ({
-    JSXOpeningElement: (node: any) => {
+const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
+
+type Options = [];
+type MessageId = "noStyledJsxInDocument";
+
+/**
+ * Rule to prevent usage of styled-jsx in pages/_document.js
+ */
+export const noStyledJsxInDocument = createRule<Options, MessageId>({
+  create: (context) => ({
+    JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
       const document = context.filename.split("pages", 2)[1];
       if (!document) {
         return;
@@ -23,26 +42,36 @@ export const noStyledJsxInDocument = defineRule({
       }
 
       if (
+        node.name.type === AST_NODE_TYPES.JSXIdentifier &&
         node.name.name === "style" &&
         node.attributes.find(
-          (attr: any) =>
-            attr.type === "JSXAttribute" && attr.name.name === "jsx",
+          (attr): attr is TSESTree.JSXAttribute =>
+            attr.type === AST_NODE_TYPES.JSXAttribute &&
+            attr.name.type === AST_NODE_TYPES.JSXIdentifier &&
+            attr.name.name === "jsx",
         )
       ) {
         context.report({
-          message: `\`styled-jsx\` should not be used in \`pages/_document.js\`. See: ${url}`,
+          data: { url },
+          messageId: "noStyledJsxInDocument",
           node,
         });
       }
     },
   }),
+  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent usage of `styled-jsx` in `pages/_document.js`.",
       recommended: true,
       url,
     },
+    messages: {
+      noStyledJsxInDocument:
+        "`styled-jsx` should not be used in `pages/_document.js`. See: {{url}}",
+    },
     schema: [],
     type: "problem",
   },
+  name,
 });

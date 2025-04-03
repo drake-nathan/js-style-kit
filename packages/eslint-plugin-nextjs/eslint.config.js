@@ -13,7 +13,6 @@ export default eslintConfig(
   {
     name: "custom-overrides",
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/restrict-plus-operands": "off",
       "no-param-reassign": "off",
     },
