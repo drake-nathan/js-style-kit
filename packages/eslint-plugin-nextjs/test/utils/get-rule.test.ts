@@ -5,15 +5,11 @@ import { getRule } from "./get-rule";
 describe("getRule", () => {
   it("should return real rules when they exist", () => {
     // Test with a few common rules
-    const rules = [
-      "google-font-display",
-      "no-img-element", 
-      "inline-script-id"
-    ];
-    
+    const rules = ["google-font-display", "no-img-element", "inline-script-id"];
+
     for (const ruleName of rules) {
       const rule = getRule(ruleName);
-      
+
       // All real rules should have these properties
       expect(rule).toBeDefined();
       expect(rule).toHaveProperty("create");

@@ -1,5 +1,4 @@
 {
-  "exclude": ["src/**/*.test.ts"],
   "extends": "@repo/typescript-config/base.json",
   "include": ["src/**/*", "bin/index.ts"]
 }

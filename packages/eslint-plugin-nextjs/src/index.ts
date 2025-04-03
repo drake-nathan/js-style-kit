@@ -1,4 +1,4 @@
-import type { ESLint, Linter } from "eslint";
+import type { FlatConfig, Linter } from "@typescript-eslint/utils/ts-eslint";
 
 import fs from "node:fs";
 
@@ -28,7 +28,7 @@ const pkg = JSON.parse(
   fs.readFileSync(new URL("./package.json", import.meta.url), "utf8"),
 );
 
-const plugin: ESLint.Plugin = {
+const plugin: Linter.Plugin = {
   meta: {
     name: pkg.name,
     version: pkg.version,
@@ -90,7 +90,7 @@ const recommendedRules: Linter.RulesRecord = {
 /**
  * The only config we need because we're only using warnings.
  */
-const recommendedConfig: Linter.Config = {
+const recommendedConfig: FlatConfig.Config = {
   files: ["**/*.{js,jsx,ts,tsx}"],
   plugins: {
     nextjs: plugin,
@@ -104,6 +104,7 @@ const recommendedConfig: Linter.Config = {
 export default {
   ...plugin,
   configs: {
+    // @ts-expect-error just some weird eslint/tseslint stuff
     recommended: recommendedConfig,
   },
-} satisfies ESLint.Plugin;
+} satisfies Linter.Plugin;

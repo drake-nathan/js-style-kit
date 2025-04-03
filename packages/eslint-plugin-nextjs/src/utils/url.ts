@@ -179,6 +179,7 @@ export const getUrlFromAppDirectory = (
     return new RegExp(urlReg);
   });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const execOnce = <TArgs extends any[], TResult>(
   fn: (...args: TArgs) => TResult,
 ): ((...args: TArgs) => TResult) => {

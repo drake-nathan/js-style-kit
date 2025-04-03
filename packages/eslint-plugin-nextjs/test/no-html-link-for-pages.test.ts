@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jest/expect-expect */
 
 import { describe, expect, it, spyOn } from "bun:test";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, it } from "bun:test";
 
 import { getRootDirs } from "../../src/utils/get-root-dirs";
@@ -10,7 +11,7 @@ describe("getRootDirs", () => {
     } as any;
 
     const result = getRootDirs(context);
-    
+
     expect(result).toStrictEqual(["/test/cwd"]);
   });
 
@@ -21,7 +22,7 @@ describe("getRootDirs", () => {
     } as any;
 
     const result = getRootDirs(context);
-    
+
     expect(result).toStrictEqual(["/test/cwd"]);
   });
 });
