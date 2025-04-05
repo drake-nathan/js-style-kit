@@ -2,7 +2,7 @@
 import { spawn } from "node:child_process";
 
 const commands = [
-  { color: "\x1b[36m", command: "turbo run format:check", name: "format" }, // Cyan
+  { color: "\x1b[36m", command: "bun run format:check", name: "format" }, // Cyan
   { color: "\x1b[33m", command: "turbo run lint", name: "lint" }, // Yellow
   { color: "\x1b[33m", command: "turbo run lint:md", name: "lint:md" }, // Yellow
   { color: "\x1b[35m", command: "turbo run test", name: "test" }, // Magenta

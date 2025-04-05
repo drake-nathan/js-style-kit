@@ -37,8 +37,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "format": "prettier --write . --cache",
-    "format:check": "prettier --check . --cache",
+    "format": "prettier . --write --cache",
+    "format:check": "prettier . --check --cache",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:inspect": "eslint --inspect-config",
