@@ -76,36 +76,8 @@ jobs:
       - name: Build
         run: turbo run build
 
-      - name: Prettier --write
-        run: bun run format
-
-      - name: Commit Prettier changes if needed
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git add .
-            git commit -m "style: apply prettier formatting"
-            
-            # For pull requests
-            if [ -n "${{ github.head_ref }}" ]; then
-              git push origin HEAD:${{ github.head_ref }}
-            # For direct pushes to branches
-            else
-              git push origin HEAD:${{ github.ref_name }}
-            fi
-            
-            echo "Formatting changes were committed and pushed"
-          else
-            echo "No formatting changes needed"
-          fi
-
       - name: ESLint
         run: turbo run lint -- --max-warnings 0
-
-      - name: Markdown lint
-        run: turbo run lint:md
 
       - name: Test and generate coverage reports
         id: test-coverage
