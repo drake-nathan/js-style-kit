@@ -1,7 +1,6 @@
 import type { FlatConfig, Linter } from "@typescript-eslint/utils/ts-eslint";
 
-import fs from "node:fs";
-
+// import fs from "node:fs";
 import { googleFontDisplay } from "./rules/google-font-display.js";
 import { googleFontPreconnect } from "./rules/google-font-preconnect.js";
 import { inlineScriptId } from "./rules/inline-script-id.js";
@@ -24,9 +23,13 @@ import { noTitleInDocumentHead } from "./rules/no-title-in-document-head.js";
 import { noTypos } from "./rules/no-typos.js";
 import { noUnwantedPolyfillio } from "./rules/no-unwanted-polyfillio.js";
 
-const pkg = JSON.parse(
-  fs.readFileSync(new URL("./package.json", import.meta.url), "utf8"),
-);
+// const pkg = JSON.parse(
+//   fs.readFileSync(new URL("./package.json", import.meta.url), "utf8"),
+// );
+const pkg = {
+  name: "eslint-plugin-nextjs",
+  version: "1.0.0",
+};
 
 const plugin: Linter.Plugin = {
   meta: {
