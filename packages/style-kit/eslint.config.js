@@ -1,5 +1,5 @@
 // @ts-check
-import { eslintConfig } from "../style-kit/dist/index.js";
+import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig({
   jsdoc: {
