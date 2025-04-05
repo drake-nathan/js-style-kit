@@ -27,7 +27,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
-          # Add token to allow commits back to the repository
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref || github.ref_name }}
 
@@ -39,42 +38,25 @@ jobs:
       - name: Restore cache
         uses: actions/cache@v4
         with:
-          path: node_modules
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          path: |
+            node_modules
+            .turbo
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}-
             ${{ runner.os }}-bun-
-
-      - name: Install global Turbo
-        run: bun add --global turbo@^2
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Save cache
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-
-      - name: Cache turbo build setup
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ hashFiles('**/bun.lock') }}-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-${{ hashFiles('**/bun.lock') }}-
-            ${{ runner.os }}-turbo-
+      - name: Install global Turbo with Bun
+        run: bun add --global turbo@^2
 
       - name: Sherif Monorepo Check
-        run: turbo run sherif
+        run: bun turbo run sherif
 
       - name: Build
-        run: turbo run build
+        run: bun turbo run build
 
       - name: Prettier --write
         run: bun run format
@@ -102,14 +84,14 @@ jobs:
           fi
 
       - name: ESLint
-        run: turbo run lint -- --max-warnings 0
+        run: bun turbo run lint -- --max-warnings 0
 
       - name: Markdown lint
-        run: turbo run lint:md
+        run: bun turbo run lint:md
 
       - name: Test and generate coverage reports
         id: test-coverage
-        run: turbo run test:coverage
+        run: bun turbo run test:coverage
         continue-on-error: true
 
       - name: Upload coverage reports to Codecov
