@@ -60,7 +60,7 @@
     "prettier-plugin-packagejson": "^2.5.10",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "typescript-eslint": "^8.29.0"
+    "typescript-eslint": "8.28.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
