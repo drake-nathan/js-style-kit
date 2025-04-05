@@ -53,10 +53,10 @@
     "@types/bun": "^1.2.8",
     "@types/node": "^22.14.0",
     "@typescript-eslint/utils": "^8.29.0",
-    "eslint": "^9.23.0",
+    "eslint": "^9.24.0",
     "eslint-plugin-eslint-plugin": "^6.4.0",
     "tsup": "^8.4.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "eslint": ">=9.0.0"

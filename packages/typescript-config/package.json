@@ -4,5 +4,8 @@
   "scripts": {
     "format": "prettier --write . --cache",
     "format:check": "prettier --check . --cache"
+  },
+  "dependencies": {
+    "typescript": "^5.8.3"
   }
 }

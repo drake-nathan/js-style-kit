@@ -30,8 +30,8 @@
     "js-style-kit": "workspace:*",
     "markdownlint-cli": "^0.44.0",
     "sherif": "^1.4.0",
-    "turbo": "^2.4.4",
-    "typescript": "^5.8.2"
+    "turbo": "^2.5.0",
+    "typescript": "^5.8.3"
   },
   "packageManager": "bun@1.2.8",
   "engines": {
