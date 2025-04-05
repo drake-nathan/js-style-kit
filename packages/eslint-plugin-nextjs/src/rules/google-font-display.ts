@@ -49,7 +49,11 @@ export const googleFontDisplay = createRule<Options, MessageId>({
         hrefValue.startsWith("https://fonts.googleapis.com/css");
 
       if (isGoogleFont) {
-        const params = new URLSearchParams(hrefValue.split("?", 2)[1]);
+        const queryPart =
+          hrefValue.includes("?") ?
+            hrefValue.substring(hrefValue.indexOf("?") + 1)
+          : "";
+        const params = new URLSearchParams(queryPart);
         const displayValue = params.get("display");
 
         if (!params.has("display")) {

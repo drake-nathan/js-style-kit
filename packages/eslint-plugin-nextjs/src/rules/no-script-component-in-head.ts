@@ -26,6 +26,35 @@ export const noScriptComponentInHead = createRule<Options, MessageId>({
   create: (context) => {
     let isNextHead: null | string = null;
 
+    /**
+     * Recursively find Script components inside a node's children
+     */
+    const findNestedScriptComponent = (
+      node: TSESTree.Node,
+    ): null | TSESTree.JSXElement => {
+      if (node.type !== AST_NODE_TYPES.JSXElement) {
+        return null;
+      }
+
+      // Check if current element is a Script component
+      if (
+        node.openingElement.name.type === AST_NODE_TYPES.JSXIdentifier &&
+        node.openingElement.name.name === "Script"
+      ) {
+        return node;
+      }
+
+      // Recursively check all children
+      for (const child of node.children) {
+        const scriptComponent = findNestedScriptComponent(child);
+        if (scriptComponent) {
+          return scriptComponent;
+        }
+      }
+
+      return null;
+    };
+
     return {
       ImportDeclaration: (node: TSESTree.ImportDeclaration) => {
         if (node.source.value === "next/head") {
@@ -44,12 +73,8 @@ export const noScriptComponentInHead = createRule<Options, MessageId>({
           return;
         }
 
-        const scriptTag = node.children.find(
-          (child): child is TSESTree.JSXElement =>
-            child.type === AST_NODE_TYPES.JSXElement &&
-            child.openingElement.name.type === AST_NODE_TYPES.JSXIdentifier &&
-            child.openingElement.name.name === "Script",
-        );
+        // Use recursive function to find any nested Script component
+        const scriptTag = findNestedScriptComponent(node);
 
         if (scriptTag) {
           context.report({
