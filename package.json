@@ -14,7 +14,7 @@
     "changeset": "changeset",
     "ci": "node scripts/ci.js",
     "dev": "turbo run dev",
-    "format": "prettier . --write --cache",
+    "format": "prettier . --write --cache --loglevel debug",
     "format:check": "prettier . --check --cache",
     "lint": "eslint . --max-warnings 0 --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
     "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
