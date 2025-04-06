@@ -5,7 +5,12 @@ import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("google-font-preconnect");
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -22,6 +27,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when rel attribute is missing from Google Font link",
     },
     {
       code: `
@@ -38,11 +44,13 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when rel attribute is not 'preconnect' for Google Font link",
     },
   ],
 
   valid: [
-    `export const Test = () => (
+    {
+      code: `export const Test = () => (
         <div>
           <link rel="preconnect" href="https://fonts.gstatic.com"/>
           <link
@@ -56,6 +64,8 @@ const tests = {
         </div>
       )
     `,
+      name: "should allow Google Font link with rel='preconnect' and other non-Google Font links",
+    },
   ],
 };
 
