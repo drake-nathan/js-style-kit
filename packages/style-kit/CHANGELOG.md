@@ -1,5 +1,12 @@
 # js-style-kit
 
+## 0.2.12
+
+### Patch Changes
+
+- Updated dependencies [7ea2ade]
+  - eslint-plugin-nextjs@1.0.0
+
 ## 0.2.11
 
 ### Patch Changes
