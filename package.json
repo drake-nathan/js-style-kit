@@ -18,7 +18,7 @@
     "format:check": "prettier . --check --cache",
     "lint": "eslint . --max-warnings 0 --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
     "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
-    "lint:md": "markdownlint '**/*.md' --ignore node_modules",
+    "lint:md": "markdownlint '**/*.md' --ignore node_modules --ignore apps",
     "outdated": "bun outdated --filter \"js-style-kit-root\" --filter \"js-style-kit\" --filter \"js-style-kit-docs\"",
     "sherif": "sherif",
     "test": "turbo run test",

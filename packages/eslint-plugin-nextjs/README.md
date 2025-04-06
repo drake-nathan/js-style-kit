@@ -35,13 +35,15 @@ bun add eslint eslint-plugin-nextjs -d
 
 ## Usage
 
-I've cleaned up the API, so it's not 1:1 with the original plugin, but all of the rules remain the same (with upgraded type-safety).
+I've cleaned up the API, so it's not 1:1 with the original plugin, but all of the rules remain the same.
 
 The original plugin ships two configs, recommended and core-web-vitals. They're the same but the latter has two rules upgraded to errors. I've consolidated this to a single "recommended" config with all rules warnings by default.
 
 My belief is that all ESLint rules should be warnings to allow you to distinguish between ESLint issues and TypeScript issues easily in your IDE (orange squiggly vs red squiggly).
 
 If you're migrating from either config, all rules will still be enabled. I didn't changed any core functionality.
+
+> **Note**: If you run this plugin with `next lint`, it will give you a warning that the next eslint plugin is not installed. You can either ignore this, or run your lint with `eslint .` instead.
 
 ### Flat Config
 
@@ -55,7 +57,7 @@ export default [
 ];
 ```
 
-If you're project has `"type": "module"` in `package.json`, you can use `eslint.config.js`, otherwise use `eslint.config.mjs` which will allow you to use ESM syntax in that file.
+If your project has `"type": "module"` in `package.json`, you can use `eslint.config.js`, otherwise use `eslint.config.mjs` which will allow you to use ESM syntax in that file.
 
 ### Custom Config
 

@@ -11,56 +11,10 @@ A zero-configuration style guide for ESLint and Prettier that provides sensible 
 
 ## Overview
 
-JS Style Kit is a comprehensive, batteries-included linting and formatting solution for modern JavaScript and TypeScript projects.
+This repo consists of two packages:
 
-- ✅ All dependencies included (ESLint, Prettier, plugins) - no need to install extras
-- ✅ ESLint v9 flat config
-- ✅ TypeScript support out of the box
-- ✅ Optional React and React Compiler support
-- ✅ JSDoc validation with configurable requirements for libraries
-- ✅ Automatic import, prop, and object sorting with Perfectionist
-- ✅ Tailwind CSS support for Prettier
-- ✅ Modern ESM-only package
-
-For detailed usage and configuration options, see the [package documentation](./packages/style-kit/README.md).
-
-> **Note:** This is very much a work in progress. I want to know what configuration changes you make, so please open an issue!
-
-## Basic Setup
-
-```bash
-npm install js-style-kit --save-dev
-# or
-yarn add js-style-kit --dev
-# or
-pnpm add js-style-kit --save-dev
-# or
-bun add js-style-kit --dev
-```
-
-### ESLint Configuration
-
-Create an `eslint.config.js` (or `eslint.config.mjs`) file at the root of your project:
-
-```js
-import { eslintConfig } from "js-style-kit";
-
-export default eslintConfig({
-  // options
-});
-```
-
-### Prettier Configuration
-
-Create a `prettier.config.js` (or `prettier.config.mjs`) file at the root of your project:
-
-```js
-import { prettierConfig } from "js-style-kit";
-
-export default prettierConfig({
-  // options
-});
-```
+- `js-style-kit` - The main package of this repo, a prettier/eslint style guide.
+- `eslint-plugin-nextjs` - A fork of `@nextjs/eslint-plugin-nextjs` with TypeScript and ESLint v9 support.
 
 ## Repository Structure
 
@@ -69,37 +23,14 @@ This is a monorepo managed with Turborepo and bun.
 ```sh
 /
 ├── apps/
-│   └── docs/             # Documentation site built with Docusaurus (WIP)
+│   ├── next-test-app/        # Next.js app for testing
+│   └── vite-test-app/        # Vite app for testing
+├── docs/                     # Documentation site built with Mintlify
 ├── packages/
-│   ├── style-kit/        # Main package with ESLint and Prettier configurations
-│   └── typescript-config/ # Shared TypeScript configurations
-├── .changeset/          # Changesets for versioning
-├── .github/             # GitHub Actions workflows
-└── turbo.json           # Turborepo configuration
+│   ├── eslint-plugin-nextjs/ # Fork of @nextjs/eslint-plugin-nextjs with TypeScript and ESLint v9 support
+│   ├── style-kit/            # Main package with ESLint and Prettier configurations
+│   └── typescript-config/    # Shared TypeScript configurations for the monorepo
+├── .changeset/               # Changesets for versioning
+├── .github/                  # GitHub Actions workflows
+└── turbo.json                # Turborepo configuration
 ```
-
-## Development
-
-```bash
-# Install dependencies
-bun i
-
-# Build all packages
-bun run build
-
-# Run tests
-bun run test
-
-# Format code
-turbo run format
-
-# Lint code
-turbo run lint
-
-# Create a changeset
-bun run changeset
-```
-
-## License
-
-MIT © [Nathan Drake](https://github.com/drake-nathan)

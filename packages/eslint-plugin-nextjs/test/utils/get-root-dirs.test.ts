@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, expect, it } from "bun:test";
 
 import { getRootDirs } from "../../src/utils/get-root-dirs";

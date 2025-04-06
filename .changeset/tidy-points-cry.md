@@ -9,7 +9,7 @@
 - Merged old configs to a single `recommended` flat config (no legacy support, use 0.1.2 for legacy support).
 - All rules now "warn" by default, which is best practice so that you can distinguish between ESLint issues and TypeScript issues.
 - Now exports in ESM only. This is easy to use in with the flat config.
-- Refactored all rules with better TypeScript support using utility types from `@typescript-eslint/utils`.
+- I intended to ship with full TS coverage, but `@typescript-eslint/utils` nuked my builds and I couldn't get there.
 
 ## Migration
 
