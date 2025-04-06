@@ -1,34 +1,20 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
 
 const name = "no-assign-module-variable";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noAssignModule";
 
 /**
  * Rule to prevent assignment to the module variable
  */
-export const noAssignModuleVariable = createRule<Options, MessageId>({
+export const noAssignModuleVariable: RuleDefinition = {
   create: (context) => ({
-    VariableDeclaration: (node: TSESTree.VariableDeclaration) => {
+    VariableDeclaration: (node) => {
       // Checks node.declarations array for variable with id.name of `module`
-      const moduleVariableFound = node.declarations.some((declaration) => {
+      const moduleVariableFound = node.declarations.some((declaration: any) => {
         if (
-          declaration.id.type === AST_NODE_TYPES.Identifier &&
+          declaration.id.type === "Identifier" &&
           declaration.id.name === "module"
         ) {
           return true;
@@ -49,7 +35,6 @@ export const noAssignModuleVariable = createRule<Options, MessageId>({
     },
   }),
 
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent assignment to the `module` variable.",
@@ -58,9 +43,8 @@ export const noAssignModuleVariable = createRule<Options, MessageId>({
     },
     messages: {
       noAssignModule: "Do not assign to the variable `module`. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

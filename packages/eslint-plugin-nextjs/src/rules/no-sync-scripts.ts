@@ -1,34 +1,17 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
 
 const name = "no-sync-scripts";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noSyncScripts";
 
 /**
  * Rule to prevent synchronous scripts
  */
-export const noSyncScripts = createRule<Options, MessageId>({
+export const noSyncScripts: RuleDefinition = {
   create: (context) => ({
-    JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
-      if (
-        node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
-        node.name.name !== "script"
-      ) {
+    JSXOpeningElement: (node: any) => {
+      if (node.name.type !== "JSXIdentifier" || node.name.name !== "script") {
         return;
       }
       if (node.attributes.length === 0) {
@@ -36,11 +19,10 @@ export const noSyncScripts = createRule<Options, MessageId>({
       }
       const attributeNames = node.attributes
         .filter(
-          (attr): attr is TSESTree.JSXAttribute =>
-            attr.type === AST_NODE_TYPES.JSXAttribute &&
-            attr.name.type === AST_NODE_TYPES.JSXIdentifier,
+          (attr: any) =>
+            attr.type === "JSXAttribute" && attr.name.type === "JSXIdentifier",
         )
-        .map((attr) => attr.name.name);
+        .map((attr: any) => attr.name.name);
       if (
         attributeNames.includes("src") &&
         !attributeNames.includes("async") &&
@@ -54,7 +36,6 @@ export const noSyncScripts = createRule<Options, MessageId>({
       }
     },
   }),
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent synchronous scripts.",
@@ -63,9 +44,8 @@ export const noSyncScripts = createRule<Options, MessageId>({
     },
     messages: {
       noSyncScripts: "Synchronous scripts should not be used. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

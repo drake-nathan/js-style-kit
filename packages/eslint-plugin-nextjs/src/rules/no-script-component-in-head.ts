@@ -1,44 +1,28 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
 
 const name = "no-script-component-in-head";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noScriptComponentInHead";
 
 /**
  * Rule to prevent usage of next/script in next/head component
  */
-export const noScriptComponentInHead = createRule<Options, MessageId>({
+export const noScriptComponentInHead: RuleDefinition = {
   create: (context) => {
     let isNextHead: null | string = null;
 
     /**
      * Recursively find Script components inside a node's children
      */
-    const findNestedScriptComponent = (
-      node: TSESTree.Node,
-    ): null | TSESTree.JSXElement => {
-      if (node.type !== AST_NODE_TYPES.JSXElement) {
+    const findNestedScriptComponent = (node: any): any => {
+      if (node.type !== "JSXElement") {
         return null;
       }
 
       // Check if current element is a Script component
       if (
-        node.openingElement.name.type === AST_NODE_TYPES.JSXIdentifier &&
+        node.openingElement.name.type === "JSXIdentifier" &&
         node.openingElement.name.name === "Script"
       ) {
         return node;
@@ -56,18 +40,18 @@ export const noScriptComponentInHead = createRule<Options, MessageId>({
     };
 
     return {
-      ImportDeclaration: (node: TSESTree.ImportDeclaration) => {
+      ImportDeclaration: (node: any) => {
         if (node.source.value === "next/head") {
           isNextHead = node.source.value;
         }
       },
-      JSXElement: (node: TSESTree.JSXElement) => {
+      JSXElement: (node: any) => {
         if (!isNextHead) {
           return;
         }
 
         if (
-          node.openingElement.name.type !== AST_NODE_TYPES.JSXIdentifier ||
+          node.openingElement.name.type !== "JSXIdentifier" ||
           node.openingElement.name.name !== "Head"
         ) {
           return;
@@ -86,7 +70,6 @@ export const noScriptComponentInHead = createRule<Options, MessageId>({
       },
     };
   },
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent usage of `next/script` in `next/head` component.",
@@ -96,9 +79,8 @@ export const noScriptComponentInHead = createRule<Options, MessageId>({
     messages: {
       noScriptComponentInHead:
         "`next/script` should not be used in `next/head` component. Move `<Script />` outside of `<Head>` instead. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

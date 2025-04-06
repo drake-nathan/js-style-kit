@@ -14,7 +14,7 @@ type MessageId = "missingFontDisplay" | "notRecommendedFontDisplay";
  */
 export const googleFontDisplay: RuleDefinition = {
   create: (context) => ({
-    JSXOpeningElement: (node: any) => {
+    JSXOpeningElement: (node) => {
       let messageId: MessageId | undefined;
       let data: Record<string, string> | undefined;
 
@@ -75,7 +75,7 @@ export const googleFontDisplay: RuleDefinition = {
       missingFontDisplay:
         "A font-display parameter is missing (adding `&display=optional` is recommended). See: {{url}}",
       notRecommendedFontDisplay: "{{display}} is not recommended. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },

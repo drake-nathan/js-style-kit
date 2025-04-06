@@ -1,8 +1,4 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
 
 const name = "no-async-client-component";
 const url = `https://nextjs.org/docs/messages/${name}`;
@@ -10,42 +6,29 @@ const description = "Prevent client components from being async functions.";
 
 const isCapitalized = (str: string): boolean => /[A-Z]/.test(str[0] ?? "");
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noAsyncClientComponent";
 
 /**
  * Rule to prevent client components from being async functions
  */
-export const noAsyncClientComponent = createRule<Options, MessageId>({
+export const noAsyncClientComponent: RuleDefinition = {
   create: (context) => ({
-    Program: (node: TSESTree.Program) => {
+    Program: (node) => {
       let isClientComponent = false;
 
       for (const block of node.body) {
         if (
-          block.type === AST_NODE_TYPES.ExpressionStatement &&
-          block.expression.type === AST_NODE_TYPES.Literal &&
+          block.type === "ExpressionStatement" &&
+          block.expression.type === "Literal" &&
           block.expression.value === "use client"
         ) {
           isClientComponent = true;
         }
 
-        if (
-          block.type === AST_NODE_TYPES.ExportDefaultDeclaration &&
-          isClientComponent
-        ) {
+        if (block.type === "ExportDefaultDeclaration" && isClientComponent) {
           // export default async function MyComponent() {...}
           if (
-            block.declaration.type === AST_NODE_TYPES.FunctionDeclaration &&
+            block.declaration.type === "FunctionDeclaration" &&
             block.declaration.async &&
             block.declaration.id &&
             isCapitalized(block.declaration.id.name)
@@ -59,24 +42,24 @@ export const noAsyncClientComponent = createRule<Options, MessageId>({
 
           // async function MyComponent() {...}; export default MyComponent;
           if (
-            block.declaration.type === AST_NODE_TYPES.Identifier &&
+            block.declaration.type === "Identifier" &&
             isCapitalized(block.declaration.name)
           ) {
             const targetName = block.declaration.name;
 
-            const functionDeclaration = node.body.find((localBlock) => {
+            const functionDeclaration = node.body.find((localBlock: any) => {
               if (
-                localBlock.type === AST_NODE_TYPES.FunctionDeclaration &&
+                localBlock.type === "FunctionDeclaration" &&
                 localBlock.id.name === targetName
               ) {
                 return true;
               }
 
               if (
-                localBlock.type === AST_NODE_TYPES.VariableDeclaration &&
+                localBlock.type === "VariableDeclaration" &&
                 localBlock.declarations.find(
-                  (declaration) =>
-                    declaration.id.type === AST_NODE_TYPES.Identifier &&
+                  (declaration: any) =>
+                    declaration.id.type === "Identifier" &&
                     declaration.id.name === targetName,
                 )
               ) {
@@ -87,8 +70,7 @@ export const noAsyncClientComponent = createRule<Options, MessageId>({
             });
 
             if (
-              functionDeclaration?.type ===
-                AST_NODE_TYPES.FunctionDeclaration &&
+              functionDeclaration?.type === "FunctionDeclaration" &&
               functionDeclaration.async
             ) {
               context.report({
@@ -98,18 +80,15 @@ export const noAsyncClientComponent = createRule<Options, MessageId>({
               });
             }
 
-            if (
-              functionDeclaration?.type === AST_NODE_TYPES.VariableDeclaration
-            ) {
+            if (functionDeclaration?.type === "VariableDeclaration") {
               const varDeclarator = functionDeclaration.declarations.find(
-                (declaration) =>
-                  declaration.id.type === AST_NODE_TYPES.Identifier &&
+                (declaration: any) =>
+                  declaration.id.type === "Identifier" &&
                   declaration.id.name === targetName,
               );
 
               if (
-                varDeclarator?.init?.type ===
-                  AST_NODE_TYPES.ArrowFunctionExpression &&
+                varDeclarator?.init?.type === "ArrowFunctionExpression" &&
                 varDeclarator.init.async
               ) {
                 context.report({
@@ -124,8 +103,6 @@ export const noAsyncClientComponent = createRule<Options, MessageId>({
       }
     },
   }),
-
-  defaultOptions: [],
   meta: {
     docs: {
       description,
@@ -135,9 +112,8 @@ export const noAsyncClientComponent = createRule<Options, MessageId>({
     messages: {
       noAsyncClientComponent:
         "Prevent client components from being async functions. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

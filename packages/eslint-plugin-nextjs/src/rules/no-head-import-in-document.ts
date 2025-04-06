@@ -1,27 +1,18 @@
-import { ESLintUtils, type TSESTree } from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import * as path from "node:path";
 
 const name = "no-head-import-in-document";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noHeadImportInDocument";
 
 /**
  * Rule to prevent usage of next/head in pages/_document.js
  */
-export const noHeadImportInDocument = createRule<Options, MessageId>({
+export const noHeadImportInDocument: RuleDefinition = {
   create: (context) => ({
-    ImportDeclaration: (node: TSESTree.ImportDeclaration) => {
+    ImportDeclaration: (node) => {
       if (node.source.value !== "next/head") {
         return;
       }
@@ -45,7 +36,6 @@ export const noHeadImportInDocument = createRule<Options, MessageId>({
       }
     },
   }),
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent usage of `next/head` in `pages/_document.js`.",
@@ -55,9 +45,8 @@ export const noHeadImportInDocument = createRule<Options, MessageId>({
     messages: {
       noHeadImportInDocument:
         "`next/head` should not be imported in `pages{{document}}`. Use `<Head />` from `next/document` instead. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

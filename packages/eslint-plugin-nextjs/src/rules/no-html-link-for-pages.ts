@@ -1,8 +1,5 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -26,7 +23,6 @@ const pagesDirWarning = execOnce((pagesDirs) => {
 const fsExistsSyncCache: Record<string, boolean> = {};
 
 // Properly typed memoize function for the specific functions we use
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyFunction = (...args: any[]) => any;
 
 const memoize = <F extends AnyFunction>(fn: F): F => {
@@ -52,34 +48,19 @@ const cachedGetUrlFromAppDirectory = memoize(getUrlFromAppDirectory);
 const name = "no-html-link-for-pages";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Category of the rule
-   */
-  category: string;
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [string | string[] | undefined];
 type MessageId = "noHtmlLinkForPages";
 
 /**
  * Rule to prevent usage of <a> elements to navigate to internal Next.js pages
  */
-export const noHtmlLinkForPages = createRule<Options, MessageId>({
+export const noHtmlLinkForPages: RuleDefinition = {
   /**
    * Creates an ESLint rule listener.
    */
   create: (context) => {
-    const [customPagesDirectory] = context.options;
+    const [customPagesDirectory] = context.options as [string | undefined];
 
-    // @ts-expect-error this is a discrepancy between tseslint and eslint, nbd
-    const rootDirs = getRootDirs(context);
+    const rootDirs = getRootDirs(context as any);
 
     const pagesDirs = (
       customPagesDirectory ?
@@ -114,11 +95,8 @@ export const noHtmlLinkForPages = createRule<Options, MessageId>({
     const allUrlRegex = [...pageUrls, ...appDirUrls];
 
     return {
-      JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
-        if (
-          node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
-          node.name.name !== "a"
-        ) {
+      JSXOpeningElement: (node) => {
+        if (node.name.type !== "JSXIdentifier" || node.name.name !== "a") {
           return;
         }
 
@@ -127,34 +105,34 @@ export const noHtmlLinkForPages = createRule<Options, MessageId>({
         }
 
         const target = node.attributes.find(
-          (attr): attr is TSESTree.JSXAttribute =>
-            attr.type === AST_NODE_TYPES.JSXAttribute &&
-            attr.name.type === AST_NODE_TYPES.JSXIdentifier &&
+          (attr: any) =>
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
             attr.name.name === "target",
         );
 
         if (
-          target?.value?.type === AST_NODE_TYPES.Literal &&
+          target?.value?.type === "Literal" &&
           target.value.value === "_blank"
         ) {
           return;
         }
 
         const href = node.attributes.find(
-          (attr): attr is TSESTree.JSXAttribute =>
-            attr.type === AST_NODE_TYPES.JSXAttribute &&
-            attr.name.type === AST_NODE_TYPES.JSXIdentifier &&
+          (attr: any) =>
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
             attr.name.name === "href",
         );
 
-        if (!href?.value || href.value.type !== AST_NODE_TYPES.Literal) {
+        if (!href?.value || href.value.type !== "Literal") {
           return;
         }
 
         const hasDownloadAttr = node.attributes.find(
-          (attr): attr is TSESTree.JSXAttribute =>
-            attr.type === AST_NODE_TYPES.JSXAttribute &&
-            attr.name.type === AST_NODE_TYPES.JSXIdentifier &&
+          (attr: any) =>
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
             attr.name.name === "download",
         );
 
@@ -183,7 +161,6 @@ export const noHtmlLinkForPages = createRule<Options, MessageId>({
     };
   },
 
-  defaultOptions: [undefined],
   meta: {
     docs: {
       category: "HTML",
@@ -195,7 +172,7 @@ export const noHtmlLinkForPages = createRule<Options, MessageId>({
     messages: {
       noHtmlLinkForPages:
         "Do not use an `<a>` element to navigate to `{{hrefPath}}`. Use `<Link />` from `next/link` instead. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [
       {
         oneOf: [
@@ -214,5 +191,4 @@ export const noHtmlLinkForPages = createRule<Options, MessageId>({
     ],
     type: "problem",
   },
-  name,
-});
+};

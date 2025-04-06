@@ -1,11 +1,15 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("google-font-display");
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `import Head from "next/head";
@@ -28,6 +32,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when font-display parameter is missing",
     },
     {
       code: `import Head from "next/head";
@@ -50,6 +55,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when display=block is used",
     },
     {
       code: `import Head from "next/head";
@@ -72,6 +78,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when display=auto is used",
     },
     {
       code: `import Head from "next/head";
@@ -94,11 +101,13 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when display=fallback is used",
     },
   ],
 
   valid: [
-    `import Head from "next/head";
+    {
+      code: `import Head from "next/head";
 
      export default Test = () => {
       return (
@@ -120,8 +129,11 @@ const tests = {
       );
      };
     `,
+      name: "should allow non-Google Font links and Google Font with display=optional",
+    },
 
-    `import Document, { Html, Head } from "next/document";
+    {
+      code: `import Document, { Html, Head } from "next/document";
 
      class MyDocument extends Document {
       render() {
@@ -140,8 +152,11 @@ const tests = {
 
      export default MyDocument;
     `,
+      name: "should allow Google Font with display=swap in next/document",
+    },
 
-    `import Document, { Html, Head } from "next/document";
+    {
+      code: `import Document, { Html, Head } from "next/document";
 
      class MyDocument extends Document {
       render() {
@@ -161,20 +176,20 @@ const tests = {
 
      export default MyDocument;
     `,
+      name: "should allow Google Font with display=swap and crossOrigin attribute",
+    },
   ],
 };
 
-describe("google-font-display", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2020,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2020,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("google-font-display", NextESLintRule, tests);

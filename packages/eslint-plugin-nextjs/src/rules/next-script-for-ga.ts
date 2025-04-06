@@ -1,8 +1,4 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
 
 import NodeAttributes from "../utils/node-attributes.js";
 
@@ -25,28 +21,15 @@ const containsStr = (str: string, strList: string[]) => {
   return strList.some((s) => str.includes(s));
 };
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "useNextScript";
 
 /**
  * Rule to enforce using next/script for Google Analytics
  */
-export const nextScriptForGa = createRule<Options, MessageId>({
+export const nextScriptForGa: RuleDefinition = {
   create: (context) => ({
-    JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
-      if (
-        node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
-        node.name.name !== "script"
-      ) {
+    JSXOpeningElement: (node) => {
+      if (node.name.type !== "JSXIdentifier" || node.name.name !== "script") {
         return;
       }
       if (node.attributes.length === 0) {
@@ -91,7 +74,6 @@ export const nextScriptForGa = createRule<Options, MessageId>({
       }
     },
   }),
-  defaultOptions: [],
   meta: {
     docs: {
       description,
@@ -101,9 +83,8 @@ export const nextScriptForGa = createRule<Options, MessageId>({
     messages: {
       useNextScript:
         "Prefer `next/script` component when using the inline script for Google Analytics. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

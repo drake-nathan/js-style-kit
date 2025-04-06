@@ -1,6 +1,4 @@
-import type { TSESTree } from "@typescript-eslint/utils";
-
-import { AST_NODE_TYPES, ESLintUtils } from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
 
 const name = "no-unwanted-polyfillio";
 const url = `https://nextjs.org/docs/messages/${name}`;
@@ -73,31 +71,24 @@ const NEXT_POLYFILLED_FEATURES = [
   "es7", // contains polyfilled 'Array.prototype.includes', 'String.prototype.padEnd' and 'String.prototype.padStart'
 ];
 
-type Options = [];
 type MessageId = "noUnwantedPolyfillio";
 
-export const noUnwantedPolyfillio = ESLintUtils.RuleCreator(() => url)<
-  Options,
-  MessageId
->({
+export const noUnwantedPolyfillio: RuleDefinition = {
   create: (context) => {
     let scriptImport: null | string = null;
 
     return {
-      ImportDeclaration: (node: TSESTree.ImportDeclaration) => {
+      ImportDeclaration: (node: any) => {
         if (node.source.value === "next/script" && node.specifiers.length > 0) {
           const specifier = node.specifiers[0];
-          if (
-            specifier &&
-            specifier.type === AST_NODE_TYPES.ImportDefaultSpecifier
-          ) {
+          if (specifier && specifier.type === "ImportDefaultSpecifier") {
             scriptImport = specifier.local.name;
           }
         }
       },
-      JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
+      JSXOpeningElement: (node: any) => {
         if (
-          node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
+          node.name.type !== "JSXIdentifier" ||
           (node.name.name !== "script" && node.name.name !== scriptImport)
         ) {
           return;
@@ -107,14 +98,14 @@ export const noUnwantedPolyfillio = ESLintUtils.RuleCreator(() => url)<
         }
 
         const srcNode = node.attributes.find(
-          (attr): attr is TSESTree.JSXAttribute =>
-            attr.type === AST_NODE_TYPES.JSXAttribute &&
-            attr.name.type === AST_NODE_TYPES.JSXIdentifier &&
+          (attr: any) =>
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
             attr.name.name === "src",
         );
         if (
           !srcNode?.value ||
-          srcNode.value.type !== AST_NODE_TYPES.Literal ||
+          srcNode.value.type !== "Literal" ||
           typeof srcNode.value.value !== "string"
         ) {
           return;
@@ -149,7 +140,6 @@ export const noUnwantedPolyfillio = ESLintUtils.RuleCreator(() => url)<
       },
     };
   },
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent duplicate polyfills from Polyfill.io.",
@@ -158,9 +148,8 @@ export const noUnwantedPolyfillio = ESLintUtils.RuleCreator(() => url)<
     messages: {
       noUnwantedPolyfillio:
         "No duplicate polyfills from Polyfill.io are allowed. {{features}} {{verb}} already shipped with Next.js. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

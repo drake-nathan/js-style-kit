@@ -1,8 +1,5 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import { posix, sep } from "node:path";
 
 import NodeAttributes from "../utils/node-attributes.js";
@@ -10,28 +7,15 @@ import NodeAttributes from "../utils/node-attributes.js";
 const name = "no-page-custom-font";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-const isIdentifierMatch = (
-  id1: null | TSESTree.Identifier,
-  id2: null | TSESTree.Identifier,
-): boolean | null =>
+const isIdentifierMatch = (id1: any, id2: any): boolean | null =>
   (id1 === null && id2 === null) || (id1 && id2 && id1.name === id2.name);
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noPageCustomFont" | "noPageCustomFontOutsideHead";
 
 /**
  * Rule to prevent page-only custom fonts
  */
-export const noPageCustomFont = createRule<Options, MessageId>({
+export const noPageCustomFont: RuleDefinition = {
   create: (context) => {
     const { sourceCode } = context;
     const paths = context.filename.split("pages");
@@ -47,35 +31,32 @@ export const noPageCustomFont = createRule<Options, MessageId>({
       page.startsWith(`${posix.sep}_document`);
 
     let documentImportName: string | undefined;
-    let localDefaultExportId: null | TSESTree.Identifier = null;
-    let exportDeclarationType: AST_NODE_TYPES | undefined;
+    let localDefaultExportId: any = null;
+    let exportDeclarationType: any;
 
     return {
-      ExportDefaultDeclaration: (
-        node: TSESTree.ExportDefaultDeclaration,
-      ): void => {
+      ExportDefaultDeclaration: (node): void => {
         exportDeclarationType = node.declaration.type;
 
-        if (node.declaration.type === AST_NODE_TYPES.FunctionDeclaration) {
+        if (node.declaration.type === "FunctionDeclaration") {
           localDefaultExportId = node.declaration.id;
           return;
         }
 
         if (
-          node.declaration.type === AST_NODE_TYPES.ClassDeclaration &&
+          node.declaration.type === "ClassDeclaration" &&
           node.declaration.superClass &&
-          node.declaration.superClass.type === AST_NODE_TYPES.Identifier &&
+          node.declaration.superClass.type === "Identifier" &&
           node.declaration.superClass.name === documentImportName
         ) {
           localDefaultExportId = node.declaration.id;
         }
       },
 
-      ImportDeclaration: (node: TSESTree.ImportDeclaration): void => {
+      ImportDeclaration: (node): void => {
         if (node.source.value === "next/document") {
           const documentImport = node.specifiers.find(
-            (specifier): specifier is TSESTree.ImportDefaultSpecifier =>
-              specifier.type === AST_NODE_TYPES.ImportDefaultSpecifier,
+            (specifier: any) => specifier.type === "ImportDefaultSpecifier",
           );
           if (documentImport?.local) {
             documentImportName = documentImport.local.name;
@@ -83,15 +64,12 @@ export const noPageCustomFont = createRule<Options, MessageId>({
         }
       },
 
-      JSXOpeningElement: (node: TSESTree.JSXOpeningElement): void => {
-        if (
-          node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
-          node.name.name !== "link"
-        ) {
+      JSXOpeningElement: (node): void => {
+        if (node.name.type !== "JSXIdentifier" || node.name.name !== "link") {
           return;
         }
 
-        const ancestors = sourceCode.getAncestors(node);
+        const ancestors = (sourceCode as any).getAncestors(node);
 
         // if `export default <n>` is further down within the file after the
         // currently traversed component, then `localDefaultExportName` will
@@ -99,8 +77,7 @@ export const noPageCustomFont = createRule<Options, MessageId>({
         if (!localDefaultExportId) {
           // find the top level of the module
           const program = ancestors.find(
-            (ancestor): ancestor is TSESTree.Program =>
-              ancestor.type === AST_NODE_TYPES.Program,
+            (ancestor: any) => ancestor.type === "Program",
           );
 
           if (!program?.tokens) {
@@ -116,7 +93,7 @@ export const noPageCustomFont = createRule<Options, MessageId>({
             const token = program.tokens[i];
 
             // TODO: fix
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+
             if (token?.type === "Keyword" && token.value === "export") {
               const nextToken = program.tokens[i + 1];
 
@@ -124,7 +101,7 @@ export const noPageCustomFont = createRule<Options, MessageId>({
                 const maybeIdentifier = program.tokens[i + 2];
 
                 // TODO: fix
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+
                 if (maybeIdentifier && maybeIdentifier.type === "Identifier") {
                   // Create a simple identifier with the name
                   // This is a simplification and may not be fully type-safe
@@ -138,30 +115,29 @@ export const noPageCustomFont = createRule<Options, MessageId>({
                     name: maybeIdentifier.value,
                     optional: false,
                     range: [0, 0],
-                    type: AST_NODE_TYPES.Identifier,
-                    // TODO: fix
-                  } as unknown as TSESTree.Identifier;
+                    type: "Identifier",
+                  };
                 }
               }
             }
           }
         }
 
-        const parentComponent = ancestors.find((ancestor) => {
+        const parentComponent = ancestors.find((ancestor: any) => {
           // export default class ... extends ...
-          if (exportDeclarationType === AST_NODE_TYPES.ClassDeclaration) {
+          if (exportDeclarationType === "ClassDeclaration") {
             return (
               ancestor.type === exportDeclarationType &&
               "superClass" in ancestor &&
               ancestor.superClass &&
-              ancestor.superClass.type === AST_NODE_TYPES.Identifier &&
+              ancestor.superClass.type === "Identifier" &&
               ancestor.superClass.name === documentImportName
             );
           }
 
           if ("id" in ancestor) {
             // export default function ...
-            if (exportDeclarationType === AST_NODE_TYPES.FunctionDeclaration) {
+            if (exportDeclarationType === "FunctionDeclaration") {
               return (
                 ancestor.type === exportDeclarationType &&
                 isIdentifierMatch(ancestor.id, localDefaultExportId)
@@ -170,7 +146,6 @@ export const noPageCustomFont = createRule<Options, MessageId>({
 
             // function ...() {} export default ...
             // class ... extends ...; export default ...
-            // @ts-expect-error TODO: fix this
             return isIdentifierMatch(ancestor.id, localDefaultExportId);
           }
 
@@ -207,7 +182,6 @@ export const noPageCustomFont = createRule<Options, MessageId>({
       },
     };
   },
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent page-only custom fonts.",
@@ -219,9 +193,8 @@ export const noPageCustomFont = createRule<Options, MessageId>({
         "Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: {{url}}",
       noPageCustomFontOutsideHead:
         "Using `<link />` outside of `<Head>` will disable automatic font optimization. This is discouraged. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

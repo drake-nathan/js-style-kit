@@ -1,27 +1,18 @@
-import { ESLintUtils, type TSESTree } from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import * as path from "node:path";
 
 const name = "no-document-import-in-page";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noDocumentImportInPage";
 
 /**
  * Rule to prevent importing next/document outside of pages/_document.js
  */
-export const noDocumentImportInPage = createRule<Options, MessageId>({
+export const noDocumentImportInPage: RuleDefinition = {
   create: (context) => ({
-    ImportDeclaration: (node: TSESTree.ImportDeclaration) => {
+    ImportDeclaration: (node) => {
       if (node.source.value !== "next/document") {
         return;
       }
@@ -44,7 +35,6 @@ export const noDocumentImportInPage = createRule<Options, MessageId>({
       });
     },
   }),
-  defaultOptions: [],
   meta: {
     docs: {
       description:
@@ -55,9 +45,8 @@ export const noDocumentImportInPage = createRule<Options, MessageId>({
     messages: {
       noDocumentImportInPage:
         "`<Document />` from `next/document` should not be imported outside of `pages/_document.js`. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

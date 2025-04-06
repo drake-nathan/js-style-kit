@@ -1,50 +1,32 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
-
+import type { RuleDefinition } from "@eslint/core";
 const name = "inline-script-id";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "missingId";
 
 /**
  * Rule to enforce id attribute on next/script components with inline content
  */
-export const inlineScriptId = createRule<Options, MessageId>({
+export const inlineScriptId: RuleDefinition = {
   create: (context) => {
     let nextScriptImportName: null | string = null;
 
     return {
-      ImportDeclaration: (node: TSESTree.ImportDeclaration) => {
+      ImportDeclaration: (node) => {
         if (node.source.value === "next/script" && node.specifiers.length > 0) {
           const specifier = node.specifiers[0];
-          if (
-            specifier &&
-            specifier.type === AST_NODE_TYPES.ImportDefaultSpecifier
-          ) {
+          if (specifier && specifier.type === "ImportDefaultSpecifier") {
             nextScriptImportName = specifier.local.name;
           }
         }
       },
-      JSXElement: (node: TSESTree.JSXElement) => {
+      JSXElement: (node) => {
         if (nextScriptImportName === null) {
           return;
         }
 
         if (
-          node.openingElement.name.type === AST_NODE_TYPES.JSXIdentifier &&
+          node.openingElement.name.type === "JSXIdentifier" &&
           node.openingElement.name.name !== nextScriptImportName
         ) {
           return;
@@ -53,24 +35,22 @@ export const inlineScriptId = createRule<Options, MessageId>({
         const attributeNames = new Set<string>();
 
         let hasNonCheckableSpreadAttribute = false;
-        node.openingElement.attributes.forEach((attribute) => {
+        node.openingElement.attributes.forEach((attribute: any) => {
           // Early return if we already have a non-checkable spread attribute, for better performance
           if (hasNonCheckableSpreadAttribute) {
             return;
           }
 
-          if (attribute.type === AST_NODE_TYPES.JSXAttribute) {
-            if (attribute.name.type === AST_NODE_TYPES.JSXIdentifier) {
+          if (attribute.type === "JSXAttribute") {
+            if (attribute.name.type === "JSXIdentifier") {
               attributeNames.add(attribute.name.name);
             }
-            // TODO: fix
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          } else if (attribute.type === AST_NODE_TYPES.JSXSpreadAttribute) {
-            if (attribute.argument.type === AST_NODE_TYPES.ObjectExpression) {
-              attribute.argument.properties.forEach((property) => {
+          } else if (attribute.type === "JSXSpreadAttribute") {
+            if (attribute.argument.type === "ObjectExpression") {
+              attribute.argument.properties.forEach((property: any) => {
                 if (
-                  property.type === AST_NODE_TYPES.Property &&
-                  property.key.type === AST_NODE_TYPES.Identifier
+                  property.type === "Property" &&
+                  property.key.type === "Identifier"
                 ) {
                   attributeNames.add(property.key.name);
                 }
@@ -104,7 +84,6 @@ export const inlineScriptId = createRule<Options, MessageId>({
       },
     };
   },
-  defaultOptions: [],
   meta: {
     docs: {
       description:
@@ -115,9 +94,8 @@ export const inlineScriptId = createRule<Options, MessageId>({
     messages: {
       missingId:
         "`next/script` components with inline content must specify an `id` attribute. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

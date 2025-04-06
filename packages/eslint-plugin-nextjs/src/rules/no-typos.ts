@@ -1,8 +1,5 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import * as path from "node:path";
 
 const NEXT_EXPORT_FUNCTIONS = [
@@ -49,24 +46,14 @@ const minDistance = (a: string, b: string): number | undefined => {
   return previousRow[previousRow.length - 1];
 };
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noTypos";
 
 /**
  * Rule to prevent common typos in Next.js data fetching functions
  */
-export const noTypos = createRule<Options, MessageId>({
+export const noTypos: RuleDefinition = {
   create: (context) => {
-    const checkTypos = (node: TSESTree.Node, functionName: string) => {
+    const checkTypos = (node: any, functionName: string) => {
       if (NEXT_EXPORT_FUNCTIONS.includes(functionName)) {
         return;
       }
@@ -80,14 +67,14 @@ export const noTypos = createRule<Options, MessageId>({
 
       if (potentialTypos.length) {
         context.report({
-          data: { functionName, suggestion: potentialTypos[0]?.option },
+          data: { functionName, suggestion: potentialTypos[0]?.option ?? "" },
           messageId: "noTypos",
           node,
         });
       }
     };
     return {
-      ExportNamedDeclaration: (node: TSESTree.ExportNamedDeclaration) => {
+      ExportNamedDeclaration: (node: any) => {
         const page = context.filename.split("pages", 2)[1];
         if (!page || path.parse(page).dir.startsWith("/api")) {
           return;
@@ -100,15 +87,15 @@ export const noTypos = createRule<Options, MessageId>({
         }
 
         switch (decl.type) {
-          case AST_NODE_TYPES.FunctionDeclaration: {
+          case "FunctionDeclaration": {
             if (decl.id) {
               checkTypos(node, decl.id.name);
             }
             break;
           }
-          case AST_NODE_TYPES.VariableDeclaration: {
-            decl.declarations.forEach((d) => {
-              if (d.id.type === AST_NODE_TYPES.Identifier) {
+          case "VariableDeclaration": {
+            decl.declarations.forEach((d: any) => {
+              if (d.id.type === "Identifier") {
                 checkTypos(node, d.id.name);
               }
             });
@@ -121,8 +108,6 @@ export const noTypos = createRule<Options, MessageId>({
       },
     };
   },
-
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent common typos in Next.js data fetching functions.",
@@ -131,9 +116,8 @@ export const noTypos = createRule<Options, MessageId>({
     },
     messages: {
       noTypos: "{{functionName}} may be a typo. Did you mean {{suggestion}}?",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

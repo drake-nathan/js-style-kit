@@ -1,31 +1,18 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import * as path from "node:path";
 
 const name = "no-styled-jsx-in-document";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noStyledJsxInDocument";
 
 /**
  * Rule to prevent usage of styled-jsx in pages/_document.js
  */
-export const noStyledJsxInDocument = createRule<Options, MessageId>({
+export const noStyledJsxInDocument: RuleDefinition = {
   create: (context) => ({
-    JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
+    JSXOpeningElement: (node: any) => {
       const document = context.filename.split("pages", 2)[1];
       if (!document) {
         return;
@@ -42,12 +29,12 @@ export const noStyledJsxInDocument = createRule<Options, MessageId>({
       }
 
       if (
-        node.name.type === AST_NODE_TYPES.JSXIdentifier &&
+        node.name.type === "JSXIdentifier" &&
         node.name.name === "style" &&
         node.attributes.find(
-          (attr): attr is TSESTree.JSXAttribute =>
-            attr.type === AST_NODE_TYPES.JSXAttribute &&
-            attr.name.type === AST_NODE_TYPES.JSXIdentifier &&
+          (attr: any): attr is any =>
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
             attr.name.name === "jsx",
         )
       ) {
@@ -59,7 +46,6 @@ export const noStyledJsxInDocument = createRule<Options, MessageId>({
       }
     },
   }),
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Prevent usage of `styled-jsx` in `pages/_document.js`.",
@@ -69,9 +55,8 @@ export const noStyledJsxInDocument = createRule<Options, MessageId>({
     messages: {
       noStyledJsxInDocument:
         "`styled-jsx` should not be used in `pages/_document.js`. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

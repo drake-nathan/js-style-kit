@@ -1,33 +1,16 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import path from "node:path";
 
 const name = "no-img-element";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Category of the rule
-   */
-  category: string;
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noImgElement";
 
 /**
  * Rule to prevent usage of <img> element due to slower LCP and higher bandwidth
  */
-export const noImgElement = createRule<Options, MessageId>({
+export const noImgElement: RuleDefinition = {
   create: (context) => {
     // Get relative path of the file
     const relativePath = context.filename
@@ -38,11 +21,8 @@ export const noImgElement = createRule<Options, MessageId>({
     const isAppDir = /^(?<temp1>src\/)?app\//.test(relativePath);
 
     return {
-      JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
-        if (
-          node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
-          node.name.name !== "img"
-        ) {
+      JSXOpeningElement: (node) => {
+        if (node.name.type !== "JSXIdentifier" || node.name.name !== "img") {
           return;
         }
 
@@ -51,17 +31,12 @@ export const noImgElement = createRule<Options, MessageId>({
         }
 
         // Check if this img is inside a picture element
-        const parentJSXElement = node.parent as TSESTree.JSXElement | undefined;
-        const grandParentJSXElement = parentJSXElement?.parent as
-          | TSESTree.JSXElement
-          | undefined;
+        const parentJSXElement = node.parent;
+        const grandParentJSXElement = parentJSXElement?.parent;
 
         if (
-          // TODO: fix
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           grandParentJSXElement?.openingElement?.name?.type ===
-            AST_NODE_TYPES.JSXIdentifier &&
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            "JSXIdentifier" &&
           grandParentJSXElement?.openingElement?.name?.name === "picture"
         ) {
           return;
@@ -84,7 +59,6 @@ export const noImgElement = createRule<Options, MessageId>({
       },
     };
   },
-  defaultOptions: [],
   meta: {
     docs: {
       category: "HTML",
@@ -96,9 +70,8 @@ export const noImgElement = createRule<Options, MessageId>({
     messages: {
       noImgElement:
         "Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

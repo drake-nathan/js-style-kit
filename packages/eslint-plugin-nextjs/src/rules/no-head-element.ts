@@ -1,35 +1,18 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import path from "node:path";
 
 const name = "no-head-element";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Category of the rule
-   */
-  category: string;
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "noHeadElement";
 
 /**
  * Rule to prevent usage of <head> element
  */
-export const noHeadElement = createRule<Options, MessageId>({
+export const noHeadElement: RuleDefinition = {
   create: (context) => ({
-    JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
+    JSXOpeningElement: (node) => {
       const paths = context.filename;
 
       const isInAppDir = () =>
@@ -38,7 +21,7 @@ export const noHeadElement = createRule<Options, MessageId>({
         paths.includes(`app${path.posix.sep}`);
       // Only lint the <head> element in pages directory
       if (
-        node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
+        node.name.type !== "JSXIdentifier" ||
         node.name.name !== "head" ||
         isInAppDir()
       ) {
@@ -52,7 +35,6 @@ export const noHeadElement = createRule<Options, MessageId>({
       });
     },
   }),
-  defaultOptions: [],
   meta: {
     docs: {
       category: "HTML",
@@ -63,9 +45,8 @@ export const noHeadElement = createRule<Options, MessageId>({
     messages: {
       noHeadElement:
         "Do not use `<head>` element. Use `<Head />` from `next/head` instead. See: {{url}}",
-    },
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-  name,
-});
+};
