@@ -1,6 +1,6 @@
 {
   "name": "js-style-kit",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "A zero configuration style guide for ESLint and Prettier",
   "keywords": [
     "eslint",
@@ -42,7 +42,7 @@
     "eslint": "^9.24.0",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.6.9",
-    "eslint-plugin-nextjs": "^0.1.2",
+    "eslint-plugin-nextjs": "^1.0.0",
     "eslint-plugin-perfectionist": "^4.11.0",
     "eslint-plugin-prefer-arrow-functions": "^3.6.2",
     "eslint-plugin-react": "^7.37.5",
