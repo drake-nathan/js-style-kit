@@ -13,9 +13,7 @@ import { nextjsRules } from "./rules.js";
 export const nextjsConfig = (): EslintConfigObject => ({
   name: configNames.nextjs,
   plugins: {
-    // TODO: will fix on next bump
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    nextjs: nextjs as any,
+    nextjs,
   },
   rules: nextjsRules,
 });

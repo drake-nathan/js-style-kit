@@ -1,8 +1,5 @@
-import {
-  AST_NODE_TYPES,
-  ESLintUtils,
-  type TSESTree,
-} from "@typescript-eslint/utils";
+import type { RuleDefinition } from "@eslint/core";
+
 import { URLSearchParams } from "node:url";
 
 import NodeAttributes from "../utils/node-attributes.js";
@@ -10,31 +7,18 @@ import NodeAttributes from "../utils/node-attributes.js";
 const name = "google-font-display";
 const url = `https://nextjs.org/docs/messages/${name}`;
 
-interface Docs {
-  /**
-   * Whether the rule is included in the recommended config.
-   */
-  recommended: boolean;
-}
-
-const createRule = ESLintUtils.RuleCreator<Docs>(() => url);
-
-type Options = [];
 type MessageId = "missingFontDisplay" | "notRecommendedFontDisplay";
 
 /**
  * Rule to enforce font-display behavior with Google Fonts
  */
-export const googleFontDisplay = createRule<Options, MessageId>({
+export const googleFontDisplay: RuleDefinition = {
   create: (context) => ({
-    JSXOpeningElement: (node: TSESTree.JSXOpeningElement) => {
+    JSXOpeningElement: (node: any) => {
       let messageId: MessageId | undefined;
       let data: Record<string, string> | undefined;
 
-      if (
-        node.name.type !== AST_NODE_TYPES.JSXIdentifier ||
-        node.name.name !== "link"
-      ) {
+      if (node.name.type !== "JSXIdentifier" || node.name.name !== "link") {
         return;
       }
 
@@ -81,7 +65,6 @@ export const googleFontDisplay = createRule<Options, MessageId>({
       }
     },
   }),
-  defaultOptions: [],
   meta: {
     docs: {
       description: "Enforce font-display behavior with Google Fonts.",
@@ -96,5 +79,4 @@ export const googleFontDisplay = createRule<Options, MessageId>({
     schema: [],
     type: "problem",
   },
-  name,
-});
+};

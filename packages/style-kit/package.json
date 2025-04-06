@@ -39,7 +39,7 @@
     "test:coverage": "bun test --coverage --coverage-reporter=lcov"
   },
   "dependencies": {
-    "eslint": "9.23.0",
+    "eslint": "^9.24.0",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.6.9",
     "eslint-plugin-nextjs": "^0.1.2",
@@ -60,7 +60,7 @@
     "prettier-plugin-packagejson": "^2.5.10",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "typescript-eslint": "8.28.0"
+    "typescript-eslint": "^8.29.0"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
