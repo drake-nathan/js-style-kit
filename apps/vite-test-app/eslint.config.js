@@ -4,7 +4,7 @@ import { eslintConfig } from "js-style-kit";
 export default eslintConfig(
   {
     react: {
-      framework: "next",
+      framework: "vite",
       reactRefresh: true,
     },
   },
