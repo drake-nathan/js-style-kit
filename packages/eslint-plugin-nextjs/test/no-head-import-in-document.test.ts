@@ -1,11 +1,15 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-head-import-in-document");
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -36,6 +40,7 @@ const tests = {
         },
       ],
       filename: "pages/_document.js",
+      name: "should report error when importing Head from next/head in _document.js",
     },
     {
       code: `
@@ -66,6 +71,7 @@ const tests = {
         },
       ],
       filename: "pages/_document.page.tsx",
+      name: "should report error when importing Head from next/head in _document.page.tsx",
     },
     {
       code: `
@@ -96,6 +102,7 @@ const tests = {
         },
       ],
       filename: "pages/_document/index.js",
+      name: "should report error when importing Head from next/head in _document/index.js",
     },
     {
       code: `
@@ -126,6 +133,7 @@ const tests = {
         },
       ],
       filename: "pages/_document/index.tsx",
+      name: "should report error when importing Head from next/head in _document/index.tsx",
     },
   ],
   valid: [
@@ -150,6 +158,7 @@ const tests = {
       export default MyDocument
     `,
       filename: "pages/_document.tsx",
+      name: "should allow Head imported from next/document in _document.tsx",
     },
     {
       code: `import Head from "next/head";
@@ -164,21 +173,20 @@ const tests = {
       }
     `,
       filename: "pages/index.tsx",
+      name: "should allow Head imported from next/head in regular pages",
     },
   ],
 };
 
-describe("no-head-import-in-document", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-head-import-in-document", NextESLintRule, tests);

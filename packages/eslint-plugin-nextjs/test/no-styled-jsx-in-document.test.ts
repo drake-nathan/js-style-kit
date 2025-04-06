@@ -1,11 +1,15 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-styled-jsx-in-document");
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -40,6 +44,7 @@ const tests = {
         },
       ],
       filename: "pages/_document.js",
+      name: "should report error when using styled-jsx in _document.js",
     },
   ],
 
@@ -66,6 +71,7 @@ const tests = {
           }
         }`,
       filename: "pages/_document.js",
+      name: "should allow _document.js without styled-jsx",
     },
     {
       code: `import Document, { Html, Head, Main, NextScript } from 'next/document'
@@ -95,6 +101,7 @@ const tests = {
           }
         }`,
       filename: "pages/_document.js",
+      name: "should allow regular style tags in _document.js",
     },
     {
       code: `
@@ -112,21 +119,20 @@ const tests = {
           }
           `,
       filename: "pages/index.js",
+      name: "should allow styled-jsx in regular pages",
     },
   ],
 };
 
-describe("no-styled-jsx-in-document", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-styled-jsx-in-document", NextESLintRule, tests);

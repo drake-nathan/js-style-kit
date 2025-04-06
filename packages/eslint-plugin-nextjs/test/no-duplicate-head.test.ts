@@ -1,4 +1,3 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
@@ -8,7 +7,12 @@ const NextESLintRule = getRule("no-duplicate-head");
 const message =
   "Do not include multiple instances of `<Head/>`. See: https://nextjs.org/docs/messages/no-duplicate-head";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -40,6 +44,7 @@ const tests = {
         },
       ],
       filename: "pages/_document.js",
+      name: "should report error when multiple Head components are used in _document.js",
     },
     {
       code: `
@@ -82,6 +87,7 @@ const tests = {
         },
       ],
       filename: "pages/_document.page.tsx",
+      name: "should report error when Head component is used multiple times with content in _document.page.tsx",
     },
   ],
   valid: [
@@ -105,6 +111,7 @@ const tests = {
       export default MyDocument
     `,
       filename: "pages/_document.js",
+      name: "should allow single Head component in _document.js",
     },
     {
       code: `import Document, { Html, Head, Main, NextScript } from 'next/document'
@@ -128,21 +135,20 @@ const tests = {
       export default MyDocument
     `,
       filename: "pages/_document.tsx",
+      name: "should allow single Head component with content in _document.tsx",
     },
   ],
 };
 
-describe("no-duplicate-head", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-duplicate-head", NextESLintRule, tests);

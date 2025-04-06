@@ -1,4 +1,3 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
@@ -7,7 +6,12 @@ const NextESLintRule = getRule("no-async-client-component");
 const message =
   "Prevent client components from being async functions. See: https://nextjs.org/docs/messages/no-async-client-component";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -19,6 +23,7 @@ const tests = {
       }
       `,
       errors: [{ message }],
+      name: "should report error for async client component with direct export",
     },
     {
       code: `
@@ -30,6 +35,7 @@ const tests = {
       }
       `,
       errors: [{ message }],
+      name: "should report error for async client function with direct export",
     },
     {
       code: `
@@ -43,6 +49,7 @@ const tests = {
       export default MyComponent
       `,
       errors: [{ message }],
+      name: "should report error for async client component with separate export",
     },
     {
       code: `
@@ -56,6 +63,7 @@ const tests = {
       export default MyFunction
       `,
       errors: [{ message }],
+      name: "should report error for async client function with separate export",
     },
     {
       code: `
@@ -69,16 +77,21 @@ const tests = {
       export default MyFunction
       `,
       errors: [{ message }],
+      name: "should report error for async arrow function in client component",
     },
   ],
   valid: [
-    `
+    {
+      code: `
     // single line
     export default async function MyComponent() {
       return <></>
     }
     `,
-    `
+      name: "should allow async component without use client directive",
+    },
+    {
+      code: `
     // single line capitalization
     "use client"
 
@@ -86,7 +99,10 @@ const tests = {
       return ''
     }
     `,
-    `
+      name: "should allow async client function with lowercase name",
+    },
+    {
+      code: `
     // multiple line
     async function MyComponent() {
       return <></>
@@ -94,7 +110,10 @@ const tests = {
 
     export default MyComponent
     `,
-    `
+      name: "should allow async component with separate export without use client directive",
+    },
+    {
+      code: `
     // multiple line capitalization
     "use client"
 
@@ -104,7 +123,10 @@ const tests = {
 
     export default myFunction
     `,
-    `
+      name: "should allow async client function with lowercase name and separate export",
+    },
+    {
+      code: `
     // arrow function
     "use client"
 
@@ -114,20 +136,20 @@ const tests = {
 
     export default myFunction
     `,
+      name: "should allow non-async arrow function in client component",
+    },
   ],
 };
 
-describe("no-async-client-component", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-async-client-component", NextESLintRule, tests);

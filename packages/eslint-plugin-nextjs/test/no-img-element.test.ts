@@ -1,4 +1,3 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
@@ -8,7 +7,12 @@ const NextESLintRule = getRule("no-img-element");
 const message =
   "Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -27,6 +31,7 @@ const tests = {
         }
       }`,
       errors: [{ message, type: "JSXOpeningElement" }],
+      name: "should report error when using img element in a div",
     },
     {
       code: `
@@ -43,6 +48,7 @@ const tests = {
         }
       }`,
       errors: [{ message, type: "JSXOpeningElement" }],
+      name: "should report error when using img element directly",
     },
     {
       code: `\
@@ -64,10 +70,12 @@ return new ImageResponse(
 `,
       errors: [{ message, type: "JSXOpeningElement" }],
       filename: `some/non-metadata-route-image.tsx`,
+      name: "should report error when using img element in ImageResponse outside metadata routes",
     },
   ],
   valid: [
-    `import { Image } from 'next/image';
+    {
+      code: `import { Image } from 'next/image';
 
       export class MyComponent {
         render() {
@@ -83,7 +91,10 @@ return new ImageResponse(
           );
         }
       }`,
-    `export class MyComponent {
+      name: "should allow Image component from next/image",
+    },
+    {
+      code: `export class MyComponent {
         render() {
           return (
             <picture>
@@ -97,7 +108,10 @@ return new ImageResponse(
           );
         }
       }`,
-    `export class MyComponent {
+      name: "should allow img element inside picture element",
+    },
+    {
+      code: `export class MyComponent {
         render() {
           return (
             <div>
@@ -113,6 +127,8 @@ return new ImageResponse(
           );
         }
       }`,
+      name: "should allow img element inside picture element with source",
+    },
     {
       code: `\
 import { ImageResponse } from "next/og";
@@ -132,6 +148,7 @@ export default function icon() {
 }
 `,
       filename: `src/app/icon.js`,
+      name: "should allow img element in icon.js metadata route",
     },
     {
       code: `\
@@ -152,21 +169,20 @@ export default function Image() {
 }
 `,
       filename: `app/opengraph-image.tsx`,
+      name: "should allow img element in opengraph-image.tsx metadata route",
     },
   ],
 };
 
-describe("no-img-element", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-img-element", NextESLintRule, tests);

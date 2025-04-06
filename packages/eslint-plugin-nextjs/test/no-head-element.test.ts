@@ -1,4 +1,3 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
@@ -8,7 +7,12 @@ const NextESLintRule = getRule("no-head-element");
 const message =
   "Do not use `<head>` element. Use `<Head />` from `next/head` instead. See: https://nextjs.org/docs/messages/no-head-element";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -30,6 +34,7 @@ const tests = {
         },
       ],
       filename: "./pages/index.js",
+      name: "should report error when using head element in pages directory",
     },
     {
       code: `import Head from 'next/head';
@@ -55,6 +60,7 @@ const tests = {
         },
       ],
       filename: "pages/index.ts",
+      name: "should report error when using both head element and Head component",
     },
   ],
   valid: [
@@ -74,6 +80,7 @@ const tests = {
       }
     `,
       filename: "pages/index.js",
+      name: "should allow Head component from next/head in pages directory",
     },
     {
       code: `import Head from 'next/head';
@@ -91,6 +98,7 @@ const tests = {
       }
     `,
       filename: "pages/index.tsx",
+      name: "should allow Head component from next/head in TypeScript files",
     },
     {
       code: `
@@ -106,21 +114,20 @@ const tests = {
       }
     `,
       filename: "./app/layout.js",
+      name: "should allow head element in app directory layout files",
     },
   ],
 };
 
-describe("no-head-element", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-head-element", NextESLintRule, tests);

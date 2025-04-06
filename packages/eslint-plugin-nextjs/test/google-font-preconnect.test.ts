@@ -1,4 +1,3 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
@@ -69,17 +68,15 @@ const tests: Tests = {
   ],
 };
 
-describe("google-font-preconnect", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2020,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2020,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("google-font-preconnect", NextESLintRule, tests);

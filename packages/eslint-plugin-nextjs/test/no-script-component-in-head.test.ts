@@ -1,14 +1,18 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-script-component-in-head");
 
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
 const message =
   "`next/script` should not be used in `next/head` component. Move `<Script />` outside of `<Head>` instead. See: https://nextjs.org/docs/messages/no-script-component-in-head";
 
-const tests = {
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -24,11 +28,13 @@ const tests = {
       }`,
       errors: [{ message }],
       filename: "pages/index.js",
+      name: "should report error when using Script component inside Head component",
     },
   ],
 
   valid: [
-    `import Script from "next/script";
+    {
+      code: `import Script from "next/script";
      const Head = ({children}) => children
 
     export default function Index() {
@@ -39,20 +45,20 @@ const tests = {
       );
     }
     `,
+      name: "should allow Script component inside custom Head component",
+    },
   ],
 };
 
-describe("no-script-component-in-head", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-script-component-in-head", NextESLintRule, tests);

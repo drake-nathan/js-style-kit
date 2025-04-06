@@ -1,4 +1,3 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
@@ -8,7 +7,12 @@ const NextESLintRule = getRule("no-css-tags");
 const message =
   "Do not include stylesheets manually. See: https://nextjs.org/docs/messages/no-css-tags";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -30,6 +34,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when including Next.js CSS file in Head component",
     },
     {
       code: `
@@ -42,11 +47,13 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when including Next.js CSS file in any component",
     },
   ],
 
   valid: [
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
 
       export class Blah extends Head {
         render() {
@@ -57,8 +64,11 @@ const tests = {
           );
         }
     }`,
+      name: "should allow Head component without CSS links",
+    },
 
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
       export class Blah extends Head {
         render() {
           return (
@@ -69,8 +79,11 @@ const tests = {
           );
         }
     }`,
+      name: "should allow external font CSS links",
+    },
 
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
       export class Blah extends Head {
         render(props) {
           return (
@@ -81,8 +94,11 @@ const tests = {
           );
         }
     }`,
+      name: "should allow link with spread props",
+    },
 
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
       export class Blah extends Head {
         render(props) {
           return (
@@ -93,20 +109,20 @@ const tests = {
           );
         }
     }`,
+      name: "should allow stylesheet link with spread props",
+    },
   ],
 };
 
-describe("no-css-tags", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-css-tags", NextESLintRule, tests);

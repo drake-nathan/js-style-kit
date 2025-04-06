@@ -1,4 +1,3 @@
-import { describe } from "bun:test";
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
@@ -7,7 +6,12 @@ const NextESLintRule = getRule("no-page-custom-font");
 
 const filename = "pages/_document.js";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -34,6 +38,7 @@ const tests = {
         },
       ],
       filename: "pages/index.tsx",
+      name: "should report error when adding custom font in a page component",
     },
     {
       code: `
@@ -77,6 +82,7 @@ const tests = {
         },
       ],
       filename,
+      name: "should report error when using link elements outside of Head component",
     },
     {
       code: `
@@ -104,6 +110,7 @@ const tests = {
         },
       ],
       filename: "pages/custom.js",
+      name: "should report error when adding custom font in a functional component page",
     },
     {
       code: `
@@ -131,6 +138,7 @@ const tests = {
         },
       ],
       filename: "pages/class-page.js",
+      name: "should report error when adding custom font in a class component page",
     },
     // Test case for when we cannot find a default export identifier
     // This covers lines 47-48 in no-page-custom-font.ts
@@ -161,6 +169,7 @@ const tests = {
         },
       ],
       filename: "pages/complex-export.js",
+      name: "should report error when adding custom font with complex export pattern",
     },
   ],
 
@@ -183,6 +192,7 @@ const tests = {
     }
     export default MyDocument;`,
       filename,
+      name: "should allow custom font in _document.js with Document class",
     },
     {
       code: `import NextDocument, { Html, Head } from "next/document";
@@ -203,6 +213,7 @@ const tests = {
     export default Document;
     `,
       filename,
+      name: "should allow custom font in _document.js with renamed Document import",
     },
     {
       code: `export default function CustomDocument() {
@@ -218,6 +229,7 @@ const tests = {
       )
     }`,
       filename,
+      name: "should allow custom font in _document.js with function component",
     },
     {
       code: `function CustomDocument() {
@@ -236,6 +248,7 @@ const tests = {
     export default CustomDocument;
     `,
       filename,
+      name: "should allow custom font in _document.js with separate function and export",
     },
     {
       code: `
@@ -257,6 +270,7 @@ const tests = {
 
       export default MyDocument;`,
       filename,
+      name: "should allow custom font in _document.js with custom class",
     },
     {
       code: `export default function() {
@@ -272,6 +286,7 @@ const tests = {
       )
     }`,
       filename,
+      name: "should allow custom font in _document.js with anonymous function",
     },
     // Test case for a non-Google Font link href
     {
@@ -294,6 +309,7 @@ const tests = {
       export default MyDocument;
       `,
       filename,
+      name: "should allow non-Google Font link in _document.js",
     },
     // Test case for a link without href attribute
     {
@@ -313,21 +329,20 @@ const tests = {
       export default MyDocument;
       `,
       filename,
+      name: "should allow link without href attribute in _document.js",
     },
   ],
 };
 
-describe("no-page-custom-font", () => {
-  new RuleTester({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+        modules: true,
       },
-      sourceType: "module",
     },
-  }).run("eslint", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-page-custom-font", NextESLintRule, tests);
