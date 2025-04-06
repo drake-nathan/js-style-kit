@@ -1,12 +1,15 @@
-import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-unwanted-polyfillio");
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `import {Head} from 'next/document';
@@ -28,6 +31,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error for multiple polyfills already shipped with Next.js",
     },
     {
       code: `
@@ -48,6 +52,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error for Array.prototype.copyWithin polyfill",
     },
     {
       code: `import NextScript from 'next/script';
@@ -67,6 +72,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error for Array.prototype.copyWithin polyfill in NextScript component",
     },
     {
       code: `import {Head} from 'next/document';
@@ -87,11 +93,13 @@ const tests = {
             "No duplicate polyfills from Polyfill.io are allowed. Object.fromEntries is already shipped with Next.js. See: https://nextjs.org/docs/messages/no-unwanted-polyfillio",
         },
       ],
+      name: "should report error for Object.fromEntries polyfill",
     },
   ],
 
   valid: [
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
 
       export class Blah extends Head {
         render() {
@@ -103,7 +111,10 @@ const tests = {
           );
         }
     }`,
-    `import {Head} from 'next/document';
+      name: "should allow AbortController polyfill",
+    },
+    {
+      code: `import {Head} from 'next/document';
 
       export class Blah extends Head {
         render() {
@@ -115,7 +126,10 @@ const tests = {
           );
         }
     }`,
-    `import Script from 'next/script';
+      name: "should allow IntersectionObserver polyfill",
+    },
+    {
+      code: `import Script from 'next/script';
 
       export function MyApp({ Component, pageProps }) {
           return (
@@ -125,7 +139,10 @@ const tests = {
             </div>
           );
     }`,
-    `import Script from 'next/script';
+      name: "should allow IntersectionObserver polyfill in Script component",
+    },
+    {
+      code: `import Script from 'next/script';
 
       export function MyApp({ Component, pageProps }) {
           return (
@@ -135,31 +152,20 @@ const tests = {
             </div>
           );
     }`,
+      name: "should allow polyfills from alternate domains",
+    },
   ],
 };
 
-describe("no-unwanted-polyfillio", () => {
-  new ESLintTesterV8({
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
     parserOptions: {
       ecmaFeatures: {
         jsx: true,
         modules: true,
       },
-      ecmaVersion: 2018,
-      sourceType: "module",
     },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
-      },
-      sourceType: "module",
-    },
-  }).run("eslint-v9", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-unwanted-polyfillio", NextESLintRule, tests);

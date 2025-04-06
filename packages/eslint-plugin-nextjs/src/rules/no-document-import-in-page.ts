@@ -1,10 +1,16 @@
+import type { RuleDefinition } from "@eslint/core";
+
 import * as path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
+const name = "no-document-import-in-page";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-const url = "https://nextjs.org/docs/messages/no-document-import-in-page";
+type MessageId = "noDocumentImportInPage";
 
-export const noDocumentImportInPage = defineRule({
+/**
+ * Rule to prevent importing next/document outside of pages/_document.js
+ */
+export const noDocumentImportInPage: RuleDefinition = {
   create: (context) => ({
     ImportDeclaration: (node) => {
       if (node.source.value !== "next/document") {
@@ -23,7 +29,8 @@ export const noDocumentImportInPage = defineRule({
       }
 
       context.report({
-        message: `\`<Document />\` from \`next/document\` should not be imported outside of \`pages/_document.js\`. See: ${url}`,
+        data: { url },
+        messageId: "noDocumentImportInPage",
         node,
       });
     },
@@ -35,7 +42,11 @@ export const noDocumentImportInPage = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noDocumentImportInPage:
+        "`<Document />` from `next/document` should not be imported outside of `pages/_document.js`. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

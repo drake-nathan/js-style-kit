@@ -14,8 +14,11 @@ This is a unofficial fork of [`@next/eslint-plugin-next`](https://www.npmjs.com/
 If you're using `eslint-config-next`, you _do not_ need this plugin.
 You only need this plugin if you're rolling your own ESLint config.
 
+Beginning with v1, this plugin is ESM only and requires ESLint v9. If you need legacy support, use v0.1.2.
+
 ## Requirements
 
+- ESLint v9
 - Node.js v20.11.0 or higher
 
 ## Installation
@@ -32,33 +35,29 @@ bun add eslint eslint-plugin-nextjs -d
 
 ## Usage
 
-> **Note**: The API _will_ break in v1. I want to clean up this API follow ESLint standards.
+I've cleaned up the API, so it's not 1:1 with the original plugin, but all of the rules remain the same.
 
-This plugin ships two configs for both legacy and flat ESLint configuration formats:
+The original plugin ships two configs, recommended and core-web-vitals. They're the same but the latter has two rules upgraded to errors. I've consolidated this to a single "recommended" config with all rules warnings by default.
 
-- "recommended" or "recommended/flat" - includes most rules from Next.js
-- "core-web-vitals" or "core-web-vitals/flat" - same thing but two rules get upgraded to errors 🤷‍♂️
+My belief is that all ESLint rules should be warnings to allow you to distinguish between ESLint issues and TypeScript issues easily in your IDE (orange squiggly vs red squiggly).
 
-You probably want Core Web Vitals (that's what ships inside of `eslint-config-next`), but you never need both.
+If you're migrating from either config, all rules will still be enabled. I didn't changed any core functionality.
 
-### Legacy Config
-
-```js
-{
-  extends: ["nextjs/core-web-vitals"],
-}
-```
+> **Note**: If you run this plugin with `next lint`, it will give you a warning that the next eslint plugin is not installed. You can either ignore this, or run your lint with `eslint .` instead.
 
 ### Flat Config
 
 ```js
+// eslint.config.js/mjs
 import nextjs from "eslint-plugin-nextjs";
 
 export default [
   // ... other configs
-  nextjs.configs["core-web-vitals/flat"],
+  nextjs.configs.recommended,
 ];
 ```
+
+If your project has `"type": "module"` in `package.json`, you can use `eslint.config.js`, otherwise use `eslint.config.mjs` which will allow you to use ESM syntax in that file.
 
 ### Custom Config
 
@@ -72,6 +71,7 @@ export default [
       nextjs,
     },
     rules: {
+      // note that the prefix is different, the original plugin uses "@next/next/"
       "nextjs/google-font-display": "warn",
       "nextjs/no-img-element": "warn",
     },

@@ -1,11 +1,17 @@
+import type { RuleDefinition } from "@eslint/core";
+
 import * as path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
+const name = "no-styled-jsx-in-document";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-const url = "https://nextjs.org/docs/messages/no-styled-jsx-in-document";
+type MessageId = "noStyledJsxInDocument";
 
-export const noStyledJsxInDocument = defineRule({
-  create: (context: any) => ({
+/**
+ * Rule to prevent usage of styled-jsx in pages/_document.js
+ */
+export const noStyledJsxInDocument: RuleDefinition = {
+  create: (context) => ({
     JSXOpeningElement: (node: any) => {
       const document = context.filename.split("pages", 2)[1];
       if (!document) {
@@ -23,14 +29,18 @@ export const noStyledJsxInDocument = defineRule({
       }
 
       if (
+        node.name.type === "JSXIdentifier" &&
         node.name.name === "style" &&
         node.attributes.find(
-          (attr: any) =>
-            attr.type === "JSXAttribute" && attr.name.name === "jsx",
+          (attr: any): attr is any =>
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
+            attr.name.name === "jsx",
         )
       ) {
         context.report({
-          message: `\`styled-jsx\` should not be used in \`pages/_document.js\`. See: ${url}`,
+          data: { url },
+          messageId: "noStyledJsxInDocument",
           node,
         });
       }
@@ -42,7 +52,11 @@ export const noStyledJsxInDocument = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noStyledJsxInDocument:
+        "`styled-jsx` should not be used in `pages/_document.js`. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

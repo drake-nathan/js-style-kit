@@ -1,6 +1,4 @@
-import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
@@ -9,7 +7,12 @@ const NextESLintRule = getRule("no-css-tags");
 const message =
   "Do not include stylesheets manually. See: https://nextjs.org/docs/messages/no-css-tags";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -31,6 +34,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when including Next.js CSS file in Head component",
     },
     {
       code: `
@@ -43,11 +47,13 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when including Next.js CSS file in any component",
     },
   ],
 
   valid: [
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
 
       export class Blah extends Head {
         render() {
@@ -58,8 +64,11 @@ const tests = {
           );
         }
     }`,
+      name: "should allow Head component without CSS links",
+    },
 
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
       export class Blah extends Head {
         render() {
           return (
@@ -70,8 +79,11 @@ const tests = {
           );
         }
     }`,
+      name: "should allow external font CSS links",
+    },
 
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
       export class Blah extends Head {
         render(props) {
           return (
@@ -82,8 +94,11 @@ const tests = {
           );
         }
     }`,
+      name: "should allow link with spread props",
+    },
 
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
       export class Blah extends Head {
         render(props) {
           return (
@@ -94,31 +109,20 @@ const tests = {
           );
         }
     }`,
+      name: "should allow stylesheet link with spread props",
+    },
   ],
 };
 
-describe("no-css-tags", () => {
-  new ESLintTesterV8({
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
     parserOptions: {
       ecmaFeatures: {
         jsx: true,
         modules: true,
       },
-      ecmaVersion: 2018,
-      sourceType: "module",
     },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
-      },
-      sourceType: "module",
-    },
-  }).run("eslint-v9", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-css-tags", NextESLintRule, tests);

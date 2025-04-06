@@ -1,16 +1,26 @@
-// Return attributes and values of a node in a convenient way:
-/* example: 
-    <ExampleElement attr1="15" attr2>
-    {   attr1: {
-            hasValue: true,
-            value: 15
-        },
-        attr2: {
-            hasValue: false
-        }
-Inclusion of hasValue is in case an eslint rule cares about boolean values
-explicitly assigned to attribute vs the attribute being used as a flag
-*/
+/**
+ * Returns attributes and values of a node in a convenient way.
+ *
+ * @example
+ * // Given the following JSX element:
+ * // <ExampleElement attr1="15" attr2 />
+ * //
+ * // The attributes would be represented as:
+ * // {
+ * //   attr1: {
+ * //     hasValue: true,
+ * //     value: '15' // Note: attribute values are typically strings
+ * //   },
+ * //   attr2: {
+ * //     hasValue: false,
+ * //     value: undefined
+ * //   }
+ * // }
+ * //
+ * // The `hasValue` property distinguishes between attributes with explicit
+ * // values (even empty ones like `attr=""`) and boolean attributes (flags)
+ * // without assigned values. This distinction can be important for ESLint rules.
+ */
 export default class NodeAttributes {
   attributes: Record<
     string,

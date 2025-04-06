@@ -1,12 +1,19 @@
-import { defineRule } from "../utils/define-rule.js";
+import type { RuleDefinition } from "@eslint/core";
+
 import NodeAttributes from "../utils/node-attributes.js";
 
-const url = "https://nextjs.org/docs/messages/google-font-preconnect";
+const name = "google-font-preconnect";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-export const googleFontPreconnect = defineRule({
-  create: (context: any) => ({
-    JSXOpeningElement: (node: any) => {
-      if (node.name.name !== "link") {
+type MessageId = "missingPreconnect";
+
+/**
+ * Rule to enforce preconnect usage with Google Fonts
+ */
+export const googleFontPreconnect: RuleDefinition = {
+  create: (context) => ({
+    JSXOpeningElement: (node) => {
+      if (node.name.type !== "JSXIdentifier" || node.name.name !== "link") {
         return;
       }
 
@@ -27,7 +34,8 @@ export const googleFontPreconnect = defineRule({
         preconnectMissing
       ) {
         context.report({
-          message: `\`rel="preconnect"\` is missing from Google Font. See: ${url}`,
+          data: { url },
+          messageId: "missingPreconnect",
           node,
         });
       }
@@ -39,7 +47,11 @@ export const googleFontPreconnect = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      missingPreconnect:
+        '`rel="preconnect"` is missing from Google Font. See: {{url}}',
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

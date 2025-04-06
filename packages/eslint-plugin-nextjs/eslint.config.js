@@ -1,3 +1,4 @@
+import eslintPlugin from "eslint-plugin-eslint-plugin";
 // @ts-check
 import { eslintConfig } from "js-style-kit";
 
@@ -8,6 +9,7 @@ export default eslintConfig(
     },
     typescript: "tsconfig.eslint.json",
   },
+  eslintPlugin.configs["flat/recommended"],
   {
     name: "custom-overrides",
     rules: {

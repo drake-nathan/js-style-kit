@@ -1,6 +1,4 @@
-import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
@@ -9,7 +7,12 @@ const NextESLintRule = getRule("next-script-for-ga");
 const ERROR_MSG =
   "Prefer `next/script` component when using the inline script for Google Analytics. See: https://nextjs.org/docs/messages/next-script-for-ga";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -40,6 +43,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when using Google Analytics inline script",
     },
     {
       code: `
@@ -69,6 +73,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when using Google Tag Manager inline script",
     },
     {
       code: `
@@ -98,6 +103,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when using traditional Google Analytics inline script",
     },
     {
       code: `
@@ -124,6 +130,7 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when using alternative Google Analytics inline script with external source",
     },
     {
       code: `
@@ -154,11 +161,13 @@ const tests = {
           type: "JSXOpeningElement",
         },
       ],
+      name: "should report error when using method-generated Google Analytics markup",
     },
   ],
 
   valid: [
-    `import Script from 'next/script'
+    {
+      code: `import Script from 'next/script'
 
       export class Blah extends Head {
         render() {
@@ -182,7 +191,10 @@ const tests = {
           );
         }
     }`,
-    `import Script from 'next/script'
+      name: "should allow Google Analytics with next/script component",
+    },
+    {
+      code: `import Script from 'next/script'
 
       export class Blah extends Head {
         render() {
@@ -203,7 +215,10 @@ const tests = {
           );
         }
     }`,
-    `import Script from 'next/script'
+      name: "should allow traditional Google Analytics with next/script component",
+    },
+    {
+      code: `import Script from 'next/script'
 
         export class Blah extends Head {
         render() {
@@ -220,7 +235,10 @@ const tests = {
             );
         }
     }`,
-    `export class Blah extends Head {
+      name: "should allow alternative Google Analytics with next/script component",
+    },
+    {
+      code: `export class Blah extends Head {
           render() {
             return (
               <div>
@@ -230,31 +248,20 @@ const tests = {
             );
           }
       }`,
+      name: "should allow script with empty dangerouslySetInnerHTML",
+    },
   ],
 };
 
-describe("next-script-for-ga", () => {
-  new ESLintTesterV8({
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
     parserOptions: {
       ecmaFeatures: {
         jsx: true,
         modules: true,
       },
-      ecmaVersion: 2018,
-      sourceType: "module",
     },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
-      },
-      sourceType: "module",
-    },
-  }).run("eslint-v9", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("next-script-for-ga", NextESLintRule, tests);

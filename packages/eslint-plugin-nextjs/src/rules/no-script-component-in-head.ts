@@ -1,9 +1,43 @@
-import { defineRule } from "../utils/define-rule.js";
-const url = "https://nextjs.org/docs/messages/no-script-component-in-head";
+import type { RuleDefinition } from "@eslint/core";
 
-export const noScriptComponentInHead = defineRule({
-  create: (context: any) => {
+const name = "no-script-component-in-head";
+const url = `https://nextjs.org/docs/messages/${name}`;
+
+type MessageId = "noScriptComponentInHead";
+
+/**
+ * Rule to prevent usage of next/script in next/head component
+ */
+export const noScriptComponentInHead: RuleDefinition = {
+  create: (context) => {
     let isNextHead: null | string = null;
+
+    /**
+     * Recursively find Script components inside a node's children
+     */
+    const findNestedScriptComponent = (node: any): any => {
+      if (node.type !== "JSXElement") {
+        return null;
+      }
+
+      // Check if current element is a Script component
+      if (
+        node.openingElement.name.type === "JSXIdentifier" &&
+        node.openingElement.name.name === "Script"
+      ) {
+        return node;
+      }
+
+      // Recursively check all children
+      for (const child of node.children) {
+        const scriptComponent = findNestedScriptComponent(child);
+        if (scriptComponent) {
+          return scriptComponent;
+        }
+      }
+
+      return null;
+    };
 
     return {
       ImportDeclaration: (node: any) => {
@@ -17,21 +51,19 @@ export const noScriptComponentInHead = defineRule({
         }
 
         if (
-          node.openingElement?.name &&
+          node.openingElement.name.type !== "JSXIdentifier" ||
           node.openingElement.name.name !== "Head"
         ) {
           return;
         }
 
-        const scriptTag = node.children.find(
-          (child: any) =>
-            child.openingElement?.name &&
-            child.openingElement.name.name === "Script",
-        );
+        // Use recursive function to find any nested Script component
+        const scriptTag = findNestedScriptComponent(node);
 
         if (scriptTag) {
           context.report({
-            message: `\`next/script\` should not be used in \`next/head\` component. Move \`<Script />\` outside of \`<Head>\` instead. See: ${url}`,
+            data: { url },
+            messageId: "noScriptComponentInHead",
             node,
           });
         }
@@ -44,7 +76,11 @@ export const noScriptComponentInHead = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noScriptComponentInHead:
+        "`next/script` should not be used in `next/head` component. Move `<Script />` outside of `<Head>` instead. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

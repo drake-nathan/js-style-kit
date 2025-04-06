@@ -1,12 +1,15 @@
-import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-document-import-in-page");
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `import Document from "next/document"
@@ -21,6 +24,7 @@ const tests = {
         },
       ],
       filename: "components/test.js",
+      name: "should report error when importing Document in components directory",
     },
     {
       code: `import Document from "next/document"
@@ -35,6 +39,7 @@ const tests = {
         },
       ],
       filename: "pages/test.js",
+      name: "should report error when importing Document in pages directory outside _document.js",
     },
   ],
   valid: [
@@ -51,6 +56,7 @@ const tests = {
     }
     `,
       filename: "pages/_document.js",
+      name: "should allow importing Document in pages/_document.js",
     },
     {
       code: `import Document from "next/document"
@@ -65,6 +71,7 @@ const tests = {
     }
     `,
       filename: "pages/_document.page.tsx",
+      name: "should allow importing Document in pages/_document.page.tsx",
     },
     {
       code: `import NDocument from "next/document"
@@ -79,6 +86,7 @@ const tests = {
     }
     `,
       filename: "pages/_document/index.js",
+      name: "should allow importing Document with alias in pages/_document/index.js",
     },
     {
       code: `import NDocument from "next/document"
@@ -93,6 +101,7 @@ const tests = {
     }
     `,
       filename: "pages/_document/index.tsx",
+      name: "should allow importing Document with alias in pages/_document/index.tsx",
     },
     {
       code: `import Document from "next/document"
@@ -107,32 +116,20 @@ const tests = {
     }
     `,
       filename: "pagesapp/src/pages/_document.js",
+      name: "should allow importing Document in custom pages directory structure",
     },
   ],
 };
 
-describe("no-document-import-in-page", () => {
-  new ESLintTesterV8({
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
     parserOptions: {
       ecmaFeatures: {
         jsx: true,
         modules: true,
       },
-      ecmaVersion: 2018,
-      sourceType: "module",
     },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
-      },
-      sourceType: "module",
-    },
-  }).run("eslint-v9", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-document-import-in-page", NextESLintRule, tests);

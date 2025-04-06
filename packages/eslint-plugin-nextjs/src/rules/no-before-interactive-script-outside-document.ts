@@ -1,24 +1,29 @@
+import type { RuleDefinition } from "@eslint/core";
+
 import * as path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
-
-const url =
-  "https://nextjs.org/docs/messages/no-before-interactive-script-outside-document";
+const name = "no-before-interactive-script-outside-document";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
 const convertToCorrectSeparator = (str: string) =>
   str.replaceAll(/[/\\]/g, path.sep);
 
-export const noBeforeInteractiveScriptOutsideDocument = defineRule({
-  create: (context: any) => {
+type MessageId = "noBeforeInteractiveOutsideDocument";
+
+/**
+ * Rule to prevent usage of next/script's beforeInteractive strategy outside of pages/_document.js
+ */
+export const noBeforeInteractiveScriptOutsideDocument: RuleDefinition = {
+  create: (context) => {
     let scriptImportName: null | string = null;
 
     return {
       'ImportDeclaration[source.value="next/script"] > ImportDefaultSpecifier'(
-        node: any,
+        node,
       ) {
         scriptImportName = node.local.name;
       },
-      JSXOpeningElement: (node: any) => {
+      JSXOpeningElement: (node) => {
         const pathname = convertToCorrectSeparator(context.filename);
 
         const isInAppDir = pathname.includes(`${path.sep}app${path.sep}`);
@@ -32,15 +37,25 @@ export const noBeforeInteractiveScriptOutsideDocument = defineRule({
           return;
         }
 
-        if (node.name && node.name.name !== scriptImportName) {
+        if (
+          node.name.type === "JSXIdentifier" &&
+          node.name.name !== scriptImportName
+        ) {
           return;
         }
 
         const strategy = node.attributes.find(
-          (child: any) => child.name && child.name.name === "strategy",
+          (child: any) =>
+            child.type === "JSXAttribute" &&
+            child.name.type === "JSXIdentifier" &&
+            child.name.name === "strategy",
         );
 
-        if (!strategy?.value || strategy.value.value !== "beforeInteractive") {
+        if (
+          !strategy?.value ||
+          strategy.value.type !== "Literal" ||
+          strategy.value.value !== "beforeInteractive"
+        ) {
           return;
         }
 
@@ -50,7 +65,8 @@ export const noBeforeInteractiveScriptOutsideDocument = defineRule({
         }
 
         context.report({
-          message: `\`next/script\`'s \`beforeInteractive\` strategy should not be used outside of \`pages/_document.js\`. See: ${url}`,
+          data: { url },
+          messageId: "noBeforeInteractiveOutsideDocument",
           node,
         });
       },
@@ -63,7 +79,11 @@ export const noBeforeInteractiveScriptOutsideDocument = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noBeforeInteractiveOutsideDocument:
+        "`next/script`'s `beforeInteractive` strategy should not be used outside of `pages/_document.js`. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

@@ -1,15 +1,18 @@
-import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-sync-scripts");
 
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
 const message =
   "Synchronous scripts should not be used. See: https://nextjs.org/docs/messages/no-sync-scripts";
 
-const tests = {
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -26,6 +29,7 @@ const tests = {
           }
       }`,
       errors: [{ message, type: "JSXOpeningElement" }],
+      name: "should report error when using script with src attribute without async",
     },
     {
       code: `
@@ -42,11 +46,13 @@ const tests = {
           }
       }`,
       errors: [{ message, type: "JSXOpeningElement" }],
+      name: "should report error when using script with dynamic src attribute without async",
     },
   ],
 
   valid: [
-    `import {Head} from 'next/document';
+    {
+      code: `import {Head} from 'next/document';
 
       export class Blah extends Head {
         render() {
@@ -58,7 +64,10 @@ const tests = {
           );
         }
     }`,
-    `import {Head} from 'next/document';
+      name: "should allow script with async attribute",
+    },
+    {
+      code: `import {Head} from 'next/document';
 
       export class Blah extends Head {
         render(props) {
@@ -70,31 +79,20 @@ const tests = {
           );
         }
     }`,
+      name: "should allow script with spread attributes",
+    },
   ],
 };
 
-describe("no-sync-scripts", () => {
-  new ESLintTesterV8({
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
     parserOptions: {
       ecmaFeatures: {
         jsx: true,
         modules: true,
       },
-      ecmaVersion: 2018,
-      sourceType: "module",
     },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
-      },
-      sourceType: "module",
-    },
-  }).run("eslint-v9", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-sync-scripts", NextESLintRule, tests);

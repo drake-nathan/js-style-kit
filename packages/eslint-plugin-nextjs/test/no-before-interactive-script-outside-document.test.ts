@@ -1,6 +1,4 @@
-import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
@@ -9,7 +7,12 @@ const NextESLintRule = getRule("no-before-interactive-script-outside-document");
 const message =
   "`next/script`'s `beforeInteractive` strategy should not be used outside of `pages/_document.js`. See: https://nextjs.org/docs/messages/no-before-interactive-script-outside-document";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -27,6 +30,7 @@ const tests = {
       }`,
       errors: [{ message }],
       filename: "pages/index.js",
+      name: "should report error when using beforeInteractive in pages/index.js",
     },
     {
       code: `
@@ -44,6 +48,7 @@ const tests = {
       }`,
       errors: [{ message }],
       filename: "components/outside-known-dirs.js",
+      name: "should report error when using beforeInteractive in components directory",
     },
     {
       code: `
@@ -62,6 +67,7 @@ const tests = {
       }`,
       errors: [{ message }],
       filename: "/Users/user_name/projects/project-name/pages/layout.tsx",
+      name: "should report error when using beforeInteractive in pages/layout.tsx",
     },
     {
       code: `
@@ -81,6 +87,7 @@ const tests = {
       errors: [{ message }],
       filename:
         "C:\\Users\\username\\projects\\project-name\\pages\\layout.tsx",
+      name: "should report error when using beforeInteractive in Windows path pages/layout.tsx",
     },
     {
       code: `
@@ -99,6 +106,7 @@ const tests = {
       }`,
       errors: [{ message }],
       filename: "/Users/user_name/projects/project-name/src/pages/layout.tsx",
+      name: "should report error when using beforeInteractive in src/pages/layout.tsx",
     },
     {
       code: `
@@ -118,6 +126,7 @@ const tests = {
       errors: [{ message }],
       filename:
         "C:\\Users\\username\\projects\\project-name\\src\\pages\\layout.tsx",
+      name: "should report error when using beforeInteractive in Windows path src/pages/layout.tsx",
     },
   ],
   valid: [
@@ -150,6 +159,7 @@ const tests = {
       export default MyDocument
       `,
       filename: "pages/_document.js",
+      name: "should allow beforeInteractive in pages/_document.js",
     },
     {
       code: `
@@ -180,6 +190,7 @@ const tests = {
       export default MyDocument
       `,
       filename: "pages/_document.tsx",
+      name: "should allow beforeInteractive with renamed component in pages/_document.tsx",
     },
     {
       code: `
@@ -209,6 +220,7 @@ const tests = {
       export default MyDocument
       `,
       filename: "pages/_document.tsx",
+      name: "should allow script without strategy in pages/_document.tsx",
     },
     {
       code: `
@@ -226,6 +238,7 @@ const tests = {
         );
       }`,
       filename: "/Users/user_name/projects/project-name/app/layout.tsx",
+      name: "should allow beforeInteractive in app/layout.tsx",
     },
     {
       code: `
@@ -243,6 +256,7 @@ const tests = {
         );
       }`,
       filename: "C:\\Users\\username\\projects\\project-name\\app\\layout.tsx",
+      name: "should allow beforeInteractive in Windows path app/layout.tsx",
     },
     {
       code: `
@@ -260,6 +274,7 @@ const tests = {
         );
       }`,
       filename: "/Users/user_name/projects/project-name/src/app/layout.tsx",
+      name: "should allow beforeInteractive in src/app/layout.tsx",
     },
     {
       code: `
@@ -278,32 +293,20 @@ const tests = {
       }`,
       filename:
         "C:\\Users\\username\\projects\\project-name\\src\\app\\layout.tsx",
+      name: "should allow beforeInteractive in Windows path src/app/layout.tsx",
     },
   ],
 };
 
-describe("no-before-interactive-script-outside-document", () => {
-  new ESLintTesterV8({
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
     parserOptions: {
       ecmaFeatures: {
         jsx: true,
         modules: true,
       },
-      ecmaVersion: 2018,
-      sourceType: "module",
     },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
-      },
-      sourceType: "module",
-    },
-  }).run("eslint-v9", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-before-interactive-script-outside-document", NextESLintRule, tests);

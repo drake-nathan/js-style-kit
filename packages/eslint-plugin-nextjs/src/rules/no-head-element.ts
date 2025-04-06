@@ -1,26 +1,36 @@
+import type { RuleDefinition } from "@eslint/core";
+
 import path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
+const name = "no-head-element";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-const url = "https://nextjs.org/docs/messages/no-head-element";
+type MessageId = "noHeadElement";
 
-export const noHeadElement = defineRule({
-  create: (context: any) => ({
-    JSXOpeningElement: (node: any) => {
+/**
+ * Rule to prevent usage of <head> element
+ */
+export const noHeadElement: RuleDefinition = {
+  create: (context) => ({
+    JSXOpeningElement: (node) => {
       const paths = context.filename;
 
       const isInAppDir = () =>
-        // TODO: fix
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        // Check if we're in the app directory using either platform separator
         paths.includes(`app${path.sep}`) ||
         paths.includes(`app${path.posix.sep}`);
       // Only lint the <head> element in pages directory
-      if (node.name.name !== "head" || isInAppDir()) {
+      if (
+        node.name.type !== "JSXIdentifier" ||
+        node.name.name !== "head" ||
+        isInAppDir()
+      ) {
         return;
       }
 
       context.report({
-        message: `Do not use \`<head>\` element. Use \`<Head />\` from \`next/head\` instead. See: ${url}`,
+        data: { url },
+        messageId: "noHeadElement",
         node,
       });
     },
@@ -32,7 +42,11 @@ export const noHeadElement = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noHeadElement:
+        "Do not use `<head>` element. Use `<Head />` from `next/head` instead. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

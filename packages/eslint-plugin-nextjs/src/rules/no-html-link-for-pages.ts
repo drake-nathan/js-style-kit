@@ -1,7 +1,8 @@
+import type { RuleDefinition } from "@eslint/core";
+
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
 import { getRootDirs } from "../utils/get-root-dirs.js";
 import {
   execOnce,
@@ -21,30 +22,45 @@ const pagesDirWarning = execOnce((pagesDirs) => {
 // Prevent multiple blocking IO requests that have already been calculated.
 const fsExistsSyncCache: Record<string, boolean> = {};
 
-const memoize = <T = any>(fn: (...args: any[]) => T) => {
-  const cache: Record<string, T> = {};
-  return (...args: any[]): T => {
+// Properly typed memoize function for the specific functions we use
+type AnyFunction = (...args: any[]) => any;
+
+const memoize = <F extends AnyFunction>(fn: F): F => {
+  const cache = new Map<string, ReturnType<F>>();
+
+  const memoized = (...args: Parameters<F>): ReturnType<F> => {
     const key = JSON.stringify(args);
-    cache[key] ??= fn(...args);
-    return cache[key];
+    if (!cache.has(key)) {
+      cache.set(key, fn(...args));
+    }
+    // We know the key exists because we just set it if it didn't
+    const value = cache.get(key);
+    // This cast is safe because we know the key exists
+    return value as ReturnType<F>;
   };
+
+  return memoized as F;
 };
 
 const cachedGetUrlFromPagesDirectories = memoize(getUrlFromPagesDirectories);
 const cachedGetUrlFromAppDirectory = memoize(getUrlFromAppDirectory);
 
-const url = "https://nextjs.org/docs/messages/no-html-link-for-pages";
+const name = "no-html-link-for-pages";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-export const noHtmlLinkForPages = defineRule({
+type MessageId = "noHtmlLinkForPages";
+
+/**
+ * Rule to prevent usage of <a> elements to navigate to internal Next.js pages
+ */
+export const noHtmlLinkForPages: RuleDefinition = {
   /**
    * Creates an ESLint rule listener.
    */
   create: (context) => {
-    // @ts-expect-error initial override, TODO: fix
-    const ruleOptions: (string | string[])[] = context.options;
-    const [customPagesDirectory] = ruleOptions;
+    const [customPagesDirectory] = context.options as [string | undefined];
 
-    const rootDirs = getRootDirs(context);
+    const rootDirs = getRootDirs(context as any);
 
     const pagesDirs = (
       customPagesDirectory ?
@@ -79,8 +95,8 @@ export const noHtmlLinkForPages = defineRule({
     const allUrlRegex = [...pageUrls, ...appDirUrls];
 
     return {
-      JSXOpeningElement: (node: any) => {
-        if (node.name.name !== "a") {
+      JSXOpeningElement: (node) => {
+        if (node.name.type !== "JSXIdentifier" || node.name.name !== "a") {
           return;
         }
 
@@ -90,32 +106,42 @@ export const noHtmlLinkForPages = defineRule({
 
         const target = node.attributes.find(
           (attr: any) =>
-            attr.type === "JSXAttribute" && attr.name.name === "target",
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
+            attr.name.name === "target",
         );
 
-        if (target && target.value.value === "_blank") {
+        if (
+          target?.value?.type === "Literal" &&
+          target.value.value === "_blank"
+        ) {
           return;
         }
 
         const href = node.attributes.find(
           (attr: any) =>
-            attr.type === "JSXAttribute" && attr.name.name === "href",
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
+            attr.name.name === "href",
         );
 
-        if (!href || (href.value && href.value.type !== "Literal")) {
+        if (!href?.value || href.value.type !== "Literal") {
           return;
         }
 
         const hasDownloadAttr = node.attributes.find(
           (attr: any) =>
-            attr.type === "JSXAttribute" && attr.name.name === "download",
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
+            attr.name.name === "download",
         );
 
         if (hasDownloadAttr) {
           return;
         }
 
-        const hrefPath = normalizeURL(href.value.value);
+        // We've already checked that href.value exists and is a Literal
+        const hrefPath = normalizeURL(href.value.value as string);
         // Outgoing links are ignored
 
         if (/^(?<temp1>https?:\/\/|\/\/)/.test(hrefPath as string)) {
@@ -125,7 +151,8 @@ export const noHtmlLinkForPages = defineRule({
         allUrlRegex.forEach((foundUrl) => {
           if (hrefPath && foundUrl.test(normalizeURL(hrefPath) as string)) {
             context.report({
-              message: `Do not use an \`<a>\` element to navigate to \`${hrefPath}\`. Use \`<Link />\` from \`next/link\` instead. See: ${url}`,
+              data: { hrefPath, url },
+              messageId: "noHtmlLinkForPages",
               node,
             });
           }
@@ -142,6 +169,10 @@ export const noHtmlLinkForPages = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noHtmlLinkForPages:
+        "Do not use an `<a>` element to navigate to `{{hrefPath}}`. Use `<Link />` from `next/link` instead. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [
       {
         oneOf: [
@@ -160,4 +191,4 @@ export const noHtmlLinkForPages = defineRule({
     ],
     type: "problem",
   },
-});
+};

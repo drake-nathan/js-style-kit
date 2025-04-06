@@ -1,15 +1,24 @@
-import { defineRule } from "../utils/define-rule.js";
-const url = "https://nextjs.org/docs/messages/no-title-in-document-head";
+import type { RuleDefinition } from "@eslint/core";
 
-export const noTitleInDocumentHead = defineRule({
-  create: (context: any) => {
+const name = "no-title-in-document-head";
+const url = `https://nextjs.org/docs/messages/${name}`;
+
+type MessageId = "noTitleInDocumentHead";
+
+/**
+ * Rule to prevent usage of <title> with Head component from next/document
+ */
+export const noTitleInDocumentHead: RuleDefinition = {
+  create: (context) => {
     let headFromNextDocument = false;
     return {
       ImportDeclaration: (node: any) => {
         if (node.source.value === "next/document") {
           if (
             node.specifiers.some(
-              ({ local }: { local: any }) => local.name === "Head",
+              (specifier: any) =>
+                specifier.type === "ImportSpecifier" &&
+                specifier.local.name === "Head",
             )
           ) {
             headFromNextDocument = true;
@@ -22,7 +31,7 @@ export const noTitleInDocumentHead = defineRule({
         }
 
         if (
-          node.openingElement?.name &&
+          node.openingElement.name.type !== "JSXIdentifier" ||
           node.openingElement.name.name !== "Head"
         ) {
           return;
@@ -30,14 +39,15 @@ export const noTitleInDocumentHead = defineRule({
 
         const titleTag = node.children.find(
           (child: any) =>
-            child.openingElement?.name &&
+            child.type === "JSXElement" &&
             child.openingElement.name.type === "JSXIdentifier" &&
             child.openingElement.name.name === "title",
         );
 
         if (titleTag) {
           context.report({
-            message: `Do not use \`<title>\` element with \`<Head />\` component from \`next/document\`. Titles should defined at the page-level using \`<Head />\` from \`next/head\` instead. See: ${url}`,
+            data: { url },
+            messageId: "noTitleInDocumentHead",
             node: titleTag,
           });
         }
@@ -51,7 +61,11 @@ export const noTitleInDocumentHead = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noTitleInDocumentHead:
+        "Do not use `<title>` element with `<Head />` component from `next/document`. Titles should defined at the page-level using `<Head />` from `next/head` instead. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

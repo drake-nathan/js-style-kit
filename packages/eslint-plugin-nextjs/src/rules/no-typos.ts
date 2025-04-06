@@ -1,6 +1,6 @@
-import * as path from "node:path";
+import type { RuleDefinition } from "@eslint/core";
 
-import { defineRule } from "../utils/define-rule.js";
+import * as path from "node:path";
 
 const NEXT_EXPORT_FUNCTIONS = [
   "getStaticProps",
@@ -10,6 +10,9 @@ const NEXT_EXPORT_FUNCTIONS = [
 
 // 0 is the exact match
 const THRESHOLD = 1;
+
+const name = "no-typos";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
 // the minimum number of operations required to convert string a to string b.
 const minDistance = (a: string, b: string): number | undefined => {
@@ -28,12 +31,14 @@ const minDistance = (a: string, b: string): number | undefined => {
 
   for (let i = 0; i < m; i++) {
     const s1 = a[i];
-    const currentRow = [i + 1];
+    // Initialize with first value
+    const currentRow: number[] = [i + 1];
     for (let j = 0; j < n; j++) {
       const s2 = b[j];
-      const insertions = (previousRow[j + 1] as any) + 1;
-      const deletions = (currentRow[j] as any) + 1;
-      const substitutions = (previousRow[j] as any) + Number(s1 !== s2);
+      // These values are guaranteed to exist because of how we initialize and build the arrays
+      const insertions = (previousRow[j + 1] ?? Infinity) + 1;
+      const deletions = (currentRow[j] ?? Infinity) + 1;
+      const substitutions = (previousRow[j] ?? Infinity) + Number(s1 !== s2);
       currentRow.push(Math.min(insertions, deletions, substitutions));
     }
     previousRow = currentRow;
@@ -41,15 +46,20 @@ const minDistance = (a: string, b: string): number | undefined => {
   return previousRow[previousRow.length - 1];
 };
 
-export const noTypos = defineRule({
-  create: (context: any) => {
-    const checkTypos = (node: any, name: string) => {
-      if (NEXT_EXPORT_FUNCTIONS.includes(name)) {
+type MessageId = "noTypos";
+
+/**
+ * Rule to prevent common typos in Next.js data fetching functions
+ */
+export const noTypos: RuleDefinition = {
+  create: (context) => {
+    const checkTypos = (node: any, functionName: string) => {
+      if (NEXT_EXPORT_FUNCTIONS.includes(functionName)) {
         return;
       }
 
       const potentialTypos = NEXT_EXPORT_FUNCTIONS.map((o) => ({
-        distance: minDistance(o, name) ?? Infinity,
+        distance: minDistance(o, functionName) ?? Infinity,
         option: o,
       }))
         .filter(({ distance }) => distance <= THRESHOLD && distance > 0)
@@ -57,7 +67,8 @@ export const noTypos = defineRule({
 
       if (potentialTypos.length) {
         context.report({
-          message: `${name} may be a typo. Did you mean ${potentialTypos[0]?.option}?`,
+          data: { functionName, suggestion: potentialTypos[0]?.option ?? "" },
+          messageId: "noTypos",
           node,
         });
       }
@@ -77,15 +88,16 @@ export const noTypos = defineRule({
 
         switch (decl.type) {
           case "FunctionDeclaration": {
-            checkTypos(node, decl.id.name);
+            if (decl.id) {
+              checkTypos(node, decl.id.name);
+            }
             break;
           }
           case "VariableDeclaration": {
             decl.declarations.forEach((d: any) => {
-              if (d.id.type !== "Identifier") {
-                return;
+              if (d.id.type === "Identifier") {
+                checkTypos(node, d.id.name);
               }
-              checkTypos(node, d.id.name);
             });
             break;
           }
@@ -96,13 +108,16 @@ export const noTypos = defineRule({
       },
     };
   },
-
   meta: {
     docs: {
       description: "Prevent common typos in Next.js data fetching functions.",
       recommended: true,
+      url,
     },
+    messages: {
+      noTypos: "{{functionName}} may be a typo. Did you mean {{suggestion}}?",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

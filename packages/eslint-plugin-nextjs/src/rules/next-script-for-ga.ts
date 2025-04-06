@@ -1,4 +1,5 @@
-import { defineRule } from "../utils/define-rule.js";
+import type { RuleDefinition } from "@eslint/core";
+
 import NodeAttributes from "../utils/node-attributes.js";
 
 const SUPPORTED_SRCS = [
@@ -9,20 +10,26 @@ const SUPPORTED_HTML_CONTENT_URLS = [
   "www.google-analytics.com/analytics.js",
   "www.googletagmanager.com/gtm.js",
 ];
+
+const name = "next-script-for-ga";
+const url = `https://nextjs.org/docs/messages/${name}`;
 const description =
   "Prefer `next/script` component when using the inline script for Google Analytics.";
-const url = "https://nextjs.org/docs/messages/next-script-for-ga";
-const ERROR_MSG = `${description} See: ${url}`;
 
 // Check if one of the items in the list is a substring of the passed string
 const containsStr = (str: string, strList: string[]) => {
   return strList.some((s) => str.includes(s));
 };
 
-export const nextScriptForGa = defineRule({
-  create: (context: any) => ({
-    JSXOpeningElement: (node: any) => {
-      if (node.name.name !== "script") {
+type MessageId = "useNextScript";
+
+/**
+ * Rule to enforce using next/script for Google Analytics
+ */
+export const nextScriptForGa: RuleDefinition = {
+  create: (context) => ({
+    JSXOpeningElement: (node) => {
+      if (node.name.type !== "JSXIdentifier" || node.name.name !== "script") {
         return;
       }
       if (node.attributes.length === 0) {
@@ -37,10 +44,12 @@ export const nextScriptForGa = defineRule({
         typeof attributes.value("src") === "string" &&
         containsStr(attributes.value("src"), SUPPORTED_SRCS)
       ) {
-        return context.report({
-          message: ERROR_MSG,
+        context.report({
+          data: { url },
+          messageId: "useNextScript",
           node,
         });
+        return;
       }
 
       // Check if inline script is being used to add GA.
@@ -57,7 +66,8 @@ export const nextScriptForGa = defineRule({
           containsStr(htmlContent, SUPPORTED_HTML_CONTENT_URLS)
         ) {
           context.report({
-            message: ERROR_MSG,
+            data: { url },
+            messageId: "useNextScript",
             node,
           });
         }
@@ -70,7 +80,11 @@ export const nextScriptForGa = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      useNextScript:
+        "Prefer `next/script` component when using the inline script for Google Analytics. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

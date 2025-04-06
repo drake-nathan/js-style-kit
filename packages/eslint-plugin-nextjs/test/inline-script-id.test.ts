@@ -1,6 +1,4 @@
-import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
@@ -9,7 +7,12 @@ const NextESLintRule = getRule("inline-script-id");
 const errorMessage =
   "`next/script` components with inline content must specify an `id` attribute. See: https://nextjs.org/docs/messages/inline-script-id";
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `import Script from 'next/script';
@@ -27,6 +30,7 @@ const tests = {
           type: "JSXElement",
         },
       ],
+      name: "should report error when Script component has inline content without id",
     },
     {
       code: `import Script from 'next/script';
@@ -46,6 +50,7 @@ const tests = {
           type: "JSXElement",
         },
       ],
+      name: "should report error when Script component has dangerouslySetInnerHTML without id",
     },
     {
       code: `import MyScript from 'next/script';
@@ -63,6 +68,7 @@ const tests = {
           type: "JSXElement",
         },
       ],
+      name: "should report error when renamed Script component has inline content without id",
     },
     {
       code: `import MyScript from 'next/script';
@@ -82,6 +88,7 @@ const tests = {
           type: "JSXElement",
         },
       ],
+      name: "should report error when renamed Script component has dangerouslySetInnerHTML without id",
     },
   ],
   valid: [
@@ -95,6 +102,7 @@ const tests = {
           </Script>
         )
       }`,
+      name: "should allow Script component with inline content and id",
     },
     {
       code: `import Script from 'next/script';
@@ -109,6 +117,7 @@ const tests = {
           />
         )
       }`,
+      name: "should allow Script component with dangerouslySetInnerHTML and id",
     },
     {
       code: `import Script from 'next/script';
@@ -118,6 +127,7 @@ const tests = {
           <Script src="https://example.com" />
         )
       }`,
+      name: "should allow Script component with src attribute and no id",
     },
     {
       code: `import MyScript from 'next/script';
@@ -129,6 +139,7 @@ const tests = {
           </MyScript>
         )
       }`,
+      name: "should allow renamed Script component with inline content and id",
     },
     {
       code: `import MyScript from 'next/script';
@@ -143,6 +154,7 @@ const tests = {
           />
         )
       }`,
+      name: "should allow renamed Script component with dangerouslySetInnerHTML and id",
     },
     {
       code: `import Script from 'next/script';
@@ -154,6 +166,7 @@ const tests = {
           </Script>
         )
       }`,
+      name: "should allow Script component with spread attributes and separate id",
     },
     {
       code: `import Script from 'next/script';
@@ -165,6 +178,7 @@ const tests = {
           </Script>
         )
       }`,
+      name: "should allow Script component with id in spread attributes",
     },
     {
       code: `import Script from 'next/script';
@@ -176,32 +190,20 @@ const tests = {
           </Script>
         )
       }`,
+      name: "should allow Script component with variable spread attributes and separate id",
     },
   ],
 };
 
-describe("inline-script-id", () => {
-  new ESLintTesterV8({
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
     parserOptions: {
       ecmaFeatures: {
         jsx: true,
         modules: true,
       },
-      ecmaVersion: 2018,
-      sourceType: "module",
     },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
-      },
-      sourceType: "module",
-    },
-  }).run("eslint-v9", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("inline-script-id", NextESLintRule, tests);

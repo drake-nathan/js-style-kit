@@ -1,4 +1,7 @@
-import { defineRule } from "../utils/define-rule.js";
+import type { RuleDefinition } from "@eslint/core";
+
+const name = "no-unwanted-polyfillio";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
 // Keep in sync with next.js polyfills file : https://github.com/vercel/next.js/blob/master/packages/next-polyfill-nomodule/src/index.js
 const NEXT_POLYFILLED_FEATURES = [
@@ -68,26 +71,25 @@ const NEXT_POLYFILLED_FEATURES = [
   "es7", // contains polyfilled 'Array.prototype.includes', 'String.prototype.padEnd' and 'String.prototype.padStart'
 ];
 
-const url = "https://nextjs.org/docs/messages/no-unwanted-polyfillio";
+type MessageId = "noUnwantedPolyfillio";
 
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-export const noUnwantedPolyfillio = defineRule({
-  create: (context: any) => {
+export const noUnwantedPolyfillio: RuleDefinition = {
+  create: (context) => {
     let scriptImport: null | string = null;
 
     return {
       ImportDeclaration: (node: any) => {
-        if (node.source && node.source.value === "next/script") {
-          scriptImport = node.specifiers[0].local.name;
+        if (node.source.value === "next/script" && node.specifiers.length > 0) {
+          const specifier = node.specifiers[0];
+          if (specifier && specifier.type === "ImportDefaultSpecifier") {
+            scriptImport = specifier.local.name;
+          }
         }
       },
       JSXOpeningElement: (node: any) => {
         if (
-          node.name &&
-          node.name.name !== "script" &&
-          node.name.name !== scriptImport
+          node.name.type !== "JSXIdentifier" ||
+          (node.name.name !== "script" && node.name.name !== scriptImport)
         ) {
           return;
         }
@@ -97,9 +99,15 @@ export const noUnwantedPolyfillio = defineRule({
 
         const srcNode = node.attributes.find(
           (attr: any) =>
-            attr.type === "JSXAttribute" && attr.name.name === "src",
+            attr.type === "JSXAttribute" &&
+            attr.name.type === "JSXIdentifier" &&
+            attr.name.name === "src",
         );
-        if (!srcNode || srcNode.value.type !== "Literal") {
+        if (
+          !srcNode?.value ||
+          srcNode.value.type !== "Literal" ||
+          typeof srcNode.value.value !== "string"
+        ) {
           return;
         }
         const src = srcNode.value.value;
@@ -113,17 +121,18 @@ export const noUnwantedPolyfillio = defineRule({
           src.startsWith("https://cdnjs.cloudflare.com/polyfill/")
         ) {
           const featureQueryString = new URL(src).searchParams.get("features");
-          const featuresRequested = (featureQueryString ?? "").split(",");
-          const unwantedFeatures = featuresRequested.filter((feature) =>
+          const featuresRequested = featureQueryString?.split(",") ?? [""];
+          const unwantedFeatures = featuresRequested.filter((feature: string) =>
             NEXT_POLYFILLED_FEATURES.includes(feature),
           );
           if (unwantedFeatures.length > 0) {
             context.report({
-              message: `No duplicate polyfills from Polyfill.io are allowed. ${unwantedFeatures.join(
-                ", ",
-              )} ${
-                unwantedFeatures.length > 1 ? "are" : "is"
-              } already shipped with Next.js. See: ${url}`,
+              data: {
+                features: unwantedFeatures.join(", "),
+                url,
+                verb: unwantedFeatures.length > 1 ? "are" : "is",
+              },
+              messageId: "noUnwantedPolyfillio",
               node,
             });
           }
@@ -131,15 +140,16 @@ export const noUnwantedPolyfillio = defineRule({
       },
     };
   },
-
   meta: {
     docs: {
-      category: "HTML",
       description: "Prevent duplicate polyfills from Polyfill.io.",
-      recommended: true,
       url,
     },
+    messages: {
+      noUnwantedPolyfillio:
+        "No duplicate polyfills from Polyfill.io are allowed. {{features}} {{verb}} already shipped with Next.js. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

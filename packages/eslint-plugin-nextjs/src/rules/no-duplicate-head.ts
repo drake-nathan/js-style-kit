@@ -1,7 +1,14 @@
-import { defineRule } from "../utils/define-rule.js";
-const url = "https://nextjs.org/docs/messages/no-duplicate-head";
+import type { RuleDefinition } from "@eslint/core";
 
-export const noDuplicateHead = defineRule({
+const name = "no-duplicate-head";
+const url = `https://nextjs.org/docs/messages/${name}`;
+
+type MessageId = "noDuplicateHead";
+
+/**
+ * Rule to prevent duplicate usage of <Head> in pages/_document.js
+ */
+export const noDuplicateHead: RuleDefinition = {
   create: (context) => {
     const { sourceCode } = context;
     let documentImportName: null | string = null;
@@ -9,7 +16,7 @@ export const noDuplicateHead = defineRule({
       ImportDeclaration: (node) => {
         if (node.source.value === "next/document") {
           const documentImport = node.specifiers.find(
-            ({ type }) => type === "ImportDefaultSpecifier",
+            (specifier: any) => specifier.type === "ImportDefaultSpecifier",
           );
           if (documentImport?.local) {
             documentImportName = documentImport.local.name;
@@ -17,12 +24,12 @@ export const noDuplicateHead = defineRule({
         }
       },
       ReturnStatement: (node) => {
-        const ancestors = sourceCode.getAncestors(node);
+        const ancestors = (sourceCode as any).getAncestors(node);
         const documentClass = ancestors.find(
-          (ancestorNode) =>
+          (ancestorNode: any) =>
             ancestorNode.type === "ClassDeclaration" &&
             ancestorNode.superClass &&
-            "name" in ancestorNode.superClass &&
+            ancestorNode.superClass.type === "Identifier" &&
             ancestorNode.superClass.name === documentImportName,
         );
 
@@ -30,23 +37,22 @@ export const noDuplicateHead = defineRule({
           return;
         }
 
-        if (
-          node.argument &&
-          "children" in node.argument &&
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          node.argument.children
-        ) {
-          const headComponents = node.argument.children.filter(
-            (childrenNode: any) =>
-              childrenNode.openingElement?.name &&
-              childrenNode.openingElement.name.name === "Head",
-          );
+        if (node.argument && node.argument.type === "JSXElement") {
+          const headComponents = node.argument.children
+            .filter(
+              (childrenNode: any) =>
+                childrenNode.type === "JSXElement" &&
+                childrenNode.openingElement.name.type === "JSXIdentifier" &&
+                childrenNode.openingElement.name.name === "Head",
+            )
+            // Ensure we have valid nodes for reporting
+            .filter(Boolean);
 
           if (headComponents.length > 1) {
             for (let i = 1; i < headComponents.length; i++) {
               context.report({
-                message: `Do not include multiple instances of \`<Head/>\`. See: ${url}`,
-                // @ts-expect-error initial override, TODO: fix
+                data: { url },
+                messageId: "noDuplicateHead",
                 node: headComponents[i],
               });
             }
@@ -62,7 +68,11 @@ export const noDuplicateHead = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noDuplicateHead:
+        "Do not include multiple instances of `<Head/>`. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

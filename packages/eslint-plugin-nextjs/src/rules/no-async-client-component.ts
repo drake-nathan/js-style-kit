@@ -1,14 +1,19 @@
-import { defineRule } from "../utils/define-rule.js";
+import type { RuleDefinition } from "@eslint/core";
 
-const url = "https://nextjs.org/docs/messages/no-async-client-component";
+const name = "no-async-client-component";
+const url = `https://nextjs.org/docs/messages/${name}`;
 const description = "Prevent client components from being async functions.";
-const message = `${description} See: ${url}`;
 
 const isCapitalized = (str: string): boolean => /[A-Z]/.test(str[0] ?? "");
 
-export const noAsyncClientComponent = defineRule({
-  create: (context: any) => ({
-    Program: (node: any) => {
+type MessageId = "noAsyncClientComponent";
+
+/**
+ * Rule to prevent client components from being async functions
+ */
+export const noAsyncClientComponent: RuleDefinition = {
+  create: (context) => ({
+    Program: (node) => {
       let isClientComponent = false;
 
       for (const block of node.body) {
@@ -23,12 +28,14 @@ export const noAsyncClientComponent = defineRule({
         if (block.type === "ExportDefaultDeclaration" && isClientComponent) {
           // export default async function MyComponent() {...}
           if (
-            block.declaration?.type === "FunctionDeclaration" &&
+            block.declaration.type === "FunctionDeclaration" &&
             block.declaration.async &&
+            block.declaration.id &&
             isCapitalized(block.declaration.id.name)
           ) {
             context.report({
-              message,
+              data: { url },
+              messageId: "noAsyncClientComponent",
               node: block,
             });
           }
@@ -52,7 +59,7 @@ export const noAsyncClientComponent = defineRule({
                 localBlock.type === "VariableDeclaration" &&
                 localBlock.declarations.find(
                   (declaration: any) =>
-                    declaration.id?.type === "Identifier" &&
+                    declaration.id.type === "Identifier" &&
                     declaration.id.name === targetName,
                 )
               ) {
@@ -67,7 +74,8 @@ export const noAsyncClientComponent = defineRule({
               functionDeclaration.async
             ) {
               context.report({
-                message,
+                data: { url },
+                messageId: "noAsyncClientComponent",
                 node: functionDeclaration,
               });
             }
@@ -75,7 +83,7 @@ export const noAsyncClientComponent = defineRule({
             if (functionDeclaration?.type === "VariableDeclaration") {
               const varDeclarator = functionDeclaration.declarations.find(
                 (declaration: any) =>
-                  declaration.id?.type === "Identifier" &&
+                  declaration.id.type === "Identifier" &&
                   declaration.id.name === targetName,
               );
 
@@ -84,7 +92,8 @@ export const noAsyncClientComponent = defineRule({
                 varDeclarator.init.async
               ) {
                 context.report({
-                  message,
+                  data: { url },
+                  messageId: "noAsyncClientComponent",
                   node: functionDeclaration,
                 });
               }
@@ -94,14 +103,17 @@ export const noAsyncClientComponent = defineRule({
       }
     },
   }),
-
   meta: {
     docs: {
       description,
       recommended: true,
       url,
     },
+    messages: {
+      noAsyncClientComponent:
+        "Prevent client components from being async functions. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

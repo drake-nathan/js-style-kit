@@ -1,18 +1,27 @@
-import { defineRule } from "../utils/define-rule.js";
+import type { RuleDefinition } from "@eslint/core";
 
-const url = "https://nextjs.org/docs/messages/no-sync-scripts";
+const name = "no-sync-scripts";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-export const noSyncScripts = defineRule({
-  create: (context: any) => ({
+type MessageId = "noSyncScripts";
+
+/**
+ * Rule to prevent synchronous scripts
+ */
+export const noSyncScripts: RuleDefinition = {
+  create: (context) => ({
     JSXOpeningElement: (node: any) => {
-      if (node.name.name !== "script") {
+      if (node.name.type !== "JSXIdentifier" || node.name.name !== "script") {
         return;
       }
       if (node.attributes.length === 0) {
         return;
       }
       const attributeNames = node.attributes
-        .filter((attr: any) => attr.type === "JSXAttribute")
+        .filter(
+          (attr: any) =>
+            attr.type === "JSXAttribute" && attr.name.type === "JSXIdentifier",
+        )
         .map((attr: any) => attr.name.name);
       if (
         attributeNames.includes("src") &&
@@ -20,7 +29,8 @@ export const noSyncScripts = defineRule({
         !attributeNames.includes("defer")
       ) {
         context.report({
-          message: `Synchronous scripts should not be used. See: ${url}`,
+          data: { url },
+          messageId: "noSyncScripts",
           node,
         });
       }
@@ -32,7 +42,10 @@ export const noSyncScripts = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noSyncScripts: "Synchronous scripts should not be used. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

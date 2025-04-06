@@ -1,19 +1,24 @@
-import type { Rule } from "eslint";
+import type { RuleDefinition } from "@eslint/core";
 
-import { defineRule } from "../utils/define-rule.js";
+import { URLSearchParams } from "node:url";
+
 import NodeAttributes from "../utils/node-attributes.js";
 
-const url = "https://nextjs.org/docs/messages/google-font-display";
+const name = "google-font-display";
+const url = `https://nextjs.org/docs/messages/${name}`;
+
+type MessageId = "missingFontDisplay" | "notRecommendedFontDisplay";
 
 /**
  * Rule to enforce font-display behavior with Google Fonts
  */
-export const googleFontDisplay = defineRule({
-  create: (context: Rule.RuleContext) => ({
-    JSXOpeningElement: (node: any) => {
-      let message: string | undefined;
+export const googleFontDisplay: RuleDefinition = {
+  create: (context) => ({
+    JSXOpeningElement: (node) => {
+      let messageId: MessageId | undefined;
+      let data: Record<string, string> | undefined;
 
-      if (node.name.name !== "link") {
+      if (node.name.type !== "JSXIdentifier" || node.name.name !== "link") {
         return;
       }
 
@@ -28,27 +33,33 @@ export const googleFontDisplay = defineRule({
         hrefValue.startsWith("https://fonts.googleapis.com/css");
 
       if (isGoogleFont) {
-        // @ts-expect-error initial override, TODO: fix
-        const params = new URLSearchParams(hrefValue.split("?", 2)[1]);
+        const queryPart =
+          hrefValue.includes("?") ?
+            hrefValue.substring(hrefValue.indexOf("?") + 1)
+          : "";
+        const params = new URLSearchParams(queryPart);
         const displayValue = params.get("display");
 
         if (!params.has("display")) {
-          message =
-            "A font-display parameter is missing (adding `&display=optional` is recommended).";
+          messageId = "missingFontDisplay";
+          data = { url };
         } else if (
           displayValue === "auto" ||
           displayValue === "block" ||
           displayValue === "fallback"
         ) {
-          message = `${
-            displayValue[0]?.toUpperCase() + displayValue.slice(1)
-          } is not recommended.`;
+          messageId = "notRecommendedFontDisplay";
+          data = {
+            display: displayValue[0]?.toUpperCase() + displayValue.slice(1),
+            url,
+          };
         }
       }
 
-      if (message) {
+      if (messageId) {
         context.report({
-          message: `${message} See: ${url}`,
+          data,
+          messageId,
           node,
         });
       }
@@ -60,7 +71,12 @@ export const googleFontDisplay = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      missingFontDisplay:
+        "A font-display parameter is missing (adding `&display=optional` is recommended). See: {{url}}",
+      notRecommendedFontDisplay: "{{display}} is not recommended. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

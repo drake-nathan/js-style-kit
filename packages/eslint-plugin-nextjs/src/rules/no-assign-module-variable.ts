@@ -1,13 +1,23 @@
-import { defineRule } from "../utils/define-rule.js";
-const url = "https://nextjs.org/docs/messages/no-assign-module-variable";
+import type { RuleDefinition } from "@eslint/core";
 
-export const noAssignModuleVariable = defineRule({
-  create: (context: any) => ({
-    VariableDeclaration: (node: any) => {
+const name = "no-assign-module-variable";
+const url = `https://nextjs.org/docs/messages/${name}`;
+
+type MessageId = "noAssignModule";
+
+/**
+ * Rule to prevent assignment to the module variable
+ */
+export const noAssignModuleVariable: RuleDefinition = {
+  create: (context) => ({
+    VariableDeclaration: (node) => {
       // Checks node.declarations array for variable with id.name of `module`
       const moduleVariableFound = node.declarations.some((declaration: any) => {
-        if ("name" in declaration.id) {
-          return declaration.id.name === "module";
+        if (
+          declaration.id.type === "Identifier" &&
+          declaration.id.name === "module"
+        ) {
+          return true;
         }
         return false;
       });
@@ -18,7 +28,8 @@ export const noAssignModuleVariable = defineRule({
       }
 
       context.report({
-        message: `Do not assign to the variable \`module\`. See: ${url}`,
+        data: { url },
+        messageId: "noAssignModule",
         node,
       });
     },
@@ -30,7 +41,10 @@ export const noAssignModuleVariable = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noAssignModule: "Do not assign to the variable `module`. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

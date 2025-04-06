@@ -1,12 +1,15 @@
-import { describe } from "bun:test";
-import { RuleTester as ESLintTesterV9 } from "eslint";
-import { RuleTester as ESLintTesterV8 } from "eslint-v8";
+import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
 
 const NextESLintRule = getRule("no-assign-module-variable");
 
-const tests = {
+interface Tests {
+  invalid: RuleTester.InvalidTestCase[];
+  valid: RuleTester.ValidTestCase[];
+}
+
+const tests: Tests = {
   invalid: [
     {
       code: `
@@ -22,41 +25,32 @@ const tests = {
             "Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable",
         },
       ],
+      name: "should report error when assigning to module variable",
     },
   ],
   valid: [
-    `
+    {
+      code: `
       let myModule = {};
 
       export default function MyComponent() {
         return <></>
       }
     `,
+      name: "should allow assignment to similarly named variables",
+    },
   ],
 };
 
-describe("no-assign-module-variable", () => {
-  new ESLintTesterV8({
+new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2018,
     parserOptions: {
       ecmaFeatures: {
         jsx: true,
         modules: true,
       },
-      ecmaVersion: 2018,
-      sourceType: "module",
     },
-  }).run("eslint-v8", NextESLintRule, tests);
-
-  new ESLintTesterV9({
-    languageOptions: {
-      ecmaVersion: 2018,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-          modules: true,
-        },
-      },
-      sourceType: "module",
-    },
-  }).run("eslint-v9", NextESLintRule, tests);
-});
+    sourceType: "module",
+  },
+}).run("no-assign-module-variable", NextESLintRule, tests);

@@ -1,12 +1,18 @@
+import type { RuleDefinition } from "@eslint/core";
+
 import * as path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
+const name = "no-head-import-in-document";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-const url = "https://nextjs.org/docs/messages/no-head-import-in-document";
+type MessageId = "noHeadImportInDocument";
 
-export const noHeadImportInDocument = defineRule({
-  create: (context: any) => ({
-    ImportDeclaration: (node: any) => {
+/**
+ * Rule to prevent usage of next/head in pages/_document.js
+ */
+export const noHeadImportInDocument: RuleDefinition = {
+  create: (context) => ({
+    ImportDeclaration: (node) => {
       if (node.source.value !== "next/head") {
         return;
       }
@@ -23,7 +29,8 @@ export const noHeadImportInDocument = defineRule({
         (dir === "/_document" && name === "index")
       ) {
         context.report({
-          message: `\`next/head\` should not be imported in \`pages${document}\`. Use \`<Head />\` from \`next/document\` instead. See: ${url}`,
+          data: { document, url },
+          messageId: "noHeadImportInDocument",
           node,
         });
       }
@@ -35,7 +42,11 @@ export const noHeadImportInDocument = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noHeadImportInDocument:
+        "`next/head` should not be imported in `pages{{document}}`. Use `<Head />` from `next/document` instead. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};

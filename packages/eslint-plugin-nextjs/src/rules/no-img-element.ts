@@ -1,11 +1,17 @@
+import type { RuleDefinition } from "@eslint/core";
+
 import path from "node:path";
 
-import { defineRule } from "../utils/define-rule.js";
+const name = "no-img-element";
+const url = `https://nextjs.org/docs/messages/${name}`;
 
-const url = "https://nextjs.org/docs/messages/no-img-element";
+type MessageId = "noImgElement";
 
-export const noImgElement = defineRule({
-  create: (context: any) => {
+/**
+ * Rule to prevent usage of <img> element due to slower LCP and higher bandwidth
+ */
+export const noImgElement: RuleDefinition = {
+  create: (context) => {
     // Get relative path of the file
     const relativePath = context.filename
       .replace(path.sep, "/")
@@ -15,8 +21,8 @@ export const noImgElement = defineRule({
     const isAppDir = /^(?<temp1>src\/)?app\//.test(relativePath);
 
     return {
-      JSXOpeningElement: (node: any) => {
-        if (node.name.name !== "img") {
+      JSXOpeningElement: (node) => {
+        if (node.name.type !== "JSXIdentifier" || node.name.name !== "img") {
           return;
         }
 
@@ -24,7 +30,15 @@ export const noImgElement = defineRule({
           return;
         }
 
-        if (node.parent?.parent?.openingElement?.name?.name === "picture") {
+        // Check if this img is inside a picture element
+        const parentJSXElement = node.parent;
+        const grandParentJSXElement = parentJSXElement?.parent;
+
+        if (
+          grandParentJSXElement?.openingElement?.name?.type ===
+            "JSXIdentifier" &&
+          grandParentJSXElement?.openingElement?.name?.name === "picture"
+        ) {
           return;
         }
 
@@ -38,7 +52,8 @@ export const noImgElement = defineRule({
         }
 
         context.report({
-          message: `Using \`<img>\` could result in slower LCP and higher bandwidth. Consider using \`<Image />\` from \`next/image\` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: ${url}`,
+          data: { url },
+          messageId: "noImgElement",
           node,
         });
       },
@@ -52,7 +67,11 @@ export const noImgElement = defineRule({
       recommended: true,
       url,
     },
+    messages: {
+      noImgElement:
+        "Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: {{url}}",
+    } satisfies Record<MessageId, string>,
     schema: [],
     type: "problem",
   },
-});
+};
