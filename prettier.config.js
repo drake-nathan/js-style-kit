@@ -1,4 +1,2 @@
 // @ts-check
-import { prettierConfig } from "js-style-kit";
-
-export default prettierConfig({});
+export { prettier as default } from "./style-kit.config.js";
