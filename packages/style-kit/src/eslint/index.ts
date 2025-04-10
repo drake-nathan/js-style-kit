@@ -30,7 +30,6 @@ export interface EslintConfigOptions {
     | boolean
     | {
         framework?: "next" | "none" | "vite";
-        next?: boolean | undefined;
         reactCompiler?: boolean | undefined;
         reactRefresh?: boolean | undefined;
       };
@@ -92,10 +91,11 @@ export const eslintConfig = (
   }: EslintConfigOptions = {},
   ...additionalConfigs: Linter.Config[]
 ): Linter.Config[] => {
+  const usingNextjs = isObject(react) && react.framework === "next";
+
   const configs: Linter.Config[] = [
     ignoresConfig({
-      next:
-        isObject(react) && (react.framework === "next" || react.next === true),
+      next: usingNextjs,
       storybook,
       userIgnores: ignores,
     }),
@@ -125,13 +125,7 @@ export const eslintConfig = (
       configs.push(reactCompilerEslintConfig);
     }
 
-    // Determine if we should use Next.js config
-    const isNextFramework =
-      isObject(react) &&
-      (react.framework === "next" ||
-        (react.next === true && react.framework === undefined));
-
-    if (isNextFramework) {
+    if (usingNextjs) {
       configs.push(nextjsConfig());
     }
 

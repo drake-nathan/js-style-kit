@@ -36,7 +36,8 @@
     "lint:fix": "eslint . --fix",
     "lint:inspect": "eslint --inspect-config",
     "test": "bun test",
-    "test:coverage": "bun test --coverage --coverage-reporter=lcov"
+    "test:coverage": "bun test --coverage --coverage-reporter=lcov",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "eslint": "^9.24.0",
@@ -50,7 +51,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-storybook": "^0.12.0",
-    "eslint-plugin-turbo": "^2.4.4",
+    "eslint-plugin-turbo": "^2.5.0",
     "eslint-plugin-unicorn": "^58.0.0",
     "eslint-plugin-vitest": "^0.5.4",
     "globals": "^16.0.0",
@@ -60,11 +61,11 @@
     "prettier-plugin-packagejson": "^2.5.10",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "typescript-eslint": "^8.29.0"
+    "typescript-eslint": "^8.29.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/bun": "^1.2.8",
+    "@types/bun": "^1.2.9",
     "@types/node": "^22.14.0",
     "commander": "^13.1.0",
     "tsup": "^8.4.0",

@@ -18,7 +18,6 @@ export const getRootDirs = (context: Rule.RuleContext) => {
   let rootDirs = [context.cwd];
 
   const nextSettings: { rootDir?: string | string[] } =
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     context.settings.next || {};
   const rootDir = nextSettings.rootDir;
 

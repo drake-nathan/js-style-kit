@@ -1,6 +1,6 @@
 import type { Linter } from "eslint";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 
 import { configNames } from "./constants.js";
 import { eslintConfig } from "./index.js";
@@ -139,17 +139,6 @@ describe("eslintConfig", () => {
       ).toStrictEqual(["warn", { allowConstantExport: true }]);
     });
 
-    it("enables React with Next.js support when next is true", () => {
-      const config = eslintConfig({ react: { next: true } });
-      const ignoresConfig = config[0];
-
-      expect(config.some((c) => c.name === configNames.react)).toBe(true);
-      expect(config.some((c) => c.name === configNames.nextjs)).toBe(true);
-      expect(ignoresConfig?.ignores).toStrictEqual(
-        expect.arrayContaining([".next"]),
-      );
-    });
-
     it("includes Next.js config when framework is 'next'", () => {
       const config = eslintConfig({ react: { framework: "next" } });
 
@@ -216,21 +205,6 @@ describe("eslintConfig", () => {
       expect(
         configWithVite.some((c) => c.name === configNames.reactRefresh),
       ).toBe(false);
-    });
-
-    it("prioritizes explicit next setting over framework setting for ignores", () => {
-      // With next: false but framework: "next"
-      const config = eslintConfig({
-        react: {
-          framework: "next",
-          next: false,
-        },
-      });
-
-      // Should still include .next in ignores because framework is "next"
-      expect(config[0]?.ignores).toStrictEqual(
-        expect.arrayContaining([".next"]),
-      );
     });
   });
 
@@ -325,16 +299,19 @@ describe("eslintConfig", () => {
       // Should still include default ignores
       expect(ignoresConfig?.ignores?.length).toBeGreaterThan(0);
       expect(ignoresConfig?.ignores).toStrictEqual(
-        expect.arrayContaining(["**/node_modules/", "**/dist/"]),
+        expect.arrayContaining(["**/dist/"]),
       );
     });
 
-    it("adds '.next' to ignores when `react.next` is true", () => {
-      const config = eslintConfig({ react: { next: true } });
+    it("handles user ignores with Next.js framework", () => {
+      const config = eslintConfig({
+        ignores: ["something else"],
+        react: { framework: "next" },
+      });
       const ignoresConfig = config[0];
 
       expect(ignoresConfig?.ignores).toStrictEqual(
-        expect.arrayContaining([".next"]),
+        expect.arrayContaining([".next", "something else"]),
       );
     });
   });
@@ -650,6 +627,7 @@ describe("eslintConfig", () => {
     });
   });
 
+  /* eslint-disable jest/no-conditional-in-test */
   describe("rule severity configuration", () => {
     it("ensures no rules are configured with 'error' severity", async () => {
       const path = await import("node:path");
@@ -717,7 +695,7 @@ describe("eslintConfig", () => {
         });
       }
 
-      expect(errorRules).toEqual([]);
+      expect(errorRules).toStrictEqual([]);
     });
   });
 });

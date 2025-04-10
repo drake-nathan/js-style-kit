@@ -91,7 +91,12 @@ export const tseslintRules: TypescriptRules = {
   "@typescript-eslint/prefer-includes": "warn",
   "@typescript-eslint/prefer-literal-enum-member": "warn",
   "@typescript-eslint/prefer-namespace-keyword": "warn",
-  "@typescript-eslint/prefer-nullish-coalescing": "warn",
+  "@typescript-eslint/prefer-nullish-coalescing": [
+    "warn",
+    {
+      ignorePrimitives: { string: true },
+    },
+  ],
   "@typescript-eslint/prefer-optional-chain": "warn",
   "@typescript-eslint/prefer-promise-reject-errors": "warn",
   "@typescript-eslint/prefer-reduce-type-parameter": "warn",
