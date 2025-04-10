@@ -1,2 +1,6 @@
 // @ts-check
-export { eslint as default } from "./style-kit.config.js";
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  turbo: true,
+});
