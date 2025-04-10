@@ -22,9 +22,7 @@ export const ignoresConfig = ({
   userIgnores?: string[];
 } = {}): Linter.Config => ({
   ignores: [
-    "**/node_modules/",
     "**/dist/",
-    ".git/",
     ...(next ? [".next"] : []),
     ...(storybook ? ["!.storybook"] : []),
     ...userIgnores,

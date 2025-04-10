@@ -58,6 +58,10 @@
         "!**/dist/**"
       ],
       "outputs": ["coverage/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
     }
   }
 }
