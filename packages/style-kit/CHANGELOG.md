@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.2.13
+
+### Patch Changes
+
+- da8c614: Consolidate eslint ignores, add some rule types, and update packages.
+
 ## 0.2.12
 
 ### Patch Changes
