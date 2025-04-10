@@ -16,6 +16,8 @@ export type EslintRuleConfig<
 
 export type FunctionStyle = "arrow" | "declaration" | "expression";
 
-export interface EslintConfigObject extends Linter.Config {
+export interface EslintConfigObject<
+  Rules extends Linter.RulesRecord = Linter.RulesRecord,
+> extends Linter.Config<Rules> {
   name: ConfigName;
 }

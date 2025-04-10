@@ -82,6 +82,7 @@ export default eslintConfig({
   jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
   react: false, // Whether to include React rules, see below for options
   sorting: true, // Whether to include sorting rules from Perfectionist
+  storybook: false, // Whether to include Storybook rules
   typescript: true, // Boolean or string path to tsconfig.json
 });
 ```
@@ -130,6 +131,7 @@ react: true
 // you can also pass an object to control react compiler and next support
 react: {
   reactCompiler: false,
+  reactRefresh: false, // Controls React Fast Refresh validation (disabled by default)
   next: true
 }
 // next simply adds ".next" to the ignores array, but I plan add the next plugin in the future
@@ -175,6 +177,21 @@ Sorting/organization rules from the Perfectionist plugin are enabled by default:
 // Disable sorting rules
 sorting: false;
 ```
+
+#### Storybook Configuration
+
+Storybook support is disabled by default, but can be enabled to provide linting rules specifically for Storybook files:
+
+```js
+// Enable Storybook rules
+storybook: true;
+```
+
+When enabled, this configuration:
+
+- Applies best practices for Storybook files (_.stories._ and _.story._)
+- Includes rules for Storybook configuration files (.storybook/main.\*)
+- Ensures the .storybook directory is not ignored by ESLint (adds a negation pattern to ignores)
 
 ### Adding Custom ESLint Configurations
 
@@ -247,6 +264,7 @@ import { prettierConfig } from "js-style-kit";
 export default prettierConfig({
   // All options shown with their default values
   cssOrderPlugin: true, // Enable CSS order plugin
+  curlyPlugin: true, // Enable curly braces enforcement for all control statements
   jsonSortPlugin: true, // Enable JSON sorting plugin
   packageJsonPlugin: true, // Enable package.json sorting plugin
   tailwindPlugin: false, // Enable Tailwind CSS plugin (boolean, string[], or options object)
@@ -283,6 +301,24 @@ The CSS order plugin is enabled by default. It sorts CSS properties in a consist
 ```js
 // Disable CSS order plugin
 cssOrderPlugin: false;
+```
+
+#### Curly Braces Enforcement
+
+The curly braces plugin is disabled by default. It enforces consistent use of curly braces for all control flow statements (`if`, `for`, `while`, etc.), even for single-line statements. This is equivalent to ESLint's `curly` rule with the `all` option, but applied at the Prettier formatting level:
+
+```diff
+- if (abc) def;
++ if (abc) {
++   def;
++ }
+```
+
+You can disable it:
+
+```js
+// Disable curly braces enforcement
+curlyPlugin: false;
 ```
 
 #### JSON Sorting

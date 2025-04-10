@@ -1,0 +1,16 @@
+# Overview
+
+- This is a monorepo managed with Turborepo and Bun
+- It is to maintain an npm package which is a style guide for ESLint and Prettier called `js-style-kit`
+- The main source code is in `packages/style-kit/`
+
+## Docs
+
+- Documentation is in `docs/`, this is a Mintlify site
+- The readme at the root is just for Github. It gives a brief overview of the project, and a map of the repo
+- The read at `packages/style-kit/README.md` is the npm documentation for the package
+
+## Workflow
+
+- Use bun for all commands
+- Many lint rules are auto-fixable, it may be more productive to stop and let me save the file to try to fix as many as we can, then continue

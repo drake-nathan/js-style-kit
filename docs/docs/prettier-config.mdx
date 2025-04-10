@@ -143,6 +143,12 @@ export default prettierConfig({
 });
 ```
 
+#### Automatic Plugin Patching
+
+When enabling the Tailwind plugin, JS Style Kit automatically patches the declaration file of `prettier-plugin-tailwindcss` to remove an unsafe `declare module` statement that can cause conflicts with other Prettier plugins. This happens automatically when the Tailwind plugin is enabled, so you don't need to worry about manual fixes or compatibility issues.
+
+The patch addresses a known issue where the Tailwind plugin's TypeScript declarations include a global module declaration that can conflict with other Prettier plugins, leading to type errors or plugin compatibility problems.
+
 ## Extending Standard Prettier Options
 
 You can include any standard Prettier configuration option along with the plugin options:

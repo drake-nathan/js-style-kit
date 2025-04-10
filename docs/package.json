@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "mintlify dev",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "prettier . --write --cache",
+    "format:check": "prettier . --check --cache"
   },
   "devDependencies": {
-    "mintlify": "^4.0.436"
+    "mintlify": "^4.0.476"
   }
 }

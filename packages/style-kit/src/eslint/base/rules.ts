@@ -223,12 +223,6 @@ export const baseEslintRules = (
    */
   "no-multi-assign": ["warn"],
   /**
-   * Disallow nested ternary expressions.
-   *
-   * 🚫 Not fixable - https://eslint.org/docs/rules/no-nested-ternary
-   */
-  "no-nested-ternary": "warn",
-  /**
    * Disallow `new` for side effects.
    *
    * 🚫 Not fixable - https://eslint.org/docs/rules/no-new

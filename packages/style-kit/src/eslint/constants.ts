@@ -4,20 +4,25 @@
  * and error messages, making it easier to track which rules come from which config.
  */
 export const configNames = {
-  base: "base-config",
+  base: "base",
   disableTypeChecked: "typescript-eslint/disable-type-checked",
-  ignores: "ignores-config",
-  import: "import-config",
-  jsdoc: "jsdoc-config",
-  markdown: "markdown-config",
-  perfectionist: "perfectionist-config",
-  preferArrowFunction: "prefer-arrow-function-config",
-  react: "react-config",
-  reactCompiler: "react-compiler-config",
-  testing: "testing-config",
-  turbo: "turbo-config",
-  typescript: "tseslint-config",
-  unicorn: "unicorn-config",
+  ignores: "ignores",
+  import: "import",
+  jsdoc: "jsdoc",
+  markdown: "markdown",
+  nextjs: "nextjs",
+  perfectionist: "perfectionist",
+  preferArrowFunction: "prefer-arrow-function",
+  react: "react",
+  reactCompiler: "react-compiler",
+  reactRefresh: "react-refresh",
+  storybook: "storybook:stories",
+  storybookConfig: "storybook:config",
+  testing: "testing",
+  turbo: "turbo",
+  typescript: "tseslint",
+  typescriptTesting: "tseslint-testing",
+  unicorn: "unicorn",
 } as const;
 
 export type ConfigName = (typeof configNames)[keyof typeof configNames];

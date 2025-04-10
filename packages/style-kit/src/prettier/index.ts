@@ -2,13 +2,15 @@ import type { Config as PrettierConfig } from "prettier";
 import type { SortJsonOptions as SortJsonPluginOptions } from "prettier-plugin-sort-json";
 import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tailwindcss";
 
-import { isArray, isObject } from "../utils/is-type.js";
+import { isObject, isString } from "../utils/is-type.js";
+import { patchTailwindPlugin } from "./patch-tailwind-plugin.js";
 
-interface PrettierConfigOptions extends PrettierConfig {
+export interface PrettierConfigOptions extends PrettierConfig {
   cssOrderPlugin?: boolean;
+  curlyPlugin?: boolean;
   jsonSortPlugin?: boolean | SortJsonPluginOptions;
   packageJsonPlugin?: boolean;
-  tailwindPlugin?: boolean | string[] | TailwindPluginOptions;
+  tailwindPlugin?: boolean | string | TailwindPluginOptions;
 }
 
 export interface PrettierConfigWithPlugins
@@ -21,6 +23,7 @@ export interface PrettierConfigWithPlugins
  *
  * @param options - Configuration options for Prettier
  * @param options.cssOrderPlugin CSS order sorting support
+ * @param options.curlyPlugin Enforce curly braces for all control statements
  * @param options.jsonSortPlugin JSON sorting support
  * @param options.packageJsonPlugin Package.json sorting support
  * @param options.tailwindPlugin Tailwind CSS formatting support
@@ -28,6 +31,7 @@ export interface PrettierConfigWithPlugins
  * - Default Prettier configuration
  * - Experimental ternaries enabled
  * - CSS order plugin
+ * - Curly braces plugin
  * - JSON sorting plugin
  * - Package.json sorting plugin
  * - Optional Tailwind plugin and functions
@@ -37,6 +41,7 @@ export const prettierConfig = (
 ): PrettierConfigWithPlugins => {
   const {
     cssOrderPlugin = true,
+    curlyPlugin = true,
     jsonSortPlugin = true,
     packageJsonPlugin = true,
     tailwindPlugin = false,
@@ -51,6 +56,10 @@ export const prettierConfig = (
 
   if (cssOrderPlugin) {
     plugins.push("prettier-plugin-css-order");
+  }
+
+  if (curlyPlugin) {
+    plugins.push("prettier-plugin-curly");
   }
 
   if (jsonSortPlugin) {
@@ -71,16 +80,23 @@ export const prettierConfig = (
     plugins.push("prettier-plugin-tailwindcss");
     const defaultTailwindFunctions = ["clsx", "cva", "cn"];
 
-    if (isArray(tailwindPlugin)) {
-      config.tailwindFunctions = [
-        ...defaultTailwindFunctions,
-        ...tailwindPlugin,
-      ];
+    if (isString(tailwindPlugin)) {
+      // then it's the path to the stylesheet
+      config.tailwindStylesheet = tailwindPlugin;
+      config.tailwindFunctions = defaultTailwindFunctions;
     } else if (isObject(tailwindPlugin)) {
       Object.assign(config, tailwindPlugin);
+
+      // Ensure defaultTailwindFunctions is applied if tailwindFunctions wasn't specified
+      if (!tailwindPlugin.tailwindFunctions) {
+        config.tailwindFunctions = defaultTailwindFunctions;
+      }
     } else {
       config.tailwindFunctions = defaultTailwindFunctions;
     }
+
+    // Patch the Tailwind plugin declaration file to remove unsafe declare statement
+    patchTailwindPlugin();
   }
 
   // Set plugins after all configurations are done

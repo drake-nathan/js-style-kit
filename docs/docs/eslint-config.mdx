@@ -48,10 +48,13 @@ export default eslintConfig({
   functionStyle: "arrow", // Controls function style: "arrow", "declaration", "expression", or "off"
   ignores: [], // Additional paths to ignore (node_modules and dist already excluded)
   jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
-  react: false, // Whether to include React rules
+  react: false, // Whether to include React rules, see below for options
   sorting: true, // Whether to include sorting rules from Perfectionist
-  typescript: true, // Boolean or string path to tsconfig.json
+  storybook: false, // Whether to include Storybook rules
   testing: true, // Testing configuration, see below for options
+  typescript: true, // Boolean or string path to tsconfig.json
+  turbo: false, // Whether to include Turborepo rules
+  unicorn: true, // Whether to include Unicorn rules
 });
 ```
 
@@ -71,6 +74,111 @@ functionStyle: "expression";
 
 // Disable function style enforcement
 functionStyle: "off";
+```
+
+## TypeScript Configuration
+
+TypeScript support is enabled by default. You can:
+
+```js
+// Enable with automatic project detection (default)
+typescript: true;
+
+// Disable TypeScript rules
+typescript: false;
+
+// Specify path to your tsconfig.json
+typescript: "./tsconfig.json";
+```
+
+## React Configuration
+
+React support is disabled by default.
+
+```js
+// Enable React support with default options (includes React Compiler)
+react: true;
+
+// Disable React support
+react: false;
+
+// Enable with custom options
+react: {
+  // Enable/disable React Compiler (default: true when react is enabled)
+  reactCompiler: true,
+
+  // Add Next.js support (adds .next to ignores)
+  next: true
+}
+```
+
+## JSDoc Configuration
+
+JSDoc validation is enabled by default, but requirement rules are off:
+
+```js
+// Disable JSDoc validation completely
+jsdoc: false;
+
+// Enable JSDoc with requirement rules, ideal for libraries
+jsdoc: {
+  requireJsdoc: true;
+}
+```
+
+## Sorting Configuration
+
+Code organization rules from Perfectionist are enabled by default:
+
+```js
+// Enable sorting rules (default)
+sorting: true;
+
+// Disable sorting rules
+sorting: false;
+```
+
+## Testing Configuration
+
+Testing support is enabled by default with Vitest configuration:
+
+```js
+// Enable with default settings (Vitest)
+testing: true;
+
+// Disable testing configuration
+testing: false;
+
+// Enable with custom options
+testing: {
+  filenamePattern: "spec", // "test" (.test, default) or "spec" (.spec)
+  files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"], // Override file patterns
+  formattingRules: true, // Whether to include formatting rules like padding around blocks
+  framework: "vitest", // "vitest" (default), "jest", "node", or "bun"
+  itOrTest: "test", // "it" (default) or "test"
+}
+```
+
+## Storybook Configuration
+
+Storybook support is disabled by default.
+
+```js
+// Enable Storybook support with default options
+storybook: true;
+
+// Disable Storybook support
+storybook: false;
+```
+
+## Additional Rules
+
+```js
+// Enable Turborepo rules (disabled by default)
+turbo: true;
+
+// Enable Unicorn rules (enabled by default)
+unicorn: true;
 ```
 
 ## Adding Ignores

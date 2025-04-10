@@ -1,0 +1,71 @@
+{
+  "name": "eslint-plugin-nextjs",
+  "version": "1.0.0",
+  "description": "A fork of @next/eslint-plugin-next that's been upgraded for TypeScript and ESLint V9.",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "next",
+    "nextjs",
+    "eslint-plugin-next",
+    "@next/eslint-plugin-next"
+  ],
+  "homepage": "https://github.com/drake-nathan/js-style-kit#readme",
+  "bugs": {
+    "url": "https://github.com/drake-nathan/js-style-kit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drake-nathan/js-style-kit.git"
+  },
+  "license": "MIT",
+  "author": "Nathan Drake <nathan@drakewest.dev>",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "format": "prettier . --write --cache",
+    "format:check": "prettier . --check --cache",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:inspect": "eslint --inspect-config",
+    "test": "bun test",
+    "test:coverage": "bun test --coverage --coverage-reporter=lcov",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "fast-glob": "^3.3.3"
+  },
+  "devDependencies": {
+    "@eslint/core": "^0.13.0",
+    "@repo/typescript-config": "workspace:*",
+    "@types/bun": "^1.2.9",
+    "@types/node": "^22.14.0",
+    "eslint": "^9.24.0",
+    "eslint-plugin-eslint-plugin": "^6.4.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.0.0"
+  },
+  "engines": {
+    "node": "^20.11.0 || >=21.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

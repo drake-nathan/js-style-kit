@@ -1,0 +1,201 @@
+---
+title: "React Configuration"
+description: "Configure React support with JS Style Kit"
+---
+
+## Overview
+
+JS Style Kit provides comprehensive React support with both ESLint rules and TypeScript integration. This includes support for React hooks, React Compiler, and Next.js projects.
+
+## Enabling React Support
+
+React support is disabled by default. To enable it, specify `react: true` in your ESLint configuration:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: true,
+});
+```
+
+## Configuration Options
+
+The React configuration supports several options:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  // Enable React with default settings
+  react: true,
+
+  // Enable React with custom settings
+  react: {
+    // Enable/disable React Compiler (default: true when react is enabled)
+    reactCompiler: true,
+
+    // Add Next.js support (adds .next to ignores)
+    next: true,
+  },
+});
+```
+
+## Function Style for Components
+
+The `functionStyle` option affects how React components are styled:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: true,
+
+  // How functions (including components) should be written
+  functionStyle: "arrow", // Default: arrow functions
+
+  // Other options:
+  // functionStyle: "declaration" // Use function declarations
+  // functionStyle: "expression" // Use function expressions
+  // functionStyle: "off" // Disable function style enforcement
+});
+```
+
+### Examples of Different Function Styles
+
+#### Arrow Function Style (default)
+
+```jsx
+// Named component as arrow function
+const MyComponent = (props) => {
+  return <div>{props.content}</div>;
+};
+
+// Unnamed/inline component as arrow function
+export default () => <div>Hello World</div>;
+```
+
+#### Function Declaration Style
+
+```jsx
+// Named component as function declaration
+function MyComponent(props) {
+  return <div>{props.content}</div>;
+}
+
+// Unnamed/inline components will still use function expressions
+export default function () {
+  return <div>Hello World</div>;
+}
+```
+
+#### Function Expression Style
+
+```jsx
+// Named component as function expression
+const MyComponent = function (props) {
+  return <div>{props.content}</div>;
+};
+
+// Unnamed/inline component as function expression
+export default function () {
+  return <div>Hello World</div>;
+}
+```
+
+## React Compiler Support
+
+[React Compiler](https://react.dev/learn/react-compiler) (formerly Forget) is a compiler that optimizes React components for better performance. JS Style Kit includes support for React Compiler through the `eslint-plugin-react-compiler` plugin.
+
+React Compiler support is **enabled by default** when React support is enabled. To explicitly control it:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    // Disable React Compiler
+    reactCompiler: false,
+  },
+});
+```
+
+## React Fast Refresh Support
+
+[React Fast Refresh](https://www.npmjs.com/package/react-refresh) is a feature that provides instant feedback on component changes without losing component state. JS Style Kit includes support for validating that your components can safely be updated with Fast Refresh through the `eslint-plugin-react-refresh` plugin.
+
+React Fast Refresh validation is **disabled by default**. It should be enabled for SPAs like Vite. It should be left disabled for Next.js projects. To enable it:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    // Enable React Fast Refresh validation
+    reactRefresh: true,
+  },
+});
+```
+
+The plugin enforces that your components are structured in a way that integrations like `react-refresh` expect, helping you avoid issues with Fast Refresh in development.
+
+### What the Plugin Validates
+
+The plugin validates that:
+
+- Components are properly exported (not mixed with non-component exports)
+- Anonymous function components are not used
+- Export patterns are compatible with Fast Refresh
+- Components are not nested inside other components
+
+By default, the configuration allows constant exports alongside components, which is supported by most bundlers including Vite.
+
+## Next.js Support
+
+For Next.js projects, enable the `next` option:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    next: true,
+  },
+});
+```
+
+This will add `.next` to the list of ignored directories, preventing ESLint from analyzing the Next.js build output.
+
+## TypeScript Integration
+
+When both React and TypeScript are enabled, JS Style Kit automatically configures TypeScript-specific React rules:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: true,
+  typescript: true, // This is enabled by default
+});
+```
+
+## React Hooks Rules
+
+JS Style Kit includes the following rules for React hooks:
+
+- `react-hooks/rules-of-hooks`: Enforces the Rules of Hooks
+- `react-hooks/exhaustive-deps`: Verifies the dependency array of useEffect and similar hooks
+
+## Best Practices
+
+The React configuration enforces several best practices:
+
+- Consistent function component definitions
+- Proper use of React.Fragment
+- Proper use of useState hook
+- No array indexes as keys
+- Proper use of boolean props
+- Self-closing tags for components without children
+- And many more
+
+These rules help avoid common pitfalls in React development and ensure consistent code style across your project.

@@ -7,10 +7,13 @@ import { baseEslintConfig } from "./base/config.js";
 import { ignoresConfig } from "./ignores.js";
 import { importConfig } from "./import/config.js";
 import { jsdocConfig } from "./jsdoc/config.js";
+import { nextjsConfig } from "./nextjs/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { reactCompilerEslintConfig } from "./react-compiler/config.js";
+import { reactRefreshEslintConfig } from "./react-refresh/config.js";
 import { reactEslintConfig } from "./react/config.js";
+import { storybookConfig } from "./storybook/config.js";
 import { testingConfig, type TestingConfig } from "./testing/config.js";
 import { turboConfig } from "./turbo/config.js";
 import { tseslintConfig } from "./typescript/config.js";
@@ -28,10 +31,12 @@ export interface EslintConfigOptions {
   react?:
     | boolean
     | {
-        next?: boolean | undefined;
+        framework?: "next" | "none" | "vite";
         reactCompiler?: boolean | undefined;
+        reactRefresh?: boolean | undefined;
       };
   sorting?: boolean;
+  storybook?: boolean;
   testing?: false | TestingConfig;
   turbo?: boolean;
   typescript?: boolean | string;
@@ -48,7 +53,13 @@ export interface EslintConfigOptions {
  * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
  * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
  *                        Can be configured with an object to control next.js support and reactCompiler.
+ *                        Also controls reactRefresh, which is enabled by default when react is true.
+ *                        Can specify framework as "next", "none", or "vite" to control related configs:
+ *                        - "next": Includes Next.js config, excludes React Refresh.
+ *                        - "vite" or "none": Includes React Refresh, excludes Next.js.
+ *                        - The reactRefresh property can override this framework-based behavior.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
+ * @param options.storybook - Whether to include Storybook rules. Defaults to false.
  * @param options.testing - An object with the following properties:
  *                          - `filenamePattern`: One of "spec" or "test" to determine which filename pattern to use.
  *                          - `files`: Array of file patterns to include in the configuration.
@@ -56,7 +67,7 @@ export interface EslintConfigOptions {
  *                          - `formattingRules`: Whether to include formatting rules like padding around blocks.
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
- * @param options.turbo - Whether to include Turborepo rules. Defaults to true.
+ * @param options.turbo - Whether to include Turborepo rules. Defaults to false.
  * @param options.unicorn - Whether to include Unicorn rules. Defaults to true.
  * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
  * @returns An array of ESLint configuration objects.
@@ -69,6 +80,7 @@ export const eslintConfig = (
     jsdoc = { requireJsdoc: false },
     react = false,
     sorting = true,
+    storybook = false,
     testing,
     /**
      * Some preceding documentation...
@@ -83,9 +95,12 @@ export const eslintConfig = (
   }: EslintConfigOptions = {},
   ...additionalConfigs: Linter.Config[]
 ): Linter.Config[] => {
+  const usingNextjs = isObject(react) && react.framework === "next";
+
   const configs: Linter.Config[] = [
     ignoresConfig({
-      next: isObject(react) && react.next,
+      next: usingNextjs,
+      storybook,
       userIgnores: ignores,
     }),
     baseEslintConfig(functionStyle, Boolean(typescript)),
@@ -116,6 +131,24 @@ export const eslintConfig = (
 
     if (shouldUseReactCompiler) {
       configs.push(reactCompilerEslintConfig);
+    }
+
+    if (usingNextjs) {
+      configs.push(nextjsConfig());
+    }
+
+    // Determine if we should use React Refresh
+    // Apply reactRefresh based on framework setting or explicit override
+    const shouldUseReactRefresh =
+      // Explicit setting takes precedence
+      (isObject(react) && react.reactRefresh === true) ||
+      // Framework-based default (vite/none use reactRefresh by default)
+      (isObject(react) &&
+        (react.framework === "vite" || react.framework === "none") &&
+        react.reactRefresh !== false);
+
+    if (shouldUseReactRefresh) {
+      configs.push(reactRefreshEslintConfig());
     }
   }
 
@@ -159,6 +192,10 @@ export const eslintConfig = (
 
   if (functionStyle === "arrow") {
     configs.push(preferArrowFunctionConfig());
+  }
+
+  if (storybook) {
+    configs.push(...storybookConfig);
   }
 
   if (turbo) {

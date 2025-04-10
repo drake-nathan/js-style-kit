@@ -81,7 +81,8 @@ export const tseslintRules: TypescriptRules = {
   ],
   "@typescript-eslint/no-useless-constructor": "warn",
   "@typescript-eslint/no-wrapper-object-types": "warn",
-  "@typescript-eslint/non-nullable-type-assertion-style": "warn",
+  // TODO: Investiate non-null vs type-cast rules
+  "@typescript-eslint/non-nullable-type-assertion-style": "off",
   "@typescript-eslint/only-throw-error": "warn",
   "@typescript-eslint/prefer-as-const": "warn",
   "@typescript-eslint/prefer-find": "warn",
@@ -90,7 +91,12 @@ export const tseslintRules: TypescriptRules = {
   "@typescript-eslint/prefer-includes": "warn",
   "@typescript-eslint/prefer-literal-enum-member": "warn",
   "@typescript-eslint/prefer-namespace-keyword": "warn",
-  "@typescript-eslint/prefer-nullish-coalescing": "warn",
+  "@typescript-eslint/prefer-nullish-coalescing": [
+    "warn",
+    {
+      ignorePrimitives: { string: true },
+    },
+  ],
   "@typescript-eslint/prefer-optional-chain": "warn",
   "@typescript-eslint/prefer-promise-reject-errors": "warn",
   "@typescript-eslint/prefer-reduce-type-parameter": "warn",

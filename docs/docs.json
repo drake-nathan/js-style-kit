@@ -1,9 +1,9 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "colors": {
-    "dark": "#2563EB",
-    "light": "#3B82F6",
-    "primary": "#2563EB"
+    "dark": "#16A34A",
+    "light": "#4ADE80",
+    "primary": "#16A34A"
   },
   "favicon": "/favicon.svg",
   "footer": {
@@ -49,7 +49,7 @@
         "groups": [
           {
             "group": "Get Started",
-            "pages": ["introduction", "quickstart", "development"]
+            "pages": ["introduction", "quickstart"]
           },
           {
             "group": "Configuration",
@@ -58,8 +58,13 @@
               "docs/prettier-config",
               "docs/typescript-config",
               "docs/react-config",
+              "docs/storybook-config",
               "docs/jsdoc-config"
             ]
+          },
+          {
+            "group": "Tools",
+            "pages": ["docs/cli"]
           }
         ],
         "tab": "Docs"

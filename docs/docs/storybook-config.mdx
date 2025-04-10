@@ -1,0 +1,77 @@
+---
+title: "Storybook Configuration"
+description: "Detailed guide for configuring ESLint for Storybook with JS Style Kit"
+---
+
+## Overview
+
+JS Style Kit provides ESLint rules specifically for Storybook, making it easier to follow best practices when working with Storybook in your project. The Storybook configuration is disabled by default but can be easily enabled.
+
+## Enabling Storybook Support
+
+To enable Storybook support in your ESLint configuration:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  storybook: true,
+  // other options...
+});
+```
+
+## What's Included
+
+When Storybook support is enabled, JS Style Kit:
+
+1. Applies Storybook-specific ESLint rules to files matching these patterns:
+
+   - `**/*.stories.@(ts|tsx|js|jsx|mjs|cjs)`
+   - `**/*.story.@(ts|tsx|js|jsx|mjs|cjs)`
+
+2. Adds rules for Storybook configuration files in:
+
+   - `.storybook/main.@(js|cjs|mjs|ts)`
+
+3. Ensures the `.storybook` directory is not ignored by ESLint by adding a negation pattern (`!.storybook`) to the ignores configuration.
+
+## Storybook Rules
+
+The Storybook configuration includes several rules to help enforce best practices:
+
+- `storybook/await-interactions`: Warns when `play` functions don't properly await interactions
+- `storybook/context-in-play-function`: Enforces proper context usage in play functions
+- `storybook/csf-component`: Ensures Component Story Format (CSF) has a component property
+- `storybook/default-exports`: Validates default exports in story files
+- `storybook/hierarchy-separator`: Warns about deprecated hierarchy separators
+- `storybook/meta-inline-properties`: Encourages proper meta object structure
+- `storybook/no-redundant-story-name`: Prevents story names that duplicate the component name
+- `storybook/prefer-pascal-case`: Encourages PascalCase for story names
+- `storybook/story-exports`: Ensures proper story exports
+- `storybook/use-storybook-expect`: Encourages using Storybook's expect instead of testing library assertions
+- `storybook/use-storybook-testing-library`: Encourages using Storybook's test library
+
+For Storybook configuration files, the following rule is applied:
+
+- `storybook/no-uninstalled-addons`: Warns about addons referenced but not installed
+
+## Rule Overrides
+
+When Storybook support is enabled, the following rules are disabled for Storybook files to avoid conflicts:
+
+- `import/no-anonymous-default-export`: Disabled to allow Storybook's default export pattern
+- `react-hooks/rules-of-hooks`: Disabled to allow using hooks in story files
+
+## Example Configuration
+
+A complete example with Storybook and React support:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: true,
+  storybook: true,
+  typescript: true,
+});
+```

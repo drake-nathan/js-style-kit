@@ -1,6 +1,6 @@
 import type { Linter } from "eslint";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "bun:test";
 
 import { configNames } from "./constants.js";
 import { eslintConfig } from "./index.js";
@@ -111,14 +111,100 @@ describe("eslintConfig", () => {
       );
     });
 
-    it("enables React with Next.js support when next is true", () => {
-      const config = eslintConfig({ react: { next: true } });
-      const ignoresConfig = config[0];
+    it("excludes React Refresh config by default when React is enabled", () => {
+      const config = eslintConfig({ react: true });
 
-      expect(config.some((c) => c.name === configNames.react)).toBe(true);
-      expect(ignoresConfig?.ignores).toStrictEqual(
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        false,
+      );
+    });
+
+    it("includes React Refresh config when React is enabled and React Refresh is explicitly enabled", () => {
+      const config = eslintConfig({ react: { reactRefresh: true } });
+
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        true,
+      );
+    });
+
+    it("applies correct React Refresh rules when enabled", () => {
+      const config = eslintConfig({ react: { reactRefresh: true } });
+      const reactRefreshConfig = config.find(
+        (c) => c.name === configNames.reactRefresh,
+      );
+
+      expect(reactRefreshConfig).toBeDefined();
+      expect(
+        reactRefreshConfig?.rules?.["react-refresh/only-export-components"],
+      ).toStrictEqual(["warn", { allowConstantExport: true }]);
+    });
+
+    it("includes Next.js config when framework is 'next'", () => {
+      const config = eslintConfig({ react: { framework: "next" } });
+
+      // Should include Next.js config
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(true);
+      // Should exclude React Refresh config by default
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        false,
+      );
+      // Should include .next in ignores
+      expect(config[0]?.ignores).toStrictEqual(
         expect.arrayContaining([".next"]),
       );
+    });
+
+    it("includes React Refresh config when framework is 'vite'", () => {
+      const config = eslintConfig({ react: { framework: "vite" } });
+
+      // Should include React Refresh config
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        true,
+      );
+      // Should exclude Next.js config
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(false);
+    });
+
+    it("includes React Refresh config when framework is 'none'", () => {
+      const config = eslintConfig({ react: { framework: "none" } });
+
+      // Should include React Refresh config
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        true,
+      );
+      // Should exclude Next.js config
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(false);
+    });
+
+    it("allows reactRefresh to override framework-based behavior", () => {
+      // With Next.js framework but explicitly enabling React Refresh
+      const configWithNext = eslintConfig({
+        react: {
+          framework: "next",
+          reactRefresh: true,
+        },
+      });
+
+      // Should include both Next.js and React Refresh configs
+      expect(configWithNext.some((c) => c.name === configNames.nextjs)).toBe(
+        true,
+      );
+      expect(
+        configWithNext.some((c) => c.name === configNames.reactRefresh),
+      ).toBe(true);
+
+      // With Vite framework but explicitly disabling React Refresh
+      const configWithVite = eslintConfig({
+        react: {
+          framework: "vite",
+          reactRefresh: false,
+        },
+      });
+
+      // Should exclude React Refresh config
+      expect(
+        configWithVite.some((c) => c.name === configNames.reactRefresh),
+      ).toBe(false);
     });
   });
 
@@ -213,16 +299,19 @@ describe("eslintConfig", () => {
       // Should still include default ignores
       expect(ignoresConfig?.ignores?.length).toBeGreaterThan(0);
       expect(ignoresConfig?.ignores).toStrictEqual(
-        expect.arrayContaining(["**/node_modules/", "**/dist/"]),
+        expect.arrayContaining(["**/dist/"]),
       );
     });
 
-    it("adds '.next' to ignores when `react.next` is true", () => {
-      const config = eslintConfig({ react: { next: true } });
+    it("handles user ignores with Next.js framework", () => {
+      const config = eslintConfig({
+        ignores: ["something else"],
+        react: { framework: "next" },
+      });
       const ignoresConfig = config[0];
 
       expect(ignoresConfig?.ignores).toStrictEqual(
-        expect.arrayContaining([".next"]),
+        expect.arrayContaining([".next", "something else"]),
       );
     });
   });
@@ -320,12 +409,47 @@ describe("eslintConfig", () => {
     });
   });
 
+  describe("storybook configuration", () => {
+    it("excludes storybook config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.storybook)).toBe(false);
+      expect(config.some((c) => c.name === configNames.storybookConfig)).toBe(
+        false,
+      );
+    });
+
+    it("includes storybook config when enabled", () => {
+      const config = eslintConfig({ storybook: true });
+
+      expect(config.some((c) => c.name === configNames.storybook)).toBe(true);
+      expect(config.some((c) => c.name === configNames.storybookConfig)).toBe(
+        true,
+      );
+    });
+
+    it("correctly configures ignores when storybook is enabled", () => {
+      const config = eslintConfig({ storybook: true });
+      const ignoresConfig = config.find((c) => c.name === configNames.ignores);
+
+      expect(ignoresConfig?.ignores).toContain("!.storybook");
+    });
+
+    it("does not include .storybook negation in ignores when storybook is disabled", () => {
+      const config = eslintConfig();
+      const ignoresConfig = config.find((c) => c.name === configNames.ignores);
+
+      expect(ignoresConfig?.ignores).not.toContain("!.storybook");
+    });
+  });
+
   describe("edge cases", () => {
     it("works when all optional features are disabled", () => {
       const config = eslintConfig({
         jsdoc: false,
         react: false,
         sorting: false,
+        storybook: false,
         testing: false,
         typescript: false,
       });
@@ -342,6 +466,8 @@ describe("eslintConfig", () => {
       expect(names).not.toContain(configNames.jsdoc);
       expect(names).not.toContain(configNames.perfectionist);
       expect(names).not.toContain(configNames.testing);
+      expect(names).not.toContain(configNames.storybook);
+      expect(names).not.toContain(configNames.storybookConfig);
     });
 
     it("handles React options without TypeScript", () => {
@@ -498,6 +624,78 @@ describe("eslintConfig", () => {
       expect(
         testingConfigObj?.rules?.["jest/padding-around-describe-blocks"],
       ).toBeUndefined();
+    });
+  });
+
+  /* eslint-disable jest/no-conditional-in-test */
+  describe("rule severity configuration", () => {
+    it("ensures no rules are configured with 'error' severity", async () => {
+      const path = await import("node:path");
+      const fs = await import("node:fs/promises");
+      const glob = await import("glob");
+
+      // Get all rules.ts and config.ts files
+      // Handle both running from root and from packages/style-kit
+      const cwd = process.cwd();
+      const isInPackageDir =
+        cwd.endsWith("packages/style-kit") ||
+        cwd.endsWith("packages/style-kit/");
+
+      const eslintDir = path.resolve(
+        cwd,
+        isInPackageDir ? "src/eslint" : "packages/style-kit/src/eslint",
+      );
+
+      const files = await glob.glob(["**/*rules.ts", "**/*config.ts"], {
+        absolute: true,
+        cwd: eslintDir,
+      });
+
+      expect(files.length).toBeGreaterThan(0);
+
+      // Check each file for "error" configurations
+      const errorRules: { file: string; rule: string }[] = [];
+
+      for (const file of files) {
+        const content = await fs.readFile(file, "utf8");
+
+        // Look for patterns like: "rule-name": "error" or "rule-name": ["error"
+        const errorMatches = content.matchAll(
+          /"(?<ruleName>[^"]+)":\s*"error"/g,
+        );
+        const arrayErrorMatches = content.matchAll(
+          /"(?<ruleName>[^"]+)":\s*\[\s*"error"/g,
+        );
+
+        for (const match of errorMatches) {
+          const ruleName = match.groups?.ruleName;
+          if (ruleName) {
+            errorRules.push({
+              file: path.relative(eslintDir, file),
+              rule: ruleName,
+            });
+          }
+        }
+
+        for (const match of arrayErrorMatches) {
+          const ruleName = match.groups?.ruleName;
+          if (ruleName) {
+            errorRules.push({
+              file: path.relative(eslintDir, file),
+              rule: ruleName,
+            });
+          }
+        }
+      }
+
+      if (errorRules.length > 0) {
+        console.error("Found rules configured with 'error' severity:");
+        errorRules.forEach(({ file, rule }) => {
+          console.error(`  - ${file}: ${rule}`);
+        });
+      }
+
+      expect(errorRules).toStrictEqual([]);
     });
   });
 });

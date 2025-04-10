@@ -14,10 +14,21 @@ describe("prettierConfig", () => {
       jsonRecursiveSort: true,
       plugins: [
         "prettier-plugin-css-order",
+        "prettier-plugin-curly",
         "prettier-plugin-sort-json",
         "prettier-plugin-packagejson",
       ],
     });
+  });
+
+  it("should accept tailwind stylesheet path as a string", () => {
+    const config = prettierConfig({
+      tailwindPlugin: "./path/to/stylesheet.css",
+    });
+
+    expect(config.plugins).toContain("prettier-plugin-tailwindcss");
+    expect(config.tailwindStylesheet).toBe("./path/to/stylesheet.css");
+    expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
   });
 
   it("should include tailwind plugin when enabled", () => {
@@ -27,19 +38,15 @@ describe("prettierConfig", () => {
     expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
   });
 
-  it("should merge custom tailwind functions", () => {
+  it("should set custom tailwind functions", () => {
     const config = prettierConfig({
-      tailwindPlugin: ["customFn", "anotherFn"],
+      tailwindPlugin: {
+        tailwindFunctions: ["customFn", "anotherFn"],
+      },
     });
 
     expect(config.plugins).toContain("prettier-plugin-tailwindcss");
-    expect(config.tailwindFunctions).toStrictEqual([
-      "clsx",
-      "cva",
-      "cn",
-      "customFn",
-      "anotherFn",
-    ]);
+    expect(config.tailwindFunctions).toStrictEqual(["customFn", "anotherFn"]);
   });
 
   it("should accept tailwind plugin options as an object", () => {
@@ -53,6 +60,18 @@ describe("prettierConfig", () => {
 
     expect(config.plugins).toContain("prettier-plugin-tailwindcss");
     expect(config.tailwindFunctions).toStrictEqual(["customOnly"]);
+    expect(config.tailwindAttributes).toStrictEqual(["customAttr"]);
+  });
+
+  it("should preserve default tailwind functions when not specified in options object", () => {
+    const config = prettierConfig({
+      tailwindPlugin: {
+        tailwindAttributes: ["customAttr"],
+      },
+    });
+
+    expect(config.plugins).toContain("prettier-plugin-tailwindcss");
+    expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
     expect(config.tailwindAttributes).toStrictEqual(["customAttr"]);
   });
 
@@ -130,5 +149,17 @@ describe("prettierConfig", () => {
     const config = prettierConfig({ cssOrderPlugin: false });
 
     expect(config.plugins).not.toContain("prettier-plugin-css-order");
+  });
+
+  it("should include curly plugin by default", () => {
+    const config = prettierConfig();
+
+    expect(config.plugins).toContain("prettier-plugin-curly");
+  });
+
+  it("should disable curly plugin when specified", () => {
+    const config = prettierConfig({ curlyPlugin: false });
+
+    expect(config.plugins).not.toContain("prettier-plugin-curly");
   });
 });
