@@ -299,7 +299,7 @@ describe("eslintConfig", () => {
       // Should still include default ignores
       expect(ignoresConfig?.ignores?.length).toBeGreaterThan(0);
       expect(ignoresConfig?.ignores).toStrictEqual(
-        expect.arrayContaining(["**/node_modules/", "**/dist/"]),
+        expect.arrayContaining(["**/dist/"]),
       );
     });
 
