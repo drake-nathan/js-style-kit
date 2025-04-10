@@ -15,7 +15,6 @@
     },
     "apps/next-test-app": {
       "name": "next-test-app",
-      "version": "0.1.0",
       "dependencies": {
         "next": "15.2.4",
         "react": "^19.1.0",

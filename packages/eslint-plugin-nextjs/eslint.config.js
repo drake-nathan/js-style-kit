@@ -1,6 +1,7 @@
 import eslintPlugin from "eslint-plugin-eslint-plugin";
+
 // @ts-check
-import { eslintConfig } from "js-style-kit";
+import { eslintConfig } from "../style-kit/dist/index.js";
 
 export default eslintConfig(
   {
