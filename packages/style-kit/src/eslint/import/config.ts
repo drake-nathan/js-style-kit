@@ -1,4 +1,8 @@
-import importPlugin from "eslint-plugin-import";
+import type { ESLint } from "eslint";
+
+import tsParser from "@typescript-eslint/parser";
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
+import importXPlugin from "eslint-plugin-import-x";
 
 import type { EslintConfigObject } from "../types.js";
 
@@ -12,15 +16,26 @@ import { importRules } from "./rules.js";
  * @returns ESLint configuration object for Import
  */
 export const importConfig = (typescript: boolean): EslintConfigObject => ({
+  languageOptions: {
+    ecmaVersion: "latest",
+    parser: tsParser,
+    sourceType: "module",
+  },
   name: configNames.import,
   plugins: {
-    import: importPlugin,
+    "import-x": importXPlugin as unknown as ESLint.Plugin,
   },
   rules: importRules(typescript),
   settings: {
-    "import/resolver": {
-      typescript: true,
+    "import-x/resolver": {
       node: true,
+      typescript,
     },
+    "import-x/resolver-next": [
+      createTypeScriptImportResolver({
+        alwaysTryTypes: true,
+        bun: true,
+      }),
+    ],
   },
 });

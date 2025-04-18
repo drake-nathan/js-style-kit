@@ -1,6 +1,6 @@
 import type { EslintRuleConfig } from "../types.js";
 
-type ImportRules = Record<`import/${string}`, EslintRuleConfig>;
+type ImportRules = Record<`import-x/${string}`, EslintRuleConfig>;
 
 /**
  * Creates a configuration object for import ESLint rules.
@@ -10,78 +10,72 @@ type ImportRules = Record<`import/${string}`, EslintRuleConfig>;
  */
 export const importRules = (typescript: boolean): ImportRules => ({
   // these rules are better handled by typescript
-  ...(typescript ?
+  ...(!typescript ?
     {
-      "import/default": "warn",
-      "import/export": "warn",
-      "import/named": "warn",
-      "import/namespace": "warn",
-      "import/no-unresolved": "warn",
+      "import-x/default": "warn",
+      "import-x/export": "warn",
+      "import-x/named": "warn",
+      "import-x/namespace": "warn",
+      "import-x/no-unresolved": "warn",
     }
   : {}),
   /**
    * Disallow non-import statements appearing before import statements.
    *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/first.md
+   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/first.md
    */
-  "import/first": "warn",
+  "import-x/first": "warn",
   /**
-   * Require a newline after the last import/require.
+   * Require a newline after the last import-x/require.
    *
-   * 🔧 Fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/newline-after-import.md
+   * 🔧 Fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/newline-after-import.md
    */
-  "import/newline-after-import": "warn",
+  "import-x/newline-after-import": "warn",
   /**
    * Disallow import of modules using absolute paths.
    *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-absolute-path.md
+   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/no-absolute-path.md
    */
-  "import/no-absolute-path": "warn",
+  "import-x/no-absolute-path": "warn",
   /**
    * Disallow cyclical dependencies between modules.
    *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-cycle.md
+   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/no-cycle.md
    */
-  "import/no-cycle": "warn",
-  /**
-   * Disallow default exports.
-   *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-default-export.md
-   */
-  "import/no-default-export": "warn",
-  "import/no-duplicates": "warn",
+  "import-x/no-cycle": "warn",
+  "import-x/no-duplicates": "warn",
   /**
    * Disallow the use of extraneous packages.
    *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-extraneous-dependencies.md
+   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/no-extraneous-dependencies.md
    */
-  "import/no-extraneous-dependencies": ["warn", { includeTypes: true }],
+  "import-x/no-extraneous-dependencies": ["warn", { includeTypes: true }],
   /**
    * Disallow mutable exports.
    *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-mutable-exports.md
+   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/no-mutable-exports.md
    */
-  "import/no-mutable-exports": "warn",
+  "import-x/no-mutable-exports": "warn",
   // red flags (thus, warnings)
-  "import/no-named-as-default": "warn",
-  "import/no-named-as-default-member": "warn",
+  "import-x/no-named-as-default": "warn",
+  "import-x/no-named-as-default-member": "warn",
   /**
    * Disallow importing packages through relative paths.
    *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-relative-packages.md
+   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/no-relative-packages.md
    */
-  "import/no-relative-packages": "warn",
+  "import-x/no-relative-packages": "warn",
 
   /**
    * Disallow a module from importing itself.
    *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-self-import.md
+   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/no-self-import.md
    */
-  "import/no-self-import": "warn",
+  "import-x/no-self-import": "warn",
   /**
    * Ensures that there are no useless path segments.
    *
-   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-useless-path-segments.md
+   * 🚫 Not fixable - https://github.com/import-js/eslint-plugin-import-x/blob/main/docs/rules/no-useless-path-segments.md
    */
-  "import/no-useless-path-segments": ["warn"],
+  "import-x/no-useless-path-segments": ["warn"],
 });

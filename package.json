@@ -18,22 +18,20 @@
     "format:check": "prettier . --check --cache",
     "lint": "eslint . --max-warnings 0 --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
     "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
-    "lint:md": "markdownlint '**/*.md' --ignore node_modules --ignore apps",
     "outdated": "bun outdated --filter \"js-style-kit-root\" --filter \"js-style-kit\" --filter \"js-style-kit-docs\"",
     "sherif": "sherif",
     "test": "turbo run test",
     "test:coverage": "turbo run test:coverage"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.28.1",
-    "@types/bun": "^1.2.9",
+    "@changesets/cli": "^2.29.2",
+    "@types/bun": "^1.2.10",
     "js-style-kit": "workspace:*",
-    "markdownlint-cli": "^0.44.0",
     "sherif": "^1.5.0",
     "turbo": "^2.5.0",
     "typescript": "^5.8.3"
   },
-  "packageManager": "bun@1.2.8",
+  "packageManager": "bun@1.2.10",
   "engines": {
     "node": ">=22"
   },

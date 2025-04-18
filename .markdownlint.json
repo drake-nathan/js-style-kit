@@ -1,5 +1,0 @@
-{
-  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json",
-  "MD024": { "siblings_only": true },
-  "extends": "markdownlint/style/prettier"
-}
