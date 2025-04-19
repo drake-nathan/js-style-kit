@@ -134,10 +134,10 @@ react: false;
 react: {
   // Enable/disable React Compiler (default: true when react is enabled)
   reactCompiler: true,
-  
+
   // Controls React Fast Refresh validation
   reactRefresh: false,
-  
+
   // Controls framework-specific configurations: "next", "vite", or "none"
   framework: "next"
 }
@@ -237,13 +237,13 @@ export default eslintConfig(
     // Use the built-in rules parameter for custom rules
     rules: {
       "no-console": ["error", { allow: ["warn", "error"] }],
-      "prefer-const": "error"
+      "prefer-const": "error",
     },
     // Configure testing
     testing: {
       framework: "jest",
-      itOrTest: "test"
-    }
+      itOrTest: "test",
+    },
   },
   // You can still add additional config objects
   {
