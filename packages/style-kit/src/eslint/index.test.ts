@@ -628,6 +628,110 @@ describe("eslintConfig", () => {
     });
   });
 
+  describe("custom rules configuration", () => {
+    it("adds custom rules to the base config when no plugin prefix is present", () => {
+      const customRules = {
+        "no-console": "off" as const,
+        "no-unused-vars": "warn" as const,
+      };
+
+      const config = eslintConfig({ rules: customRules });
+      const baseConfig = config.find((c) => c.name === configNames.base);
+
+      expect(baseConfig?.rules?.["no-console"]).toBe("off");
+      expect(baseConfig?.rules?.["no-unused-vars"]).toBe("warn");
+    });
+
+    it("adds TypeScript rules to the TypeScript config", () => {
+      const customRules = {
+        "@typescript-eslint/explicit-function-return-type": "warn" as const,
+        "@typescript-eslint/no-explicit-any": "off" as const,
+      };
+
+      const config = eslintConfig({ rules: customRules });
+      const tsConfig = config.find((c) => c.name === configNames.typescript);
+
+      expect(tsConfig?.rules?.["@typescript-eslint/no-explicit-any"]).toBe(
+        "off",
+      );
+      expect(
+        tsConfig?.rules?.["@typescript-eslint/explicit-function-return-type"],
+      ).toBe("warn");
+    });
+
+    it("adds React rules to the React config", () => {
+      const customRules = {
+        "react-hooks/exhaustive-deps": "warn" as const,
+        "react/prop-types": "off" as const,
+      };
+
+      const config = eslintConfig({ react: true, rules: customRules });
+      const reactConfig = config.find((c) => c.name === configNames.react);
+
+      expect(reactConfig?.rules?.["react/prop-types"]).toBe("off");
+      expect(reactConfig?.rules?.["react-hooks/exhaustive-deps"]).toBe("warn");
+    });
+
+    it("distributes mixed custom rules to their respective configs", () => {
+      const customRules = {
+        // TypeScript rules
+        "@typescript-eslint/no-explicit-any": "off" as const,
+        // Import rules
+        "import/no-unresolved": "off" as const,
+        // Base rules
+        "no-console": "off" as const,
+        // Perfectionist rules
+        "perfectionist/sort-imports": "off" as const,
+        // React rules
+        "react/prop-types": "off" as const,
+      };
+
+      const config = eslintConfig({ react: true, rules: customRules });
+
+      const baseConfig = config.find((c) => c.name === configNames.base);
+      const tsConfig = config.find((c) => c.name === configNames.typescript);
+      const reactConfig = config.find((c) => c.name === configNames.react);
+      const importConfig = config.find((c) => c.name === configNames.import);
+      const perfectionistConfig = config.find(
+        (c) => c.name === configNames.perfectionist,
+      );
+
+      expect(baseConfig?.rules?.["no-console"]).toBe("off");
+      expect(tsConfig?.rules?.["@typescript-eslint/no-explicit-any"]).toBe(
+        "off",
+      );
+      expect(reactConfig?.rules?.["react/prop-types"]).toBe("off");
+      expect(importConfig?.rules?.["import/no-unresolved"]).toBe("off");
+      expect(perfectionistConfig?.rules?.["perfectionist/sort-imports"]).toBe(
+        "off",
+      );
+    });
+
+    it("handles rules for disabled features by not applying them", () => {
+      const customRules = {
+        "@typescript-eslint/no-explicit-any": "off" as const,
+        "react/prop-types": "off" as const,
+      };
+
+      // Disable React and TypeScript
+      const config = eslintConfig({
+        react: false,
+        rules: customRules,
+        typescript: false,
+      });
+
+      // These configs should not exist
+      expect(config.some((c) => c.name === configNames.react)).toBe(false);
+      expect(config.some((c) => c.name === configNames.typescript)).toBe(false);
+
+      // The rules should not have been applied anywhere
+      const allRules = config.flatMap((c) => Object.keys(c.rules || {}));
+
+      expect(allRules).not.toContain("react/prop-types");
+      expect(allRules).not.toContain("@typescript-eslint/no-explicit-any");
+    });
+  });
+
   /* eslint-disable jest/no-conditional-in-test */
   describe("rule severity configuration", () => {
     it("ensures no rules are configured with 'error' severity", async () => {
