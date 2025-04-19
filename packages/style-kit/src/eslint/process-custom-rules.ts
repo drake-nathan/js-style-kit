@@ -1,4 +1,4 @@
-import type { ConfigName } from "./constants.js"; // Ensure space after previous import
+import type { ConfigName } from "./constants.js";
 import type { EslintRuleConfig } from "./types.js";
 
 import { configNames } from "./constants.js";
@@ -13,17 +13,21 @@ import { configNames } from "./constants.js";
 export const processCustomRules = (
   customRules: Record<string, EslintRuleConfig> | undefined,
 ): Partial<Record<ConfigName, Record<string, EslintRuleConfig>>> => {
+  // Initialize result object with empty base config
   const categorizedRules: Partial<
     Record<ConfigName, Record<string, EslintRuleConfig>>
-  > = {};
+  > = {
+    [configNames.base]: {},
+  };
 
+  // Early return if no custom rules provided
   if (!customRules) {
-    return categorizedRules; // Return empty object if no custom rules
+    return categorizedRules;
   }
 
   // NOTE: This map should ideally be kept in sync with constants.ts
   // and the configs actually generated in index.ts
-  const prefixToConfigNameMap: Partial<Record<string, ConfigName>> = {
+  const prefixToConfigNameMap: Record<string, ConfigName> = {
     "@typescript-eslint": configNames.typescript,
     import: configNames.import,
     "import-x": configNames.import,
@@ -40,28 +44,37 @@ export const processCustomRules = (
   };
   const prefixes = Object.keys(prefixToConfigNameMap);
 
+  // Process each custom rule
   for (const [ruleKey, ruleValue] of Object.entries(customRules)) {
-    let targetConfigName: ConfigName | undefined;
+    // Optimization: Quick check if rule has no prefix (no '/' or '@')
+    // Rules without prefixes go directly to base config
+    if (!ruleKey.includes("/") && !ruleKey.startsWith("@")) {
+      // @ts-expect-error We know this exists because we initialized it above
+      categorizedRules[configNames.base][ruleKey] = ruleValue;
+      continue;
+    }
 
-    // Check if the rule key starts with a known prefix
+    // Find matching prefix and corresponding config
+    let targetConfig: ConfigName | undefined;
+
     for (const prefix of prefixes) {
       const checkPrefix =
         prefix.includes("/") || prefix.startsWith("@") ? prefix : `${prefix}/`;
+
       if (ruleKey.startsWith(checkPrefix)) {
-        targetConfigName = prefixToConfigNameMap[prefix];
+        targetConfig = prefixToConfigNameMap[prefix];
         break; // Found the corresponding prefix
       }
     }
 
-    // Determine the final category name (specific plugin or 'base')
-    const category = targetConfigName ?? configNames.base;
+    // Use base config if no matching prefix was found
+    const configName = targetConfig ?? configNames.base;
 
-    // Ensure the category exists in the result object
-    categorizedRules[category] ??= {};
+    // Initialize the config category if it doesn't exist yet
+    categorizedRules[configName] ??= {};
 
-    // Add the rule to the correct category
-    const keyToUse = targetConfigName ? ruleKey : ruleKey;
-    categorizedRules[category][keyToUse] = ruleValue;
+    // Add the rule to the appropriate config
+    categorizedRules[configName][ruleKey] = ruleValue;
   }
 
   return categorizedRules;
