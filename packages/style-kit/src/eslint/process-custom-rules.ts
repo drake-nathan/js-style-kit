@@ -11,7 +11,7 @@ import { configNames, pluginPrefixMap } from "./constants.js";
  *          and values are the corresponding rule subsets for that config.
  */
 export const processCustomRules = (
-  customRules: Record<string, EslintRuleConfig> | undefined,
+  customRules: Record<string, EslintRuleConfig>,
 ): Partial<Record<ConfigName, Record<string, EslintRuleConfig>>> => {
   // Initialize result object with all possible config categories
   const categorizedRules = Object.values(configNames).reduce<
@@ -23,12 +23,6 @@ export const processCustomRules = (
     },
     {} as Record<ConfigName, Record<string, EslintRuleConfig>>,
   );
-
-  // Early return if no custom rules provided
-  if (!customRules) {
-    // Only return the base config to ensure it's always present
-    return { [configNames.base]: categorizedRules[configNames.base] };
-  }
 
   // Process each custom rule
   for (const [ruleKey, ruleValue] of Object.entries(customRules)) {

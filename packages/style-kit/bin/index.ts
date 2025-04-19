@@ -144,14 +144,14 @@ const setupConfigFiles = (): Extension => {
     const prettierConfigContent = `
       import { prettierConfig } from "js-style-kit";
 
-      export const prettier = prettierConfig({});
+      export default prettierConfig({});
     `;
 
     // Create eslint.config.js/mjs
     const eslintConfigContent = `
       import { eslintConfig } from "js-style-kit";
 
-      export const eslint = eslintConfig({});
+      export default eslintConfig({});
     `;
 
     fs.writeFileSync(`prettier.config${extension}`, prettierConfigContent);

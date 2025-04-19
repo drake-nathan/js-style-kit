@@ -102,7 +102,7 @@ export const eslintConfig = (
   ...additionalConfigs: Linter.Config[]
 ): Linter.Config[] => {
   // Categorize user's custom rules first
-  const categorizedRules = processCustomRules(rules);
+  const categorizedRules = rules === undefined ? {} : processCustomRules(rules);
 
   const usingNextjs = isObject(react) && react.framework === "next";
 
@@ -154,7 +154,6 @@ export const eslintConfig = (
         react.reactRefresh !== false);
 
     if (shouldUseReactRefresh) {
-      // Assuming reactRefreshEslintConfig becomes a function accepting rules
       configs.push(
         reactRefreshEslintConfig(categorizedRules[configNames.reactRefresh]),
       );
@@ -173,14 +172,12 @@ export const eslintConfig = (
       react === true || (isObject(react) && react.reactCompiler !== false);
 
     if (shouldUseReactCompiler) {
-      // Assuming reactCompilerEslintConfig becomes a function accepting rules
       configs.push(
         reactCompilerEslintConfig(categorizedRules[configNames.reactCompiler]),
       );
     }
 
     if (usingNextjs) {
-      // Assuming nextjsConfig becomes a function accepting rules
       configs.push(nextjsConfig(categorizedRules[configNames.nextjs]));
     }
   }
@@ -211,20 +208,16 @@ export const eslintConfig = (
   }
 
   if (sorting) {
-    // Assuming perfectionistConfig becomes a function accepting rules
     configs.push(
       perfectionistConfig(categorizedRules[configNames.perfectionist]),
     );
   }
 
   if (unicorn) {
-    // Assuming unicornConfig becomes a function accepting rules
     configs.push(unicornConfig(categorizedRules[configNames.unicorn]));
   }
 
   if (functionStyle === "arrow") {
-    // Assuming preferArrowFunctionConfig becomes a function accepting rules
-    // Passing base rules as prefer-arrow-function isn't mapped directly
     configs.push(
       preferArrowFunctionConfig(
         categorizedRules[configNames.preferArrowFunction],
@@ -233,12 +226,10 @@ export const eslintConfig = (
   }
 
   if (storybook) {
-    // Assuming storybookConfig handles distribution of categorizedRules.storybook
-    configs.push(...storybookConfig(categorizedRules[configNames.storybook])); // 'storybook' is correct ConfigName here
+    configs.push(...storybookConfig(categorizedRules[configNames.storybook]));
   }
 
   if (turbo) {
-    // Assuming turboConfig becomes a function accepting rules
     configs.push(turboConfig(categorizedRules[configNames.turbo]));
   }
 
