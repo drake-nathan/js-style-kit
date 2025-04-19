@@ -27,20 +27,24 @@ export const configNames = {
 
 export type ConfigName = (typeof configNames)[keyof typeof configNames];
 
-export const pluginPrefixes = [
-  "@typescript-eslint",
-  "import",
-  "import-x",
-  "jsdoc",
-  "nextjs",
-  "perfectionist",
-  "react",
-  "react-compiler",
-  "react-hooks",
-  "react-refresh",
-  "jest",
-  "vitest",
-  "storybook",
-  "turbo",
-  "unicorn",
-];
+/**
+ * Maps plugin prefixes to their corresponding config names.
+ * This is the single source of truth for categorizing rules by plugin.
+ */
+export const pluginPrefixMap = new Map<string, ConfigName>([
+  ["@typescript-eslint", configNames.typescript],
+  ["import", configNames.import],
+  ["import-x", configNames.import],
+  ["jest", configNames.testing],
+  ["jsdoc", configNames.jsdoc],
+  ["nextjs", configNames.nextjs],
+  ["perfectionist", configNames.perfectionist],
+  ["react", configNames.react],
+  ["react-compiler", configNames.reactCompiler],
+  ["react-hooks", configNames.react],
+  ["react-refresh", configNames.reactRefresh],
+  ["storybook", configNames.storybook],
+  ["turbo", configNames.turbo],
+  ["unicorn", configNames.unicorn],
+  ["vitest", configNames.testing],
+]);

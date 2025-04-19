@@ -21,8 +21,7 @@ import { turboConfig } from "./turbo/config.js";
 import { tseslintConfig } from "./typescript/config.js";
 import { unicornConfig } from "./unicorn/config.js";
 
-// Default configuration for testing
-const DEFAULT_TESTING_CONFIG: TestingConfig = {
+const defaultTestingConfig: TestingConfig = {
   filenamePattern: "test",
   files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
   formattingRules: true,
@@ -95,7 +94,7 @@ export const eslintConfig = (
     rules,
     sorting = true,
     storybook = false,
-    testing = DEFAULT_TESTING_CONFIG,
+    testing = defaultTestingConfig,
     turbo = false,
     typescript = true,
     unicorn = true,
@@ -189,7 +188,9 @@ export const eslintConfig = (
   if (testing !== false) {
     // Use the provided testing config or the default if testing is true
     const mergedTestingConfig: TestingConfig =
-      isObject(testing) ? testing : DEFAULT_TESTING_CONFIG;
+      isObject(testing) ?
+        { ...defaultTestingConfig, ...testing }
+      : defaultTestingConfig;
 
     // Destructure from the merged config
     const { filenamePattern, files, formattingRules, framework, itOrTest } =

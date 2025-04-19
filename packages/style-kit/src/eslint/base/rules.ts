@@ -16,7 +16,7 @@ export const baseEslintRules = (
   functionStyle: "off" | FunctionStyle,
   typescript: boolean,
 ): BaseRules => ({
-  ...(typescript ?
+  ...(!typescript ?
     {
       "no-unused-expressions": "warn",
       "no-unused-vars": "warn",

@@ -725,7 +725,8 @@ describe("eslintConfig", () => {
       expect(config.some((c) => c.name === configNames.typescript)).toBe(false);
 
       // The rules should not have been applied anywhere
-      const allRules = config.flatMap((c) => Object.keys(c.rules || {}));
+      // eslint-disable-next-line jest/no-conditional-in-test
+      const allRules = config.flatMap((c) => Object.keys(c.rules ?? {}));
 
       expect(allRules).not.toContain("react/prop-types");
       expect(allRules).not.toContain("@typescript-eslint/no-explicit-any");

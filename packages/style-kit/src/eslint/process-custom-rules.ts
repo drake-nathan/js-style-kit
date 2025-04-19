@@ -1,7 +1,7 @@
 import type { ConfigName } from "./constants.js";
 import type { EslintRuleConfig } from "./types.js";
 
-import { configNames } from "./constants.js";
+import { configNames, pluginPrefixMap } from "./constants.js";
 
 /**
  * Categorizes custom rules provided by the user based on plugin prefixes.
@@ -13,69 +13,66 @@ import { configNames } from "./constants.js";
 export const processCustomRules = (
   customRules: Record<string, EslintRuleConfig> | undefined,
 ): Partial<Record<ConfigName, Record<string, EslintRuleConfig>>> => {
-  // Initialize result object with empty base config
-  const categorizedRules: Partial<
+  // Initialize result object with all possible config categories
+  const categorizedRules = Object.values(configNames).reduce<
     Record<ConfigName, Record<string, EslintRuleConfig>>
-  > = {
-    [configNames.base]: {},
-  };
+  >(
+    (acc, configName) => {
+      acc[configName] = {};
+      return acc;
+    },
+    {} as Record<ConfigName, Record<string, EslintRuleConfig>>,
+  );
 
   // Early return if no custom rules provided
   if (!customRules) {
-    return categorizedRules;
+    // Only return the base config to ensure it's always present
+    return { [configNames.base]: categorizedRules[configNames.base] };
   }
-
-  // NOTE: This map should ideally be kept in sync with constants.ts
-  // and the configs actually generated in index.ts
-  const prefixToConfigNameMap: Record<string, ConfigName> = {
-    "@typescript-eslint": configNames.typescript,
-    import: configNames.import,
-    "import-x": configNames.import,
-    jsdoc: configNames.jsdoc,
-    nextjs: configNames.nextjs,
-    perfectionist: configNames.perfectionist,
-    react: configNames.react,
-    "react-compiler": configNames.reactCompiler,
-    "react-hooks": configNames.react,
-    "react-refresh": configNames.reactRefresh,
-    storybook: configNames.storybook,
-    turbo: configNames.turbo,
-    unicorn: configNames.unicorn,
-  };
-  const prefixes = Object.keys(prefixToConfigNameMap);
 
   // Process each custom rule
   for (const [ruleKey, ruleValue] of Object.entries(customRules)) {
-    // Optimization: Quick check if rule has no prefix (no '/' or '@')
+    // Quick check if rule has no prefix (no '/' or '@')
     // Rules without prefixes go directly to base config
     if (!ruleKey.includes("/") && !ruleKey.startsWith("@")) {
-      // @ts-expect-error We know this exists because we initialized it above
       categorizedRules[configNames.base][ruleKey] = ruleValue;
       continue;
     }
 
-    // Find matching prefix and corresponding config
-    let targetConfig: ConfigName | undefined;
+    // Extract the plugin prefix from the rule key
+    let prefix: null | string = null;
 
-    for (const prefix of prefixes) {
-      const checkPrefix =
-        prefix.includes("/") || prefix.startsWith("@") ? prefix : `${prefix}/`;
-
-      if (ruleKey.startsWith(checkPrefix)) {
-        targetConfig = prefixToConfigNameMap[prefix];
-        break; // Found the corresponding prefix
+    if (ruleKey.startsWith("@")) {
+      // Handle scoped packages like @typescript-eslint/rule-name
+      const firstSlashIndex = ruleKey.indexOf("/");
+      if (firstSlashIndex !== -1) {
+        prefix = ruleKey.substring(0, firstSlashIndex);
+      }
+    } else {
+      // Handle regular plugins like eslint-plugin-react/rule-name
+      const firstSlashIndex = ruleKey.indexOf("/");
+      if (firstSlashIndex !== -1) {
+        prefix = ruleKey.substring(0, firstSlashIndex);
       }
     }
 
-    // Use base config if no matching prefix was found
-    const configName = targetConfig ?? configNames.base;
-
-    // Initialize the config category if it doesn't exist yet
-    categorizedRules[configName] ??= {};
+    // Find the corresponding config name for this prefix
+    const configName =
+      prefix ?
+        (pluginPrefixMap.get(prefix) ?? configNames.base)
+      : configNames.base;
 
     // Add the rule to the appropriate config
     categorizedRules[configName][ruleKey] = ruleValue;
   }
 
-  return categorizedRules;
+  // Filter out empty config objects to save memory
+  return Object.entries(categorizedRules).reduce<
+    Partial<Record<ConfigName, Record<string, EslintRuleConfig>>>
+  >((acc, [configName, rules]) => {
+    if (Object.keys(rules).length > 0) {
+      acc[configName as ConfigName] = rules;
+    }
+    return acc;
+  }, {});
 };

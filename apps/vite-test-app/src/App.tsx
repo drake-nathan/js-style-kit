@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import reactLogo from "./assets/react.svg";
 
+// this proves that import-x plugin is enabled
+// eslint-disable-next-line import-x/no-absolute-path
 import viteLogo from "/vite.svg";
 
 import "./App.css";

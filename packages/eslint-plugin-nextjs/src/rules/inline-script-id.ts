@@ -1,4 +1,5 @@
 import type { RuleDefinition } from "@eslint/core";
+
 const name = "inline-script-id";
 const url = `https://nextjs.org/docs/messages/${name}`;
 

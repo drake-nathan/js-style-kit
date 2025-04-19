@@ -1,6 +1,7 @@
 import { RuleTester } from "eslint";
 
 import { getRule } from "./utils/get-rule";
+
 const NextESLintRule = getRule("no-async-client-component");
 
 const message =
