@@ -1,6 +1,6 @@
 import reactRefresh from "eslint-plugin-react-refresh";
 
-import type { EslintConfigObject } from "../types.js";
+import type { EslintConfigObject, EslintRuleConfig } from "../types.js";
 
 import { configNames } from "../constants.js";
 import { reactRefreshRules } from "./rules.js";
@@ -12,14 +12,17 @@ import { reactRefreshRules } from "./rules.js";
  * It enforces that components are structured in a way that integrations like
  * react-refresh expect.
  *
+ * @param customRules - Optional object containing custom rules to override or add to the React Refresh configuration.
  * @returns An ESLint configuration object for React Refresh.
  */
-export const reactRefreshEslintConfig = (): EslintConfigObject => {
+export const reactRefreshEslintConfig = (
+  customRules?: Record<string, EslintRuleConfig>,
+): EslintConfigObject => {
   return {
     name: configNames.reactRefresh,
     plugins: {
       "react-refresh": reactRefresh,
     },
-    rules: reactRefreshRules,
+    rules: customRules ?? reactRefreshRules,
   };
 };

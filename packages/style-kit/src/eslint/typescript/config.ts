@@ -1,5 +1,7 @@
 import tseslint, { type Config } from "typescript-eslint";
 
+import type { EslintRuleConfig } from "../types.js";
+
 import { configNames } from "../constants.js";
 import { tseslintRules } from "./rules.js";
 
@@ -7,9 +9,13 @@ import { tseslintRules } from "./rules.js";
  * Creates a TypeScript ESLint configuration object.
  *
  * @param tsconfigPath - Path to the TypeScript configuration file
+ * @param customRules - Optional object containing custom rules to override or add to the TypeScript configuration.
  * @returns TypeScript ESLint configuration object
  */
-export const tseslintConfig = (tsconfigPath?: string): Config => {
+export const tseslintConfig = (
+  tsconfigPath?: string,
+  customRules?: Record<string, EslintRuleConfig>,
+): Config => {
   const userCwd = process.cwd();
 
   return tseslint.config(
@@ -27,7 +33,10 @@ export const tseslintConfig = (tsconfigPath?: string): Config => {
       plugins: {
         "@typescript-eslint": tseslint.plugin,
       },
-      rules: tseslintRules,
+      rules: {
+        ...tseslintRules,
+        ...(customRules ?? {}),
+      },
     },
     {
       // disable type-aware linting on JS files

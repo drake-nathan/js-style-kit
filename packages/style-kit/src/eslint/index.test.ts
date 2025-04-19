@@ -16,6 +16,7 @@ describe("eslintConfig", () => {
         configNames.jsdoc,
         configNames.typescript,
         configNames.perfectionist,
+        configNames.import,
         configNames.testing,
         configNames.preferArrowFunction,
         configNames.disableTypeChecked,

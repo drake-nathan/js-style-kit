@@ -26,3 +26,21 @@ export const configNames = {
 } as const;
 
 export type ConfigName = (typeof configNames)[keyof typeof configNames];
+
+export const pluginPrefixes = [
+  "@typescript-eslint",
+  "import",
+  "import-x",
+  "jsdoc",
+  "nextjs",
+  "perfectionist",
+  "react",
+  "react-compiler",
+  "react-hooks",
+  "react-refresh",
+  "jest",
+  "vitest",
+  "storybook",
+  "turbo",
+  "unicorn",
+];

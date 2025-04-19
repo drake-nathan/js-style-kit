@@ -2,7 +2,7 @@ import type { ESLint } from "eslint";
 
 import storybookPlugin from "eslint-plugin-storybook";
 
-import type { EslintConfigObject } from "../types.js";
+import type { EslintConfigObject, EslintRuleConfig } from "../types.js";
 
 import { configNames } from "../constants.js";
 
@@ -10,9 +10,12 @@ import { configNames } from "../constants.js";
  * ESLint configuration for Storybook.
  * Contains rules for best practices when working with Storybook.
  *
- * @returns Storybook ESLint config
+ * @param customRules - Optional custom rules to merge into the Storybook config.
+ * @returns Storybook ESLint config array.
  */
-export const storybookConfig: EslintConfigObject[] = [
+export const storybookConfig = (
+  customRules?: Record<string, EslintRuleConfig>,
+): EslintConfigObject[] => [
   {
     files: [
       "**/*.stories.@(ts|tsx|js|jsx|mjs|cjs)",
@@ -23,6 +26,7 @@ export const storybookConfig: EslintConfigObject[] = [
       storybook: storybookPlugin as unknown as ESLint.Plugin,
     },
     rules: {
+      // Default Storybook rules
       "import/no-anonymous-default-export": "off",
       "react-hooks/rules-of-hooks": "off",
       "storybook/await-interactions": "warn",
@@ -36,6 +40,8 @@ export const storybookConfig: EslintConfigObject[] = [
       "storybook/story-exports": "warn",
       "storybook/use-storybook-expect": "warn",
       "storybook/use-storybook-testing-library": "warn",
+      // Merge custom rules
+      ...(customRules ?? {}),
     },
   },
   {
