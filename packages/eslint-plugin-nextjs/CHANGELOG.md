@@ -1,5 +1,11 @@
 # eslint-plugin-nextjs
 
+## 1.0.1
+
+### Patch Changes
+
+- 391399a: Reconfigure TSUP to exclude dependencies from bundle. Add `eslint-plugin-import-x` to style kit.
+
 ## 1.0.0
 
 ### Major Changes
