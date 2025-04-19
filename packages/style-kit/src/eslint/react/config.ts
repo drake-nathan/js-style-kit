@@ -2,7 +2,11 @@ import react from "eslint-plugin-react";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
 
-import type { EslintConfigObject, FunctionStyle } from "../types.js";
+import type {
+  EslintConfigObject,
+  EslintRuleConfig,
+  FunctionStyle,
+} from "../types.js";
 
 import { configNames } from "../constants.js";
 import { reactRules } from "./rules.js";
@@ -16,11 +20,13 @@ import { reactRules } from "./rules.js";
  *   - "declaration": Enforces function declarations
  *   - "expression": Enforces function expressions
  * @param typescript - Whether TypeScript is being used in the project. When true, some rules are adjusted to be more TypeScript-friendly. Defaults to true.
+ * @param customRules - Optional object containing custom rules to override or add to the React configuration.
  * @returns An ESLint configuration object for React.
  */
 export const reactEslintConfig = (
   functionStyle: "off" | FunctionStyle,
   typescript: boolean,
+  customRules?: Record<string, EslintRuleConfig>,
 ): EslintConfigObject => {
   return {
     languageOptions: {
@@ -38,7 +44,10 @@ export const reactEslintConfig = (
       react,
       "react-hooks": pluginReactHooks,
     },
-    rules: reactRules(functionStyle, typescript),
+    rules: {
+      ...reactRules(functionStyle, typescript),
+      ...(customRules ?? {}),
+    },
     settings: {
       react: {
         version: "detect",

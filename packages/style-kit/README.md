@@ -43,7 +43,7 @@ bun add js-style-kit --dev
 
 ## ESLint Configuration
 
-### Basic Usage
+### ESLint Usage
 
 Create an `eslint.config.js` file in your project root:
 
@@ -79,11 +79,18 @@ export default eslintConfig({
   // All options shown with their default values
   functionStyle: "arrow", // Controls function style: "arrow", "declaration", "expression", or "off"
   ignores: [], // Additional paths to ignore (node_modules and dist already excluded)
+  importPlugin: true, // Whether to include import plugin rules
   jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
   react: false, // Whether to include React rules, see below for options
+  rules: {}, // Custom rules to override or configure specific ESLint rules
   sorting: true, // Whether to include sorting rules from Perfectionist
   storybook: false, // Whether to include Storybook rules
+  testing: {
+    /* see Testing Configuration section */
+  }, // Testing configuration or false to disable
+  turbo: false, // Whether to include Turborepo rules
   typescript: true, // Boolean or string path to tsconfig.json
+  unicorn: true, // Whether to include Unicorn rules
 });
 ```
 
@@ -120,6 +127,32 @@ typescript: false;
 typescript: "./tsconfig.json";
 ```
 
+#### Import Plugin Configuration
+
+The import plugin rules are enabled by default. These rules help maintain proper import/export syntax and detect issues with imports.
+
+```js
+// Enable import plugin (default)
+importPlugin: true;
+
+// Disable import plugin
+importPlugin: false;
+```
+
+#### Custom Rules Configuration
+
+You can override or configure specific ESLint rules using the `rules` option:
+
+```js
+// Add custom rule configurations
+rules: {
+  // Format is the same as standard ESLint rule configuration
+  "no-console": ["error", { allow: ["warn", "error"] }],
+  "@typescript-eslint/no-explicit-any": "off",
+  // Any valid ESLint rule can be configured here
+}
+```
+
 #### React Configuration
 
 React support is disabled by default.
@@ -128,13 +161,33 @@ React support is disabled by default.
 // `true` enables standard react rules, react hook rules, and react compiler
 react: true
 
-// you can also pass an object to control react compiler and next support
+// you can also pass an object to control react compiler, framework, and refresh support
 react: {
   reactCompiler: false,
-  reactRefresh: false, // Controls React Fast Refresh validation (disabled by default)
-  next: true
+  reactRefresh: false, // Controls React Fast Refresh validation
+  framework: "next" // "next", "vite", or "none" to control related configurations
 }
-// next simply adds ".next" to the ignores array, but I plan add the next plugin in the future
+// Using the framework option configures related features:
+// - "next": Includes Next.js config, excludes React Refresh by default
+// - "vite" or "none": Includes React Refresh by default, excludes Next.js
+```
+
+#### Testing Configuration
+
+Testing rules are enabled by default with smart defaults. You can customize them or disable them entirely:
+
+```js
+// Disable testing rules
+testing: false;
+
+// Customize testing rules
+testing: {
+  filenamePattern: "test", // "test" or "spec" for filename patterns
+  files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"], // File patterns to match
+  formattingRules: true, // Whether to include formatting rules
+  framework: "vitest", // "vitest" or "jest"
+  itOrTest: "it", // Whether to use "it" or "test" as the test function
+};
 ```
 
 #### JSDoc Configuration
@@ -151,7 +204,7 @@ jsdoc: {
 }
 ```
 
-#### Testing Configuration
+#### Additional Testing Options
 
 Testing support is enabled by default with Vitest configuration. You can customize it or disable it completely:
 
@@ -231,7 +284,7 @@ export default eslintConfig(
 
 ## Prettier Configuration
 
-### Basic Usage
+### Prettier Usage
 
 Create a `prettier.config.js` file in your project root:
 
@@ -254,7 +307,7 @@ Setup your `package.json` commands:
 }
 ```
 
-### Configuration Options
+### Prettier Configuration
 
 The `prettierConfig()` function accepts a configuration object with the following options:
 
@@ -294,7 +347,7 @@ tailwindPlugin: {
 }
 ```
 
-#### CSS Order Plugin
+#### CSS Properties Order
 
 The CSS order plugin is enabled by default. It sorts CSS properties in a consistent order. You can disable it:
 
@@ -374,11 +427,21 @@ export default eslintConfig(
     react: true,
     jsdoc: { requireJsdoc: true },
     functionStyle: "arrow",
-  },
-  {
-    name: "project-specific-rules",
+    // Use the built-in rules parameter for custom rules
     rules: {
       "no-console": ["error", { allow: ["warn", "error"] }],
+    },
+    // Configure testing
+    testing: {
+      framework: "jest",
+      itOrTest: "test",
+    },
+  },
+  // You can still add additional config objects
+  {
+    name: "additional-config",
+    rules: {
+      // More custom rules
     },
   },
 );

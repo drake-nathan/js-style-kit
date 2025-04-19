@@ -7,6 +7,7 @@ export const configNames = {
   base: "base",
   disableTypeChecked: "typescript-eslint/disable-type-checked",
   ignores: "ignores",
+  import: "import",
   jsdoc: "jsdoc",
   markdown: "markdown",
   nextjs: "nextjs",
@@ -25,3 +26,25 @@ export const configNames = {
 } as const;
 
 export type ConfigName = (typeof configNames)[keyof typeof configNames];
+
+/**
+ * Maps plugin prefixes to their corresponding config names.
+ * This is the single source of truth for categorizing rules by plugin.
+ */
+export const pluginPrefixMap = new Map<string, ConfigName>([
+  ["@typescript-eslint", configNames.typescript],
+  ["import", configNames.import],
+  ["import-x", configNames.import],
+  ["jest", configNames.testing],
+  ["jsdoc", configNames.jsdoc],
+  ["nextjs", configNames.nextjs],
+  ["perfectionist", configNames.perfectionist],
+  ["react", configNames.react],
+  ["react-compiler", configNames.reactCompiler],
+  ["react-hooks", configNames.react],
+  ["react-refresh", configNames.reactRefresh],
+  ["storybook", configNames.storybook],
+  ["turbo", configNames.turbo],
+  ["unicorn", configNames.unicorn],
+  ["vitest", configNames.testing],
+]);

@@ -1,7 +1,7 @@
 import jest from "eslint-plugin-jest";
 import vitest from "eslint-plugin-vitest";
 
-import type { EslintConfigObject } from "../types.js";
+import type { EslintConfigObject, EslintRuleConfig } from "../types.js";
 
 import { configNames } from "../constants.js";
 import { jestRules } from "./jest-rules.js";
@@ -24,6 +24,7 @@ export interface TestingConfig {
  * @param options.itOrTest - "it" or "test"
  * @param options.framework - "jest" or "vitest"
  * @param options.formattingRules - Whether to include formatting rules like padding around blocks
+ * @param customRules - Optional object containing custom rules to override or add to the testing configuration.
  * @returns ESLint configuration object
  */
 export const testingConfig = (
@@ -39,6 +40,7 @@ export const testingConfig = (
     framework: "vitest",
     itOrTest: "test",
   },
+  customRules?: Record<string, EslintRuleConfig>,
 ): EslintConfigObject => ({
   files: files ?? ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
   languageOptions: {
@@ -74,6 +76,7 @@ export const testingConfig = (
         "jest/padding-around-test-blocks": "warn",
       }
     : {}),
+    ...(customRules ?? {}),
   },
   ...(framework !== "jest" && framework !== "vitest" ?
     {

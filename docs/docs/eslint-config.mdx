@@ -47,8 +47,10 @@ export default eslintConfig({
   // All options shown with their default values
   functionStyle: "arrow", // Controls function style: "arrow", "declaration", "expression", or "off"
   ignores: [], // Additional paths to ignore (node_modules and dist already excluded)
+  importPlugin: true, // Whether to include import plugin rules
   jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
   react: false, // Whether to include React rules, see below for options
+  rules: {}, // Custom rules to override or configure specific ESLint rules
   sorting: true, // Whether to include sorting rules from Perfectionist
   storybook: false, // Whether to include Storybook rules
   testing: true, // Testing configuration, see below for options
@@ -91,6 +93,32 @@ typescript: false;
 typescript: "./tsconfig.json";
 ```
 
+## Import Plugin Configuration
+
+The import plugin rules are enabled by default. These rules help maintain proper import/export syntax and detect issues with imports.
+
+```js
+// Enable import plugin (default)
+importPlugin: true;
+
+// Disable import plugin
+importPlugin: false;
+```
+
+## Custom Rules Configuration
+
+You can override or configure specific ESLint rules using the `rules` option:
+
+```js
+// Add custom rule configurations
+rules: {
+  // Format is the same as standard ESLint rule configuration
+  "no-console": ["error", { allow: ["warn", "error"] }],
+  "@typescript-eslint/no-explicit-any": "off",
+  // Any valid ESLint rule can be configured here
+}
+```
+
 ## React Configuration
 
 React support is disabled by default.
@@ -107,8 +135,11 @@ react: {
   // Enable/disable React Compiler (default: true when react is enabled)
   reactCompiler: true,
 
-  // Add Next.js support (adds .next to ignores)
-  next: true
+  // Controls React Fast Refresh validation
+  reactRefresh: false,
+
+  // Controls framework-specific configurations: "next", "vite", or "none"
+  framework: "next"
 }
 ```
 
@@ -140,7 +171,7 @@ sorting: false;
 
 ## Testing Configuration
 
-Testing support is enabled by default with Vitest configuration:
+Testing support is enabled by default with Vitest configuration. You can customize it or disable it entirely:
 
 ```js
 // Enable with default settings (Vitest)
@@ -203,8 +234,18 @@ export default eslintConfig(
     // Base configuration options
     typescript: "tsconfig.eslint.json",
     react: true,
+    // Use the built-in rules parameter for custom rules
+    rules: {
+      "no-console": ["error", { allow: ["warn", "error"] }],
+      "prefer-const": "error",
+    },
+    // Configure testing
+    testing: {
+      framework: "jest",
+      itOrTest: "test",
+    },
   },
-  // Additional custom ESLint configuration objects
+  // You can still add additional config objects
   {
     name: "custom-globals",
     languageOptions: {
@@ -212,13 +253,6 @@ export default eslintConfig(
         process: "readonly",
         __dirname: "readonly",
       },
-    },
-  },
-  {
-    name: "custom-rules",
-    rules: {
-      "no-console": "warn",
-      "prefer-const": "error",
     },
   },
 );

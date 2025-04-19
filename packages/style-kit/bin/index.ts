@@ -140,23 +140,20 @@ const setupConfigFiles = (): Extension => {
     const isEsm = packageJson.type === "module";
     extension = isEsm ? ".js" : ".mjs";
 
-    // Create style-kit.config.js/mjs
-    const styleConfigContent = `import { eslintConfig, prettierConfig } from "js-style-kit";
-
-export const eslint = eslintConfig({});
-
-export const prettier = prettierConfig({});
-`;
-
     // Create prettier.config.js/mjs
-    const prettierConfigContent = `export { prettier as default } from "./style-kit.config${extension}";
-`;
+    const prettierConfigContent = `
+      import { prettierConfig } from "js-style-kit";
+
+      export default prettierConfig({});
+    `;
 
     // Create eslint.config.js/mjs
-    const eslintConfigContent = `export { eslint as default } from "./style-kit.config${extension}";
-`;
+    const eslintConfigContent = `
+      import { eslintConfig } from "js-style-kit";
 
-    fs.writeFileSync(`style-kit.config${extension}`, styleConfigContent);
+      export default eslintConfig({});
+    `;
+
     fs.writeFileSync(`prettier.config${extension}`, prettierConfigContent);
     fs.writeFileSync(`eslint.config${extension}`, eslintConfigContent);
 
@@ -171,10 +168,8 @@ export const prettier = prettierConfig({});
 
 /**
  * Sets up VS Code settings
- *
- * @param extension - The file extension to use for configuration files
  */
-const setupVSCodeSettings = (extension: Extension): void => {
+const setupVSCodeSettings = (): void => {
   console.info("Setting up VS Code settings...");
 
   try {
@@ -201,19 +196,8 @@ const setupVSCodeSettings = (extension: Extension): void => {
       "editor.defaultFormatter": "esbenp.prettier-vscode",
       "editor.formatOnSave": true,
       "eslint.runtime": "node",
-      "explorer.fileNesting.enabled": true,
+      "tailwindCSS.classFunctions": ["cn", "cva", "clsx"],
     };
-
-    // Add or update file nesting patterns
-    settings["explorer.fileNesting.patterns"] ??= {};
-
-    // Type assertion to handle the nesting patterns
-    const nestingPatterns = settings["explorer.fileNesting.patterns"] as Record<
-      string,
-      string
-    >;
-    nestingPatterns[`style-kit.config${extension}`] =
-      `eslint.config${extension}, prettier.config${extension}`;
 
     fs.writeFileSync(
       settingsPath,
@@ -246,8 +230,8 @@ program
 
       setupDependencies(packageManager);
       setupScripts();
-      const extension = setupConfigFiles();
-      setupVSCodeSettings(extension);
+      setupConfigFiles();
+      setupVSCodeSettings();
 
       const runCmd: Record<PackageManager, string> = {
         bun: "bun run",
