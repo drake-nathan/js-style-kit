@@ -1,5 +1,19 @@
 # js-style-kit
 
+## 0.3.0
+
+### Minor Changes
+
+- 43899bd: Add new `rules` property to the eslint config options which routes rules to their respective configs.
+
+### Patch Changes
+
+- 391399a: Reconfigure TSUP to exclude dependencies from bundle. Add `eslint-plugin-import-x` to style kit.
+- 924f681: Update cli to not create style-kit.config file
+- da8c614: Consolidate eslint ignores, add some rule types, and update packages.
+- Updated dependencies [391399a]
+  - eslint-plugin-nextjs@1.0.1
+
 ## 0.2.12
 
 ### Patch Changes
