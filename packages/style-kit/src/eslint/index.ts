@@ -12,7 +12,6 @@ import { nextjsConfig } from "./nextjs/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { processCustomRules } from "./process-custom-rules.js";
-import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactRefreshEslintConfig } from "./react-refresh/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { storybookConfig } from "./storybook/config.js";
@@ -166,16 +165,6 @@ export const eslintConfig = (
         categorizedRules[configNames.react],
       ),
     );
-
-    // Apply reactCompiler by default if react is true or if react.reactCompiler isn't explicitly false
-    const shouldUseReactCompiler =
-      react === true || (isObject(react) && react.reactCompiler !== false);
-
-    if (shouldUseReactCompiler) {
-      configs.push(
-        reactCompilerEslintConfig(categorizedRules[configNames.reactCompiler]),
-      );
-    }
 
     if (usingNextjs) {
       configs.push(nextjsConfig(categorizedRules[configNames.nextjs]));
