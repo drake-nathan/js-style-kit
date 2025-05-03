@@ -96,20 +96,12 @@ describe("eslintConfig", () => {
       expect(config.some((c) => c.name === configNames.react)).toBe(true);
     });
 
-    it("includes React compiler config by default when React is enabled", () => {
+    it("includes React compiler via the react hooks plugin", () => {
       const config = eslintConfig({ react: true });
 
-      expect(config.some((c) => c.name === configNames.reactCompiler)).toBe(
-        true,
-      );
-    });
+      const reactConfig = config.find((c) => c.name === configNames.react);
 
-    it("excludes React compiler config when React is enabled but React compiler is not", () => {
-      const config = eslintConfig({ react: { reactCompiler: false } });
-
-      expect(config.some((c) => c.name === configNames.reactCompiler)).toBe(
-        false,
-      );
+      expect(reactConfig?.rules?.["react-hooks/react-compiler"]).toBe("warn");
     });
 
     it("excludes React Refresh config by default when React is enabled", () => {
@@ -463,7 +455,6 @@ describe("eslintConfig", () => {
       // These should be excluded
       expect(names).not.toContain(configNames.typescript);
       expect(names).not.toContain(configNames.react);
-      expect(names).not.toContain(configNames.reactCompiler);
       expect(names).not.toContain(configNames.jsdoc);
       expect(names).not.toContain(configNames.perfectionist);
       expect(names).not.toContain(configNames.testing);

@@ -12,7 +12,6 @@ import { nextjsConfig } from "./nextjs/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { processCustomRules } from "./process-custom-rules.js";
-import { reactCompilerEslintConfig } from "./react-compiler/config.js";
 import { reactRefreshEslintConfig } from "./react-refresh/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { storybookConfig } from "./storybook/config.js";
@@ -62,9 +61,7 @@ export interface EslintConfigOptions {
  * @param options.ignores - Additional paths to ignore. Already excludes `node_modules` and `dist`.
  * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
  * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
- * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
- *                        Can be configured with an object to control next.js support and reactCompiler.
- *                        Also controls reactRefresh, which is enabled by default when react is true.
+ * @param options.react - Whether to include React, React hooks, and React compiler rules.
  *                        Can specify framework as "next", "none", or "vite" to control related configs:
  *                        - "next": Includes Next.js config, excludes React Refresh.
  *                        - "vite" or "none": Includes React Refresh, excludes Next.js.
@@ -166,16 +163,6 @@ export const eslintConfig = (
         categorizedRules[configNames.react],
       ),
     );
-
-    // Apply reactCompiler by default if react is true or if react.reactCompiler isn't explicitly false
-    const shouldUseReactCompiler =
-      react === true || (isObject(react) && react.reactCompiler !== false);
-
-    if (shouldUseReactCompiler) {
-      configs.push(
-        reactCompilerEslintConfig(categorizedRules[configNames.reactCompiler]),
-      );
-    }
 
     if (usingNextjs) {
       configs.push(nextjsConfig(categorizedRules[configNames.nextjs]));

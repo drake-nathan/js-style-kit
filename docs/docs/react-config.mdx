@@ -32,11 +32,7 @@ export default eslintConfig({
 
   // Enable React with custom settings
   react: {
-    // Enable/disable React Compiler (default: true when react is enabled)
-    reactCompiler: true,
-
-    // Add Next.js support (adds .next to ignores)
-    next: true,
+    framework: "next",
   },
 });
 ```
@@ -105,17 +101,19 @@ export default function () {
 
 ## React Compiler Support
 
-[React Compiler](https://react.dev/learn/react-compiler) (formerly Forget) is a compiler that optimizes React components for better performance. JS Style Kit includes support for React Compiler through the `eslint-plugin-react-compiler` plugin.
+[React Compiler](https://react.dev/learn/react-compiler) is a compiler that optimizes React components for better performance. JS Style Kit enables React Compiler support through the `react-hooks/react-compiler` rule, which flags Hooks violations required for the compiler to function.
 
-React Compiler support is **enabled by default** when React support is enabled. To explicitly control it:
+React Compiler support is **enabled by default** when React support is enabled. To disable it, use the `rules` option:
 
 ```js
 import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig({
   react: {
-    // Disable React Compiler
-    reactCompiler: false,
+    framework: "vite",
+  },
+  rules: {
+    "react-hooks/react-compiler": "off",
   },
 });
 ```

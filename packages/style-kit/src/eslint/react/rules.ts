@@ -49,6 +49,7 @@ export const reactRules = (
      */
     ...(typescript ? {} : { "react/prop-types": "warn" }),
     "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/react-compiler": "warn",
     "react-hooks/rules-of-hooks": "warn",
     /**
      * Require an explicit type when using button elements.
