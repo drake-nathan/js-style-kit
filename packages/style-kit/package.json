@@ -40,8 +40,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^8.31.0",
-    "eslint": "^9.25.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "eslint": "^9.26.0",
     "eslint-import-resolver-typescript": "^4.3.4",
     "eslint-plugin-import-x": "^4.11.0",
     "eslint-plugin-jest": "^28.11.0",
@@ -54,7 +54,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "eslint-plugin-storybook": "^0.12.0",
     "eslint-plugin-turbo": "^2.5.2",
-    "eslint-plugin-unicorn": "^58.0.0",
+    "eslint-plugin-unicorn": "^59.0.0",
     "eslint-plugin-vitest": "^0.5.4",
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
@@ -63,12 +63,12 @@
     "prettier-plugin-packagejson": "^2.5.10",
     "prettier-plugin-sort-json": "^4.1.1",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "typescript-eslint": "^8.31.0"
+    "typescript-eslint": "^8.31.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/bun": "^1.2.10",
-    "@types/node": "^22.15.2",
+    "@types/bun": "^1.2.11",
+    "@types/node": "^22.15.3",
     "commander": "^13.1.0",
     "glob": "^11.0.2",
     "tsup": "^8.4.0",

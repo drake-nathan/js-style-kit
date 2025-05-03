@@ -13,4 +13,4 @@
 ## Workflow
 
 - Use bun for all commands
-- Many lint rules are auto-fixable, it may be more productive to stop and let me save the file to try to fix as many as we can, then continue
+- Use the ESLint mcp to fix linting issues
