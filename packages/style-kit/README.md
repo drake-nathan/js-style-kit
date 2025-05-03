@@ -13,14 +13,36 @@ A zero-configuration style guide for ESLint and Prettier that provides sensible 
 
 JS Style Kit is a comprehensive, batteries-included linting and formatting solution for modern JavaScript and TypeScript projects.
 
-- ✅ All dependencies included (ESLint, Prettier, plugins) - no need to install extras
+- ✅ All dependencies included (ESLint, Prettier, plugins) - no need to install peer deps
 - ✅ ESLint v9 flat config
-- ✅ TypeScript support out of the box
-- ✅ Optional React and React Compiler support
-- ✅ JSDoc validation with configurable requirements for libraries
-- ✅ Automatic import, prop, and object sorting with Perfectionist
-- ✅ Tailwind CSS support for Prettier
-- ✅ Modern ESM-only package
+- ✅ ESM-only package
+- ✅ All rules configured as warnings
+
+### Configs Included
+
+> **Note:** All configs are optional and can be disabled or configured.
+
+- ESlint
+  - Base config - Tweaked version of "recommended" config
+  - typescript-eslint - Falls somewhere between "recommended" and "strict"
+  - eslint-plugin-perfectionist - automatically sort all imports, objects, props, etc.
+  - eslint-plugin-import-x - faster version of eslint-plugin-import
+  - eslint-plugin-unicorn - enforce consistent file names (kebab-case will save you so many headaches)
+  - eslint-plugin-react - React rules
+  - eslint-plugin-react-hooks - React hooks rules
+  - eslint-plugin-react-refresh - React Fast Refresh validation for Vite
+  - eslint-plugin-nextjs - Next.js rules
+  - eslint-plugin-storybook - Storybook rules
+  - eslint-plugin-turbo - Turborepo rules
+  - eslint-plugin-jest - Jest rules
+  - eslint-plugin-vitest - Vitest rules
+- Prettier
+  - Default config
+  - prettier-plugin-css-order
+  - prettier-plugin-curly
+  - prettier-plugin-packagejson
+  - prettier-plugin-sort-json
+  - prettier-plugin-tailwindcss
 
 > **Note:** This is very much a work in progress. I want to know what configuration changes you make, so please open an issue!
 
@@ -163,7 +185,6 @@ react: true
 
 // you can also pass an object to control react compiler, framework, and refresh support
 react: {
-  reactCompiler: false,
   reactRefresh: false, // Controls React Fast Refresh validation
   framework: "next" // "next", "vite", or "none" to control related configurations
 }

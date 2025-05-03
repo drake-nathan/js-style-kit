@@ -61,9 +61,7 @@ export interface EslintConfigOptions {
  * @param options.ignores - Additional paths to ignore. Already excludes `node_modules` and `dist`.
  * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
  * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
- * @param options.react - Whether to include React rules. When true, reactCompiler is enabled by default.
- *                        Can be configured with an object to control next.js support and reactCompiler.
- *                        Also controls reactRefresh, which is enabled by default when react is true.
+ * @param options.react - Whether to include React, React hooks, and React compiler rules.
  *                        Can specify framework as "next", "none", or "vite" to control related configs:
  *                        - "next": Includes Next.js config, excludes React Refresh.
  *                        - "vite" or "none": Includes React Refresh, excludes Next.js.
