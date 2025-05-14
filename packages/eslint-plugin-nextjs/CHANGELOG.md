@@ -1,5 +1,11 @@
 # eslint-plugin-nextjs
 
+## 1.0.2
+
+### Patch Changes
+
+- ac88f4b: Update all dependencies to latest
+
 ## 1.0.1
 
 ### Patch Changes
