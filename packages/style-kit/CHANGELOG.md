@@ -1,5 +1,13 @@
 # js-style-kit
 
+## 0.4.1
+
+### Patch Changes
+
+- ac88f4b: Update all dependencies to latest
+- Updated dependencies [ac88f4b]
+  - eslint-plugin-nextjs@1.0.2
+
 ## 0.4.0
 
 ### Minor Changes
