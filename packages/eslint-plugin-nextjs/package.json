@@ -50,13 +50,13 @@
     "fast-glob": "^3.3.3"
   },
   "devDependencies": {
-    "@eslint/core": "^0.14.0",
+    "@eslint/core": "^0.15.0",
     "@repo/typescript-config": "workspace:*",
-    "@types/bun": "^1.2.13",
-    "@types/node": "^22.15.17",
-    "eslint": "^9.26.0",
+    "@types/bun": "^1.2.14",
+    "@types/node": "^22.15.31",
+    "eslint": "^9.27.0",
     "eslint-plugin-eslint-plugin": "^6.4.0",
-    "tsup": "^8.4.0",
+    "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
