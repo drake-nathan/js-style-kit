@@ -25,12 +25,10 @@ export default eslintConfig({
 When Storybook support is enabled, JS Style Kit:
 
 1. Applies Storybook-specific ESLint rules to files matching these patterns:
-
    - `**/*.stories.@(ts|tsx|js|jsx|mjs|cjs)`
    - `**/*.story.@(ts|tsx|js|jsx|mjs|cjs)`
 
 2. Adds rules for Storybook configuration files in:
-
    - `.storybook/main.@(js|cjs|mjs|ts)`
 
 3. Ensures the `.storybook` directory is not ignored by ESLint by adding a negation pattern (`!.storybook`) to the ignores configuration.
