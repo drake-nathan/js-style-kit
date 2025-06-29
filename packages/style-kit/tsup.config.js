@@ -43,7 +43,7 @@ export default defineConfig([
     clean: false,
     dts: false,
     entryPoints: ["bin/index.ts"],
-    format: ["esm"],
+    format: ["cjs"],
     noExternal: ["commander"],
     outDir: "dist/bin",
     sourcemap: true,

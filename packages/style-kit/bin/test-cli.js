@@ -40,25 +40,22 @@ try {
   // Run our CLI tool
   console.info("Running js-style-kit init...");
   // Note: Replace with the actual path to the compiled CLI
-  execSync(`node ${path.join(__dirname, "../dist/bin/index.js")} init`, {
+  execSync(`node ${path.join(__dirname, "../dist/bin/index.cjs")} init`, {
     stdio: "inherit",
   });
 
   // Verify that configuration files were created
   console.info("\nVerifying configuration files:");
-  [
-    "style.config.js",
-    "eslint.config.js",
-    "prettier.config.js",
-    ".vscode/settings.json",
-  ].forEach((file) => {
-    const filePath = path.join(testDir, file);
-    if (fs.existsSync(filePath)) {
-      console.info(`✅ ${file} was created successfully`);
-    } else {
-      console.info(`❌ ${file} was NOT created`);
-    }
-  });
+  ["eslint.config.mjs", "prettier.config.mjs", ".vscode/settings.json"].forEach(
+    (file) => {
+      const filePath = path.join(testDir, file);
+      if (fs.existsSync(filePath)) {
+        console.info(`✅ ${file} was created successfully`);
+      } else {
+        console.info(`❌ ${file} was NOT created`);
+      }
+    },
+  );
 
   // Verify package.json updates
   console.info("\nVerifying package.json updates:");
