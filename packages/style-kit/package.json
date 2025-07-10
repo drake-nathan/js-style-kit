@@ -72,6 +72,7 @@
     "@types/node": "^22.16.2",
     "commander": "^14.0.0",
     "glob": "^11.0.3",
+    "js-style-kit": "^0.4.2",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },

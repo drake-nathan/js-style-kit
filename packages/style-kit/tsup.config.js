@@ -5,6 +5,7 @@ export default defineConfig([
     clean: true,
     dts: true,
     entryPoints: ["src/index.ts"],
+    exclude: ["temp-test"],
     external: [
       // Node built-ins
       "path",
@@ -43,6 +44,7 @@ export default defineConfig([
     clean: false,
     dts: false,
     entryPoints: ["bin/index.ts"],
+    exclude: ["temp-test"],
     format: ["cjs"],
     noExternal: ["commander"],
     outDir: "dist/bin",

@@ -13,7 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // Path to the compiled CLI
 const CLI_PATH = path.resolve(__dirname, "../dist/bin/index.cjs");
 
-describe("CLI Integration Tests", () => {
+describe("cli Integration Tests", () => {
   let testDir: string;
 
   afterEach(() => {
@@ -87,7 +87,7 @@ describe("CLI Integration Tests", () => {
     });
   });
 
-  describe("cLI help", () => {
+  describe("cli help", () => {
     it("shows help when no arguments are provided", () => {
       try {
         execSync(`node ${CLI_PATH}`, {
