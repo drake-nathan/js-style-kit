@@ -8,6 +8,6 @@
     "format:check": "prettier . --check --cache"
   },
   "devDependencies": {
-    "mintlify": "^4.1.97"
+    "mintlify": "^4.2.10"
   }
 }

@@ -14,6 +14,7 @@ This is a monorepo for `js-style-kit`, a zero-configuration style guide for ESLi
 ## Common Development Commands
 
 ### Building and Development
+
 ```bash
 # Build all packages
 bun run build
@@ -26,6 +27,7 @@ bun run dev
 ```
 
 ### Testing and Quality Checks
+
 ```bash
 # Run all tests
 bun run test
@@ -50,6 +52,7 @@ bun run ci
 ```
 
 ### Package Management
+
 ```bash
 # Check for outdated dependencies
 bun run outdated
@@ -62,6 +65,7 @@ bun run changeset
 ```
 
 ### Single Package Development
+
 ```bash
 # For style-kit package
 cd packages/style-kit
@@ -69,7 +73,7 @@ bun run build
 bun run test
 bun run typecheck
 
-# For eslint-plugin-nextjs package  
+# For eslint-plugin-nextjs package
 cd packages/eslint-plugin-nextjs
 bun run build
 bun run test
@@ -78,6 +82,7 @@ bun run test
 ## Architecture Overview
 
 ### Monorepo Structure
+
 - **Root workspace** - Manages shared dependencies and scripts
 - **packages/style-kit/** - Core ESLint/Prettier configuration system
 - **packages/eslint-plugin-nextjs/** - Next.js ESLint plugin
@@ -96,6 +101,7 @@ The main package (`packages/style-kit/`) follows a modular configuration system:
 - **bin/** - CLI tool for initializing projects with the style guide
 
 Key files:
+
 - `src/index.ts` - Main entry point exporting ESLint and Prettier configs
 - `src/eslint/index.ts` - Main ESLint configuration factory function
 - `bin/index.ts` - CLI tool for project initialization
@@ -103,6 +109,7 @@ Key files:
 ### ESLint Plugin NextJS Architecture
 
 The NextJS plugin (`packages/eslint-plugin-nextjs/`) structure:
+
 - **src/rules/** - Individual ESLint rule implementations
 - **src/utils/** - Shared utilities for rules
 - **test/** - Comprehensive test suites including custom pages structures
@@ -115,6 +122,7 @@ The NextJS plugin (`packages/eslint-plugin-nextjs/`) structure:
 - **Changesets** - Version management and changelog generation
 
 ### Build Outputs
+
 - Packages build to `dist/` directories
 - Style-kit includes both main package and CLI binary
 - Source maps are generated for debugging
@@ -129,8 +137,9 @@ The NextJS plugin (`packages/eslint-plugin-nextjs/`) structure:
 ## CI/CD Pipeline
 
 The `scripts/ci.js` provides a comprehensive CI check that runs:
+
 1. Format checking
-2. Linting 
+2. Linting
 3. Testing
 4. Sherif (dependency checks)
 5. Building
