@@ -13,12 +13,37 @@ describe("prettierConfig", () => {
       experimentalTernaries: true,
       jsonRecursiveSort: true,
       plugins: [
+        "@prettier/plugin-oxc",
         "prettier-plugin-css-order",
         "prettier-plugin-curly",
         "prettier-plugin-sort-json",
         "prettier-plugin-packagejson",
       ],
     });
+  });
+
+  it("should include oxc plugin by default", () => {
+    const config = prettierConfig();
+
+    expect(config.plugins).toContain("@prettier/plugin-oxc");
+  });
+
+  it("should include oxc plugin when parser is explicitly set to oxc", () => {
+    const config = prettierConfig({ parser: "oxc" });
+
+    expect(config.plugins).toContain("@prettier/plugin-oxc");
+  });
+
+  it("should not include oxc plugin when parser is set to default", () => {
+    const config = prettierConfig({ parser: "default" });
+
+    expect(config.plugins).not.toContain("@prettier/plugin-oxc");
+    expect(config.plugins).toStrictEqual([
+      "prettier-plugin-css-order",
+      "prettier-plugin-curly",
+      "prettier-plugin-sort-json",
+      "prettier-plugin-packagejson",
+    ]);
   });
 
   it("should accept tailwind stylesheet path as a string", () => {
@@ -129,6 +154,7 @@ describe("prettierConfig", () => {
       tailwindPlugin: true,
     });
 
+    expect(config.plugins).toContain("@prettier/plugin-oxc");
     expect(config.plugins).toContain("prettier-plugin-sort-json");
     expect(config.plugins).toContain("prettier-plugin-packagejson");
     expect(config.plugins).toContain("prettier-plugin-tailwindcss");
@@ -137,6 +163,20 @@ describe("prettierConfig", () => {
     });
     expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
     expect(config.tabWidth).toBe(2);
+  });
+
+  it("should work with parser option and other plugins", () => {
+    const config = prettierConfig({
+      parser: "default",
+      printWidth: 120,
+      tailwindPlugin: true,
+    });
+
+    expect(config.plugins).not.toContain("@prettier/plugin-oxc");
+    expect(config.plugins).toContain("prettier-plugin-tailwindcss");
+    expect(config.plugins).toContain("prettier-plugin-css-order");
+    expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
+    expect(config.printWidth).toBe(120);
   });
 
   it("should include css order plugin by default", () => {
