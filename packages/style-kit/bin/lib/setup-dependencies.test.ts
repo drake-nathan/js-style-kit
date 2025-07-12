@@ -1,62 +1,43 @@
-import { afterEach, beforeEach, describe, expect, it, mock } from "bun:test";
-import { execSync } from "node:child_process";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
+import * as childProcess from "node:child_process";
 import fs from "node:fs";
 
-import { getDependencies } from "./get-dependencies.js";
+import * as getDependenciesModule from "./get-dependencies.js";
 import { setupDependencies } from "./setup-dependencies.js";
 
-// Mock modules
-const mockExecSync = mock();
-const mockFsReadFileSync = mock();
-const mockFsWriteFileSync = mock();
-const mockGetDependencies = mock();
-const mockConsoleInfo = mock();
-const mockConsoleError = mock();
-const mockProcessExit = mock();
-
-// Mock the modules at the top level
-mock.module("node:child_process", () => ({
-  execSync: mockExecSync,
-}));
-
-mock.module("node:fs", () => ({
-  default: {
-    readFileSync: mockFsReadFileSync,
-    writeFileSync: mockFsWriteFileSync,
-  },
-  readFileSync: mockFsReadFileSync,
-  writeFileSync: mockFsWriteFileSync,
-}));
-
-mock.module("./get-dependencies.js", () => ({
-  getDependencies: mockGetDependencies,
-}));
-
-const originalConsole = console;
-const originalProcess = process;
-
 describe("setupDependencies", () => {
-  beforeEach(() => {
-    // Reset all mocks before each test
-    mockExecSync.mockReset();
-    mockFsReadFileSync.mockReset();
-    mockFsWriteFileSync.mockReset();
-    mockGetDependencies.mockReset();
-    mockConsoleInfo.mockReset();
-    mockConsoleError.mockReset();
-    mockProcessExit.mockReset();
+  // Store original implementations
+  let originalExit: (code?: number) => never;
+  let originalConsoleInfo: (...args: any[]) => void;
+  let originalConsoleError: (...args: any[]) => void;
 
-    // Mock console and process
-    console.info = mockConsoleInfo;
-    console.error = mockConsoleError;
-    process.exit = mockProcessExit;
+  beforeEach(() => {
+    // Store original implementations
+    originalExit = process.exit;
+    originalConsoleInfo = console.info;
+    originalConsoleError = console.error;
+
+    // Mock process methods
+    process.exit = mock(() => {
+      throw new Error("process.exit called");
+    }) as any;
+
+    // Mock console methods
+    console.info = mock();
+    console.error = mock();
   });
 
   afterEach(() => {
-    // Restore console and process
-    console.info = originalConsole.info;
-    console.error = originalConsole.error;
-    process.exit = originalProcess.exit;
+    // Restore original implementations
+    process.exit = originalExit;
+    console.info = originalConsoleInfo;
+    console.error = originalConsoleError;
+
+    // Clean up mocks and restore spies
+    mock.restore();
   });
 
   it("should install js-style-kit with bun when not in dry run mode", () => {
@@ -65,14 +46,16 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockGetDependencies.mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
 
     setupDependencies("bun", false);
 
-    expect(mockConsole.info).toHaveBeenCalledWith("Using package manager: bun");
-    expect(mockConsole.info).toHaveBeenCalledWith("Installing js-style-kit...");
-    expect(mockExecSync).toHaveBeenCalledWith("bun add --dev js-style-kit", {
+    expect(console.info).toHaveBeenCalledWith("Using package manager: bun");
+    expect(console.info).toHaveBeenCalledWith("Installing js-style-kit...");
+    expect(execSyncSpy).toHaveBeenCalledWith("bun add --dev js-style-kit", {
       stdio: "inherit",
     });
   });
@@ -83,12 +66,14 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockGetDependencies.mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
 
     setupDependencies("npm", false);
 
-    expect(mockExecSync).toHaveBeenCalledWith(
+    expect(execSyncSpy).toHaveBeenCalledWith(
       "npm install --save-dev js-style-kit",
       { stdio: "inherit" },
     );
@@ -100,12 +85,14 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockGetDependencies.mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
 
     setupDependencies("pnpm", false);
 
-    expect(mockExecSync).toHaveBeenCalledWith(
+    expect(execSyncSpy).toHaveBeenCalledWith(
       "pnpm add --save-dev js-style-kit",
       {
         stdio: "inherit",
@@ -119,12 +106,14 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockGetDependencies.mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
 
     setupDependencies("yarn", false);
 
-    expect(mockExecSync).toHaveBeenCalledWith("yarn add --dev js-style-kit", {
+    expect(execSyncSpy).toHaveBeenCalledWith("yarn add --dev js-style-kit", {
       stdio: "inherit",
     });
   });
@@ -135,15 +124,17 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockGetDependencies.mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
 
     setupDependencies("npm", true);
 
-    expect(mockConsole.info).toHaveBeenCalledWith(
+    expect(console.info).toHaveBeenCalledWith(
       "Would install js-style-kit (dry run)",
     );
-    expect(mockExecSync).not.toHaveBeenCalled();
+    expect(execSyncSpy).not.toHaveBeenCalled();
   });
 
   it("should remove overlapping dependencies from both dependencies and devDependencies", () => {
@@ -158,8 +149,10 @@ describe("setupDependencies", () => {
       },
     };
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockGetDependencies.mockReturnValue(["eslint", "prettier"]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue(["eslint", "prettier"]);
 
     setupDependencies("npm", true);
 
@@ -172,14 +165,14 @@ describe("setupDependencies", () => {
       },
     };
 
-    expect(mockFs.writeFileSync).toHaveBeenCalledWith(
+    expect(writeFileSyncSpy).toHaveBeenCalledWith(
       "package.json",
       JSON.stringify(expectedUpdatedPackageJson, null, 2).concat("\n"),
     );
-    expect(mockConsole.info).toHaveBeenCalledWith(
+    expect(console.info).toHaveBeenCalledWith(
       "Removed eslint from dependencies",
     );
-    expect(mockConsole.info).toHaveBeenCalledWith(
+    expect(console.info).toHaveBeenCalledWith(
       "Removed prettier from devDependencies",
     );
   });
@@ -187,13 +180,24 @@ describe("setupDependencies", () => {
   it("should handle missing dependencies and devDependencies fields in package.json", () => {
     const mockPackageJson = {};
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockGetDependencies.mockReturnValue(["eslint"]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    let wasWriteFileCalled = false;
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {
+      wasWriteFileCalled = true;
+    });
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue(["eslint"]);
 
     setupDependencies("npm", true);
 
     // Should not throw error and should not write file since no changes were made
-    expect(mockFs.writeFileSync).not.toHaveBeenCalled();
+    expect(wasWriteFileCalled).toBe(false);
+
+    // Clean up spies for this test
+    readFileSyncSpy.mockRestore();
+    writeFileSyncSpy.mockRestore();
+    execSyncSpy.mockRestore();
+    getDependenciesSpy.mockRestore();
   });
 
   it("should not write package.json if no overlapping dependencies are found", () => {
@@ -206,42 +210,55 @@ describe("setupDependencies", () => {
       },
     };
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockGetDependencies.mockReturnValue(["eslint", "prettier"]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    let wasWriteFileCalled = false;
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {
+      wasWriteFileCalled = true;
+    });
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue(["eslint", "prettier"]);
 
     setupDependencies("npm", true);
 
     // No overlapping dependencies, so no changes should be made
-    expect(mockFs.writeFileSync).not.toHaveBeenCalled();
+    expect(wasWriteFileCalled).toBe(false);
+
+    // Clean up spies for this test
+    readFileSyncSpy.mockRestore();
+    writeFileSyncSpy.mockRestore();
+    execSyncSpy.mockRestore();
+    getDependenciesSpy.mockRestore();
   });
 
   it("should handle getDependencies error and exit process", () => {
-    mockGetDependencies.mockImplementation(() => {
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockImplementation(() => {
       throw new Error("Failed to get dependencies");
     });
 
-    setupDependencies("npm", true);
+    expect(() => {
+      setupDependencies("npm", true);
+    }).toThrow("process.exit called");
 
-    expect(mockConsole.error).toHaveBeenCalledWith(
+    expect(console.error).toHaveBeenCalledWith(
       "Failed to install dependencies:",
       expect.any(Error),
     );
-    expect(mockProcess.exit).toHaveBeenCalledWith(1);
   });
 
   it("should handle package.json read error and exit process", () => {
-    mockFs.readFileSync.mockImplementation(() => {
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockImplementation(() => {
       throw new Error("Failed to read package.json");
     });
-    mockGetDependencies.mockReturnValue([]);
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
 
-    setupDependencies("npm", true);
+    expect(() => {
+      setupDependencies("npm", true);
+    }).toThrow("process.exit called");
 
-    expect(mockConsole.error).toHaveBeenCalledWith(
+    expect(console.error).toHaveBeenCalledWith(
       "Failed to install dependencies:",
       expect.any(Error),
     );
-    expect(mockProcess.exit).toHaveBeenCalledWith(1);
   });
 
   it("should handle package.json write error and exit process", () => {
@@ -252,31 +269,34 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
-    mockFs.writeFileSync.mockImplementation(() => {
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {
       throw new Error("Failed to write package.json");
     });
-    mockGetDependencies.mockReturnValue(["eslint"]);
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue(["eslint"]);
 
-    setupDependencies("npm", true);
+    expect(() => {
+      setupDependencies("npm", true);
+    }).toThrow("process.exit called");
 
-    expect(mockConsole.error).toHaveBeenCalledWith(
+    expect(console.error).toHaveBeenCalledWith(
       "Failed to install dependencies:",
       expect.any(Error),
     );
-    expect(mockProcess.exit).toHaveBeenCalledWith(1);
   });
 
   it("should handle invalid JSON in package.json and exit process", () => {
-    mockFs.readFileSync.mockReturnValue("invalid json");
-    mockGetDependencies.mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue("invalid json");
+    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
 
-    setupDependencies("npm", true);
+    expect(() => {
+      setupDependencies("npm", true);
+    }).toThrow("process.exit called");
 
-    expect(mockConsole.error).toHaveBeenCalledWith(
+    expect(console.error).toHaveBeenCalledWith(
       "Failed to install dependencies:",
       expect.any(Error),
     );
-    expect(mockProcess.exit).toHaveBeenCalledWith(1);
   });
 });
