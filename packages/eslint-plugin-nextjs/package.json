@@ -52,10 +52,10 @@
   "devDependencies": {
     "@eslint/core": "^0.15.1",
     "@repo/typescript-config": "workspace:*",
-    "@types/bun": "^1.2.18",
-    "@types/node": "^22.16.2",
+    "@types/bun": "^1.2.19",
+    "@types/node": "^22.17.0",
     "eslint": "^9.30.1",
-    "eslint-plugin-eslint-plugin": "^6.5.0",
+    "eslint-plugin-eslint-plugin": "^7.0.0",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   },
