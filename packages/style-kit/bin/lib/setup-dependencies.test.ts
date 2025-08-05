@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { afterEach, beforeEach, describe, expect, it, mock, spyOn } from "bun:test";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  mock,
+  spyOn,
+} from "bun:test";
 import * as childProcess from "node:child_process";
 import fs from "node:fs";
 
@@ -46,10 +54,19 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {},
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue([]);
 
     setupDependencies("bun", false);
 
@@ -66,10 +83,19 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {},
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue([]);
 
     setupDependencies("npm", false);
 
@@ -85,10 +111,19 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {},
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue([]);
 
     setupDependencies("pnpm", false);
 
@@ -106,10 +141,19 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {},
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue([]);
 
     setupDependencies("yarn", false);
 
@@ -124,10 +168,19 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {},
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue([]);
 
     setupDependencies("npm", true);
 
@@ -149,10 +202,19 @@ describe("setupDependencies", () => {
       },
     };
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {});
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue(["eslint", "prettier"]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {},
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue(["eslint", "prettier"]);
 
     setupDependencies("npm", true);
 
@@ -180,13 +242,22 @@ describe("setupDependencies", () => {
   it("should handle missing dependencies and devDependencies fields in package.json", () => {
     const mockPackageJson = {};
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
     let wasWriteFileCalled = false;
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {
-      wasWriteFileCalled = true;
-    });
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue(["eslint"]);
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {
+        wasWriteFileCalled = true;
+      },
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue(["eslint"]);
 
     setupDependencies("npm", true);
 
@@ -210,13 +281,22 @@ describe("setupDependencies", () => {
       },
     };
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
     let wasWriteFileCalled = false;
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {
-      wasWriteFileCalled = true;
-    });
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue(["eslint", "prettier"]);
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {
+        wasWriteFileCalled = true;
+      },
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue(["eslint", "prettier"]);
 
     setupDependencies("npm", true);
 
@@ -231,7 +311,10 @@ describe("setupDependencies", () => {
   });
 
   it("should handle getDependencies error and exit process", () => {
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockImplementation(() => {
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockImplementation(() => {
       throw new Error("Failed to get dependencies");
     });
 
@@ -249,7 +332,10 @@ describe("setupDependencies", () => {
     const readFileSyncSpy = spyOn(fs, "readFileSync").mockImplementation(() => {
       throw new Error("Failed to read package.json");
     });
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue([]);
 
     expect(() => {
       setupDependencies("npm", true);
@@ -269,12 +355,21 @@ describe("setupDependencies", () => {
       devDependencies: {},
     };
 
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(mockPackageJson));
-    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(() => {
-      throw new Error("Failed to write package.json");
-    });
-    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(() => {});
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue(["eslint"]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      JSON.stringify(mockPackageJson),
+    );
+    const writeFileSyncSpy = spyOn(fs, "writeFileSync").mockImplementation(
+      () => {
+        throw new Error("Failed to write package.json");
+      },
+    );
+    const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      () => {},
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue(["eslint"]);
 
     expect(() => {
       setupDependencies("npm", true);
@@ -287,8 +382,13 @@ describe("setupDependencies", () => {
   });
 
   it("should handle invalid JSON in package.json and exit process", () => {
-    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue("invalid json");
-    const getDependenciesSpy = spyOn(getDependenciesModule, "getDependencies").mockReturnValue([]);
+    const readFileSyncSpy = spyOn(fs, "readFileSync").mockReturnValue(
+      "invalid json",
+    );
+    const getDependenciesSpy = spyOn(
+      getDependenciesModule,
+      "getDependencies",
+    ).mockReturnValue([]);
 
     expect(() => {
       setupDependencies("npm", true);

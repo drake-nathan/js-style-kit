@@ -5,9 +5,5 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "eslint.runtime": "node",
-  "tailwindCSS.classFunctions": [
-    "cn",
-    "cva",
-    "clsx"
-  ]
+  "tailwindCSS.classFunctions": ["cn", "cva", "clsx"]
 }

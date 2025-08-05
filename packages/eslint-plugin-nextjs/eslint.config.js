@@ -1,6 +1,6 @@
+// @ts-check
 import eslintPlugin from "eslint-plugin-eslint-plugin";
 
-// @ts-check
 // eslint-disable-next-line import-x/no-relative-packages
 import { eslintConfig } from "../style-kit/dist/index.js";
 
@@ -11,7 +11,7 @@ export default eslintConfig(
     },
     typescript: "tsconfig.eslint.json",
   },
-  eslintPlugin.configs["flat/recommended"],
+  eslintPlugin.configs.recommended,
   {
     name: "custom-overrides",
     rules: {

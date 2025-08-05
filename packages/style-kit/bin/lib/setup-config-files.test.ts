@@ -115,16 +115,16 @@ describe("setupConfigFiles", () => {
 
     mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
 
-    setupConfigFiles(false);
+    setupConfigFiles();
 
     const prettierCall = mockFs.writeFileSync.mock.calls.find((call) =>
       call[0].includes("prettier.config"),
     );
 
     expect(prettierCall).toBeDefined();
-    expect(prettierCall![1]).toContain("//@ts-check");
-    expect(prettierCall![1]).toContain("import { prettierConfig }");
-    expect(prettierCall![1]).toContain("export default prettierConfig({});");
+    expect(prettierCall?.[1]).toContain("//@ts-check");
+    expect(prettierCall?.[1]).toContain("import { prettierConfig }");
+    expect(prettierCall?.[1]).toContain("export default prettierConfig({});");
   });
 
   it("should create files with correct content for eslint config", () => {
@@ -135,16 +135,16 @@ describe("setupConfigFiles", () => {
 
     mockFs.readFileSync.mockReturnValue(JSON.stringify(mockPackageJson));
 
-    setupConfigFiles(false);
+    setupConfigFiles();
 
     const eslintCall = mockFs.writeFileSync.mock.calls.find((call) =>
       call[0].includes("eslint.config"),
     );
 
     expect(eslintCall).toBeDefined();
-    expect(eslintCall![1]).toContain("//@ts-check");
-    expect(eslintCall![1]).toContain("import { eslintConfig }");
-    expect(eslintCall![1]).toContain("export default eslintConfig({});");
+    expect(eslintCall?.[1]).toContain("//@ts-check");
+    expect(eslintCall?.[1]).toContain("import { eslintConfig }");
+    expect(eslintCall?.[1]).toContain("export default eslintConfig({});");
   });
 
   it("should handle file read error and exit process", () => {
@@ -152,7 +152,7 @@ describe("setupConfigFiles", () => {
       throw new Error("Failed to read package.json");
     });
 
-    setupConfigFiles(false);
+    setupConfigFiles();
 
     expect(mockConsole.error).toHaveBeenCalledWith(
       "Failed to create configuration files:",
@@ -172,7 +172,7 @@ describe("setupConfigFiles", () => {
       throw new Error("Failed to write config file");
     });
 
-    setupConfigFiles(false);
+    setupConfigFiles();
 
     expect(mockConsole.error).toHaveBeenCalledWith(
       "Failed to create configuration files:",
@@ -184,7 +184,7 @@ describe("setupConfigFiles", () => {
   it("should handle invalid JSON in package.json and exit process", () => {
     mockFs.readFileSync.mockReturnValue("invalid json");
 
-    setupConfigFiles(false);
+    setupConfigFiles();
 
     expect(mockConsole.error).toHaveBeenCalledWith(
       "Failed to create configuration files:",
@@ -196,7 +196,7 @@ describe("setupConfigFiles", () => {
   it("should handle empty package.json file", () => {
     mockFs.readFileSync.mockReturnValue("{}");
 
-    const result = setupConfigFiles(false);
+    const result = setupConfigFiles();
 
     expect(result).toBe(".mjs");
     expect(mockFs.writeFileSync).toHaveBeenCalledWith(
