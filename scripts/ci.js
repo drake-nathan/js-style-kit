@@ -17,8 +17,7 @@ const getTerminalWidth = () => {
   try {
     const { columns } = process.stdout;
     return columns || 80;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) {
+  } catch {
     return 80;
   }
 };

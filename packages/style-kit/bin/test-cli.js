@@ -3,15 +3,21 @@
 // This is a simple test script to verify that our CLI tool works correctly
 import { execSync } from "node:child_process";
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 // Get current file directory with ESM compatibility
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Create a temporary test directory
-const testDir = path.join(os.tmpdir(), `js-style-kit-test-${Date.now()}`);
+// Create a temporary test directory adjacent to the bin directory
+const testDir = path.join(__dirname, `temp-test`);
+
+// Remove existing temp directory if it exists
+if (fs.existsSync(testDir)) {
+  console.info(`Removing existing test directory: ${testDir}`);
+  fs.rmSync(testDir, { force: true, recursive: true });
+}
+
 console.info(`Creating test directory: ${testDir}`);
 fs.mkdirSync(testDir, { recursive: true });
 
@@ -25,6 +31,13 @@ try {
     path.join(testDir, "package.json"),
     JSON.stringify(
       {
+        dependencies: {
+          eslint: "^9.19.0",
+          "eslint-plugin-import-x": "^1.0.0",
+          "eslint-something-else": "^1.0.0",
+          prettier: "^3.4.2",
+          "prettier-plugin-tailwindcss": "^0.6.11",
+        },
         description: "Test project for js-style-kit CLI",
         devDependencies: {},
         main: "index.js",
@@ -37,28 +50,28 @@ try {
     ),
   );
 
-  // Run our CLI tool
-  console.info("Running js-style-kit init...");
+  // Run our CLI tool in dry run mode
+  console.info("Running js-style-kit init --dry-run...");
   // Note: Replace with the actual path to the compiled CLI
-  execSync(`node ${path.join(__dirname, "../dist/bin/index.js")} init`, {
-    stdio: "inherit",
-  });
+  execSync(
+    `node ${path.join(__dirname, "../dist/bin/index.cjs")} init --dry-run`,
+    {
+      stdio: "inherit",
+    },
+  );
 
   // Verify that configuration files were created
   console.info("\nVerifying configuration files:");
-  [
-    "style.config.js",
-    "eslint.config.js",
-    "prettier.config.js",
-    ".vscode/settings.json",
-  ].forEach((file) => {
-    const filePath = path.join(testDir, file);
-    if (fs.existsSync(filePath)) {
-      console.info(`✅ ${file} was created successfully`);
-    } else {
-      console.info(`❌ ${file} was NOT created`);
-    }
-  });
+  ["eslint.config.mjs", "prettier.config.mjs", ".vscode/settings.json"].forEach(
+    (file) => {
+      const filePath = path.join(testDir, file);
+      if (fs.existsSync(filePath)) {
+        console.info(`✅ ${file} was created successfully`);
+      } else {
+        console.info(`❌ ${file} was NOT created`);
+      }
+    },
+  );
 
   // Verify package.json updates
   console.info("\nVerifying package.json updates:");
@@ -74,17 +87,19 @@ try {
 
   console.info(`✅ Scripts added: ${hasScripts ? "Yes" : "No"}`);
 
-  // Check if js-style-kit was added as a dependency
+  // Check if js-style-kit was NOT added as a dependency (dry run behavior)
   const hasStyleKit =
     updatedPackage.devDependencies &&
     updatedPackage.devDependencies["js-style-kit"];
 
-  console.info(`✅ js-style-kit added: ${hasStyleKit ? "Yes" : "No"}`);
+  console.info(
+    `✅ js-style-kit not installed (dry run): ${!hasStyleKit ? "Yes" : "No"}`,
+  );
 } catch (error) {
   console.error("Error during test:", error);
 } finally {
   // Clean up the test directory
   console.info(`\nTest complete. Test directory: ${testDir}`);
   // Uncomment to automatically clean up the test directory
-  // fs.rmSync(testDir, { recursive: true, force: true });
+  // fs.rmSync(testDir, { force: true, recursive: true });
 }

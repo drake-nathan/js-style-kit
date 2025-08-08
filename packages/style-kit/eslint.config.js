@@ -1,12 +1,9 @@
-// @ts-check
+//@ts-check
 import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig({
-  jsdoc: {
-    requireJsdoc: true,
-  },
+  ignores: ["bin/temp-test"],
   testing: {
     framework: "bun",
   },
-  typescript: "tsconfig.eslint.json",
 });

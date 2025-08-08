@@ -25,7 +25,6 @@
 - 7ea2ade: # V1 - ESLint V9 / TypeScript upgrades
 
   ## Changes
-
   - Merged old configs to a single `recommended` flat config (no legacy support, use 0.1.2 for legacy support).
   - All rules now "warn" by default, which is best practice so that you can distinguish between ESLint issues and TypeScript issues.
   - Now exports in ESM only. This is easy to use in with the flat config.

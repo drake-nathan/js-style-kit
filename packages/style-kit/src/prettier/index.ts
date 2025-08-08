@@ -10,6 +10,7 @@ export interface PrettierConfigOptions extends PrettierConfig {
   curlyPlugin?: boolean;
   jsonSortPlugin?: boolean | SortJsonPluginOptions;
   packageJsonPlugin?: boolean;
+  parser?: "default" | "oxc";
   tailwindPlugin?: boolean | string | TailwindPluginOptions;
 }
 
@@ -25,11 +26,13 @@ export interface PrettierConfigWithPlugins
  * @param options.cssOrderPlugin CSS order sorting support
  * @param options.curlyPlugin Enforce curly braces for all control statements
  * @param options.jsonSortPlugin JSON sorting support
+ * @param options.parser choose between default and oxc parser
  * @param options.packageJsonPlugin Package.json sorting support
  * @param options.tailwindPlugin Tailwind CSS formatting support
  * @returns Prettier configuration object with:
  * - Default Prettier configuration
  * - Experimental ternaries enabled
+ * - OXC parser plugin
  * - CSS order plugin
  * - Curly braces plugin
  * - JSON sorting plugin
@@ -44,6 +47,7 @@ export const prettierConfig = (
     curlyPlugin = true,
     jsonSortPlugin = true,
     packageJsonPlugin = true,
+    parser = "oxc",
     tailwindPlugin = false,
     ...rest
   } = options;
@@ -53,6 +57,10 @@ export const prettierConfig = (
     experimentalTernaries: true,
     ...rest,
   };
+
+  if (parser === "oxc") {
+    plugins.push("@prettier/plugin-oxc");
+  }
 
   if (cssOrderPlugin) {
     plugins.push("prettier-plugin-css-order");

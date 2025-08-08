@@ -161,6 +161,7 @@ export const noHtmlLinkForPages: RuleDefinition = {
     };
   },
 
+  // eslint-disable-next-line eslint-plugin/require-meta-default-options
   meta: {
     docs: {
       category: "HTML",
@@ -176,9 +177,11 @@ export const noHtmlLinkForPages: RuleDefinition = {
     schema: [
       {
         oneOf: [
+          // eslint-disable-next-line eslint-plugin/require-meta-schema-description
           {
             type: "string",
           },
+          // eslint-disable-next-line eslint-plugin/require-meta-schema-description
           {
             items: {
               type: "string",

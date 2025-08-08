@@ -24,14 +24,14 @@
     "test:coverage": "turbo run test:coverage"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.4",
-    "@types/bun": "^1.2.16",
+    "@changesets/cli": "^2.29.5",
+    "@types/bun": "^1.2.19",
     "js-style-kit": "workspace:*",
-    "sherif": "^1.5.0",
-    "turbo": "^2.5.4",
-    "typescript": "^5.8.3"
+    "sherif": "^1.6.1",
+    "turbo": "^2.5.5",
+    "typescript": "^5.9.2"
   },
-  "packageManager": "bun@1.2.16",
+  "packageManager": "bun@1.2.19",
   "engines": {
     "node": ">=22"
   }
