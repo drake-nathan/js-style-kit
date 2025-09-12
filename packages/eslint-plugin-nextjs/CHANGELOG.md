@@ -1,5 +1,11 @@
 # eslint-plugin-nextjs
 
+## 1.0.4
+
+### Patch Changes
+
+- c1a8a2b: Update dependencies
+
 ## 1.0.3
 
 ### Patch Changes
