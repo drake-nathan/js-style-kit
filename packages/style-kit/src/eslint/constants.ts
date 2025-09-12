@@ -5,7 +5,7 @@
  */
 export const configNames = {
   base: "base",
-  disableTypeChecked: "typescript-eslint/disable-type-checked",
+  disableTypeChecked: "UserConfig[1] > typescript-eslint/disable-type-checked",
   ignores: "ignores",
   import: "import",
   jsdoc: "jsdoc",

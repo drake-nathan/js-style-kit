@@ -14,11 +14,11 @@
     "react-dom": "^19.1.1"
   },
   "devDependencies": {
-    "@types/react": "^19.1.9",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^4.7.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "@vitejs/plugin-react": "^5.0.2",
     "js-style-kit": "workspace:*",
     "typescript": "^5.9.2",
-    "vite": "^7.0.6"
+    "vite": "^7.1.5"
   }
 }

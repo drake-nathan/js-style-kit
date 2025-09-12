@@ -1,3 +1,4 @@
+import { defineConfig } from "eslint/config";
 import tseslint, { type Config } from "typescript-eslint";
 
 import type { EslintRuleConfig } from "../types.js";
@@ -18,7 +19,7 @@ export const tseslintConfig = (
 ): Config => {
   const userCwd = process.cwd();
 
-  return tseslint.config(
+  return defineConfig(
     {
       files: ["**/*.{js,cjs,mjs,ts,jsx,tsx}"],
       languageOptions: {
