@@ -18,11 +18,10 @@ export const noBeforeInteractiveScriptOutsideDocument: RuleDefinition = {
     let scriptImportName: null | string = null;
 
     return {
-      'ImportDeclaration[source.value="next/script"] > ImportDefaultSpecifier'(
-        node,
-      ) {
-        scriptImportName = node.local.name;
-      },
+      'ImportDeclaration[source.value="next/script"] > ImportDefaultSpecifier':
+        (node) => {
+          scriptImportName = node.local.name;
+        },
       JSXOpeningElement: (node) => {
         const pathname = convertToCorrectSeparator(context.filename);
 

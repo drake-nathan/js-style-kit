@@ -16,8 +16,8 @@
     "dev": "turbo run dev",
     "format": "prettier . --write --cache",
     "format:check": "prettier . --check --cache",
-    "lint": "eslint . --max-warnings 0 --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
-    "lint:fix": "eslint . --max-warnings 0 --fix --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
+    "lint": "eslint . --max-warnings=0 --cache --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
+    "lint:fix": "eslint . --max-warnings=0 --fix --cache --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
     "outdated": "bun outdated --filter \"js-style-kit-root\" --filter \"js-style-kit\" --filter \"js-style-kit-docs\"",
     "sherif": "sherif",
     "test": "turbo run test",
@@ -25,13 +25,13 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
-    "@types/bun": "^1.2.21",
+    "@types/bun": "^1.2.22",
     "js-style-kit": "workspace:*",
     "sherif": "^1.6.1",
-    "turbo": "^2.5.6",
+    "turbo": "^2.5.8",
     "typescript": "^5.9.2"
   },
-  "packageManager": "bun@1.2.21",
+  "packageManager": "bun@1.2.22",
   "engines": {
     "node": ">=22"
   }

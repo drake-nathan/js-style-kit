@@ -7,9 +7,6 @@
     "//#lint:fix": {
       "dependsOn": ["^lint:fix"]
     },
-    "//#lint:md": {
-      "dependsOn": ["^lint:md"]
-    },
     "//#sherif": {
       "dependsOn": ["^sherif"]
     },
@@ -29,10 +26,6 @@
     "lint:fix": {
       "dependsOn": ["^lint:fix"],
       "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
-    },
-    "lint:md": {
-      "dependsOn": ["^lint:md"],
-      "inputs": ["**/*.md", "!**/node_modules/**", "!**/dist/**"]
     },
     "sherif": {
       "cache": true,
