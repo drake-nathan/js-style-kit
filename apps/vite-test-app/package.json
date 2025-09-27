@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "lint:inspect": "eslint . --inspect-config",
+    "lint": "eslint . --max-warnings=0 --cache",
+    "lint:fix": "eslint . --fix --max-warnings=0 --cache",
+    "lint:inspect": "eslint --inspect-config",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -3,9 +3,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "lint:inspect": "eslint . --inspect-config",
+    "lint": "eslint . --max-warnings=0 --cache",
+    "lint:fix": "eslint . --fix --max-warnings=0 --cache",
+    "lint:inspect": "eslint --inspect-config",
     "start": "next start"
   },
   "dependencies": {
