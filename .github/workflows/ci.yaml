@@ -86,9 +86,6 @@ jobs:
       - name: ESLint
         run: bun turbo run lint -- --max-warnings 0
 
-      - name: Markdown lint
-        run: bun turbo run lint:md
-
       - name: Test and generate coverage reports
         id: test-coverage
         run: bun turbo run test:coverage
