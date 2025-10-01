@@ -186,11 +186,13 @@ react: true
 // you can also pass an object to control react compiler, framework, and refresh support
 react: {
   reactRefresh: false, // Controls React Fast Refresh validation
-  framework: "next" // "next", "vite", or "none" to control related configurations
+  framework: "next" // "next", "vite", "none", "remix", or "react-router" to control related configurations
 }
 // Using the framework option configures related features:
 // - "next": Includes Next.js config, excludes React Refresh by default
 // - "vite" or "none": Includes React Refresh by default, excludes Next.js
+// - "remix" or "react-router": Excludes both Next.js and React Refresh (these frameworks handle their own refresh logic)
+// - The reactRefresh property can override the framework-based behavior
 ```
 
 #### Testing Configuration

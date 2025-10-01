@@ -122,7 +122,7 @@ export default eslintConfig({
 
 [React Fast Refresh](https://www.npmjs.com/package/react-refresh) is a feature that provides instant feedback on component changes without losing component state. JS Style Kit includes support for validating that your components can safely be updated with Fast Refresh through the `eslint-plugin-react-refresh` plugin.
 
-React Fast Refresh validation is **disabled by default**. It should be enabled for SPAs like Vite. It should be left disabled for Next.js projects. To enable it:
+React Fast Refresh validation is **disabled by default**. It should be enabled for SPAs like Vite. It should be left disabled for Next.js, Remix, and React Router projects (these frameworks handle their own refresh logic). To enable it:
 
 ```js
 import { eslintConfig } from "js-style-kit";
@@ -148,21 +148,97 @@ The plugin validates that:
 
 By default, the configuration allows constant exports alongside components, which is supported by most bundlers including Vite.
 
-## Next.js Support
+## Framework Support
 
-For Next.js projects, enable the `next` option:
+JS Style Kit supports multiple React frameworks with automatic configuration:
+
+### Next.js
+
+For Next.js projects, use the `framework` option:
 
 ```js
 import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig({
   react: {
-    next: true,
+    framework: "next",
   },
 });
 ```
 
-This will add `.next` to the list of ignored directories, preventing ESLint from analyzing the Next.js build output.
+This will:
+- Add `.next` to the list of ignored directories
+- Include Next.js-specific ESLint rules
+- Disable React Refresh (Next.js has its own Fast Refresh)
+
+### Vite
+
+For Vite projects:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    framework: "vite",
+  },
+});
+```
+
+This will:
+- Enable React Refresh validation by default
+- Exclude Next.js-specific rules
+
+### Remix
+
+For Remix projects:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    framework: "remix",
+  },
+});
+```
+
+This will:
+- Disable React Refresh (Remix handles its own refresh logic)
+- Exclude Next.js-specific rules
+
+### React Router
+
+For React Router projects:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    framework: "react-router",
+  },
+});
+```
+
+This will:
+- Disable React Refresh (React Router handles its own refresh logic)
+- Exclude Next.js-specific rules
+
+### Override Framework Defaults
+
+You can override the framework-based React Refresh behavior:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    framework: "remix",
+    reactRefresh: true, // Explicitly enable even though Remix is selected
+  },
+});
+```
 
 ## TypeScript Integration
 
