@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.5.3
+
+### Patch Changes
+
+- eca2133: Add remix/react-router option to react config
+
 ## 0.5.2
 
 ### Patch Changes
