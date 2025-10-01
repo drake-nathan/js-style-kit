@@ -199,6 +199,54 @@ describe("eslintConfig", () => {
         configWithVite.some((c) => c.name === configNames.reactRefresh),
       ).toBe(false);
     });
+
+    it("excludes React Refresh config when framework is 'remix'", () => {
+      const config = eslintConfig({ react: { framework: "remix" } });
+
+      // Should exclude React Refresh config by default
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        false,
+      );
+      // Should exclude Next.js config
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(false);
+    });
+
+    it("excludes React Refresh config when framework is 'react-router'", () => {
+      const config = eslintConfig({ react: { framework: "react-router" } });
+
+      // Should exclude React Refresh config by default
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        false,
+      );
+      // Should exclude Next.js config
+      expect(config.some((c) => c.name === configNames.nextjs)).toBe(false);
+    });
+
+    it("allows explicit reactRefresh override for remix and react-router frameworks", () => {
+      // Remix with explicit reactRefresh: true
+      const configRemix = eslintConfig({
+        react: {
+          framework: "remix",
+          reactRefresh: true,
+        },
+      });
+
+      expect(configRemix.some((c) => c.name === configNames.reactRefresh)).toBe(
+        true,
+      );
+
+      // React Router with explicit reactRefresh: true
+      const configRouter = eslintConfig({
+        react: {
+          framework: "react-router",
+          reactRefresh: true,
+        },
+      });
+
+      expect(
+        configRouter.some((c) => c.name === configNames.reactRefresh),
+      ).toBe(true);
+    });
   });
 
   describe("jSDoc configuration", () => {

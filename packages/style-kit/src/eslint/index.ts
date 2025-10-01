@@ -40,7 +40,7 @@ export interface EslintConfigOptions {
   react?:
     | boolean
     | {
-        framework?: "next" | "none" | "vite";
+        framework?: "next" | "none" | "react-router" | "remix" | "vite";
         reactCompiler?: boolean;
         reactRefresh?: boolean;
       };
@@ -62,9 +62,10 @@ export interface EslintConfigOptions {
  * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
  * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
  * @param options.react - Whether to include React, React hooks, and React compiler rules.
- *                        Can specify framework as "next", "none", or "vite" to control related configs:
+ *                        Can specify framework as "next", "none", "react-router", "remix", or "vite" to control related configs:
  *                        - "next": Includes Next.js config, excludes React Refresh.
  *                        - "vite" or "none": Includes React Refresh, excludes Next.js.
+ *                        - "remix" or "react-router": Excludes both Next.js and React Refresh (these frameworks handle their own refresh logic).
  *                        - The reactRefresh property can override this framework-based behavior.
  * @param options.sorting - Whether to include sorting rules from Perfectionist. Defaults to true.
  * @param options.storybook - Whether to include Storybook rules. Defaults to false.
