@@ -14,22 +14,28 @@ import { reactRules } from "./rules.js";
 /**
  * Generates ESLint configuration for React.
  *
- * @param functionStyle - Controls how functions (components) should be written. Can be:
+ * @param options - Configuration options
+ * @param options.functionStyle - Controls how functions (components) should be written. Can be:
  *   - "off": Disables function style enforcement
  *   - "arrow": Enforces arrow function expressions
  *   - "declaration": Enforces function declarations
  *   - "expression": Enforces function expressions
- * @param reactCompiler - Whether to use the React compiler rules from `eslint-plugin-react-hooks`.
- * @param typescript - Whether TypeScript is being used in the project. When true, some rules are adjusted to be more TypeScript-friendly.
- * @param customRules - Optional object containing custom rules to override or add to the React configuration.
+ * @param options.reactCompiler - Whether to use the React compiler rules from `eslint-plugin-react-hooks`
+ * @param options.typescript - Whether TypeScript is being used in the project. When true, some rules are adjusted to be more TypeScript-friendly
+ * @param options.customRules - Optional object containing custom rules to override or add to the React configuration
  * @returns An ESLint configuration object for React.
  */
-export const reactEslintConfig = (
-  functionStyle: "off" | FunctionStyle,
-  reactCompiler: boolean,
-  typescript: boolean,
-  customRules?: Record<string, EslintRuleConfig>,
-): EslintConfigObject => {
+export const reactEslintConfig = ({
+  customRules,
+  functionStyle,
+  reactCompiler,
+  typescript,
+}: {
+  customRules?: Record<string, EslintRuleConfig>;
+  functionStyle: "off" | FunctionStyle;
+  reactCompiler: boolean;
+  typescript: boolean;
+}): EslintConfigObject => {
   return {
     languageOptions: {
       globals: {
@@ -47,7 +53,7 @@ export const reactEslintConfig = (
       "react-hooks": pluginReactHooks,
     },
     rules: {
-      ...reactRules(functionStyle, reactCompiler, typescript),
+      ...reactRules({ functionStyle, reactCompiler, typescript }),
       ...(customRules ?? {}),
     },
     settings: {

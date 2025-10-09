@@ -5,16 +5,21 @@ import type { ReactFunctionDefinitions, ReactRules } from "./types.js";
  * Generates ESLint rules configuration for React and React Hooks.
  * Includes settings for function component style enforcement and TypeScript-specific rules.
  *
- * @param functionStyle - The preferred style for React function components: 'arrow' for arrow functions, 'declaration' for function declarations, 'expression' for function expressions, or 'off' to disable style enforcement
- * @param reactCompiler - Whether to use the React compiler rules from `eslint-plugin-react-hooks`.
- * @param typescript - Whether TypeScript-specific React rules should be enabled
+ * @param options - Configuration options
+ * @param options.functionStyle - The preferred style for React function components: 'arrow' for arrow functions, 'declaration' for function declarations, 'expression' for function expressions, or 'off' to disable style enforcement
+ * @param options.reactCompiler - Whether to use the React compiler rules from `eslint-plugin-react-hooks`
+ * @param options.typescript - Whether TypeScript-specific React rules should be enabled
  * @returns Configuration object containing ESLint rules for React and React Hooks
  */
-export const reactRules = (
-  functionStyle: "off" | FunctionStyle,
-  reactCompiler: boolean,
-  typescript: boolean,
-): ReactRules => {
+export const reactRules = ({
+  functionStyle,
+  reactCompiler,
+  typescript,
+}: {
+  functionStyle: "off" | FunctionStyle;
+  reactCompiler: boolean;
+  typescript: boolean;
+}): ReactRules => {
   const functionStyleMap: Record<FunctionStyle, ReactFunctionDefinitions> = {
     arrow: "arrow-function",
     declaration: "function-declaration",

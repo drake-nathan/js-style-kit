@@ -96,12 +96,30 @@ describe("eslintConfig", () => {
       expect(config.some((c) => c.name === configNames.react)).toBe(true);
     });
 
-    it("includes React compiler via the react hooks plugin", () => {
+    it("includes React compiler rules by default", () => {
       const config = eslintConfig({ react: true });
 
       const reactConfig = config.find((c) => c.name === configNames.react);
 
-      expect(reactConfig?.rules?.["react-hooks/react-compiler"]).toBe("warn");
+      // Check for some key React compiler rules
+      expect(reactConfig?.rules?.["react-hooks/purity"]).toBe("warn");
+      expect(reactConfig?.rules?.["react-hooks/immutability"]).toBe("warn");
+      expect(reactConfig?.rules?.["react-hooks/use-memo"]).toBe("warn");
+    });
+
+    it("excludes React compiler rules when reactCompiler is false", () => {
+      const config = eslintConfig({ react: { reactCompiler: false } });
+
+      const reactConfig = config.find((c) => c.name === configNames.react);
+
+      // Core hooks rules should still be present
+      expect(reactConfig?.rules?.["react-hooks/rules-of-hooks"]).toBe("warn");
+      expect(reactConfig?.rules?.["react-hooks/exhaustive-deps"]).toBe("warn");
+
+      // Compiler-specific rules should be absent
+      expect(reactConfig?.rules?.["react-hooks/purity"]).toBeUndefined();
+      expect(reactConfig?.rules?.["react-hooks/immutability"]).toBeUndefined();
+      expect(reactConfig?.rules?.["react-hooks/use-memo"]).toBeUndefined();
     });
 
     it("excludes React Refresh config by default when React is enabled", () => {

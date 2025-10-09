@@ -146,14 +146,15 @@ export const eslintConfig = (
   }
 
   if (react) {
+    const reactOptions = isObject(react) ? react : {};
+    
     // Apply reactRefresh based on framework setting or explicit override
     const shouldUseReactRefresh =
       // Explicit setting takes precedence
-      (isObject(react) && react.reactRefresh === true) ||
+      reactOptions.reactRefresh === true ||
       // Framework-based default (vite/none use reactRefresh by default)
-      (isObject(react) &&
-        (react.framework === "vite" || react.framework === "none") &&
-        react.reactRefresh !== false);
+      ((reactOptions.framework === "vite" || reactOptions.framework === "none") &&
+        reactOptions.reactRefresh !== false);
 
     if (shouldUseReactRefresh) {
       configs.push(
@@ -162,12 +163,12 @@ export const eslintConfig = (
     }
 
     configs.push(
-      reactEslintConfig(
+      reactEslintConfig({
+        customRules: categorizedRules[configNames.react],
         functionStyle,
-        Boolean(typescript),
-        isObject(react) ? react.reactCompiler : false,
-        categorizedRules[configNames.react],
-      ),
+        reactCompiler: reactOptions.reactCompiler ?? true,
+        typescript: Boolean(typescript),
+      }),
     );
 
     if (usingNextjs) {
