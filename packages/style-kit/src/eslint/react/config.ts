@@ -19,12 +19,14 @@ import { reactRules } from "./rules.js";
  *   - "arrow": Enforces arrow function expressions
  *   - "declaration": Enforces function declarations
  *   - "expression": Enforces function expressions
- * @param typescript - Whether TypeScript is being used in the project. When true, some rules are adjusted to be more TypeScript-friendly. Defaults to true.
+ * @param reactCompiler - Whether to use the React compiler rules from `eslint-plugin-react-hooks`.
+ * @param typescript - Whether TypeScript is being used in the project. When true, some rules are adjusted to be more TypeScript-friendly.
  * @param customRules - Optional object containing custom rules to override or add to the React configuration.
  * @returns An ESLint configuration object for React.
  */
 export const reactEslintConfig = (
   functionStyle: "off" | FunctionStyle,
+  reactCompiler: boolean,
   typescript: boolean,
   customRules?: Record<string, EslintRuleConfig>,
 ): EslintConfigObject => {
@@ -45,7 +47,7 @@ export const reactEslintConfig = (
       "react-hooks": pluginReactHooks,
     },
     rules: {
-      ...reactRules(functionStyle, typescript),
+      ...reactRules(functionStyle, reactCompiler, typescript),
       ...(customRules ?? {}),
     },
     settings: {
