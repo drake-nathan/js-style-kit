@@ -321,6 +321,18 @@ describe("eslintConfig", () => {
 
       expect(config.some((c) => c.name === configNames.turbo)).toBe(true);
     });
+
+    it("excludes query config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.query)).toBe(false);
+    });
+
+    it("includes query config when enabled", () => {
+      const config = eslintConfig({ query: true });
+
+      expect(config.some((c) => c.name === configNames.query)).toBe(true);
+    });
   });
 
   describe("ignore patterns", () => {
