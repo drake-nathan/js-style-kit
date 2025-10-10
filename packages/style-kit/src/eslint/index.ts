@@ -147,13 +147,14 @@ export const eslintConfig = (
 
   if (react) {
     const reactOptions = isObject(react) ? react : {};
-    
+
     // Apply reactRefresh based on framework setting or explicit override
     const shouldUseReactRefresh =
       // Explicit setting takes precedence
       reactOptions.reactRefresh === true ||
       // Framework-based default (vite/none use reactRefresh by default)
-      ((reactOptions.framework === "vite" || reactOptions.framework === "none") &&
+      ((reactOptions.framework === "vite" ||
+        reactOptions.framework === "none") &&
         reactOptions.reactRefresh !== false);
 
     if (shouldUseReactRefresh) {
