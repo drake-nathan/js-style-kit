@@ -5,7 +5,6 @@ export default eslintConfig(
   {
     react: {
       framework: "vite",
-      reactRefresh: true,
     },
   },
   {

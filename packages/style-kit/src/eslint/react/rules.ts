@@ -1,56 +1,77 @@
-import type { EslintRuleConfig, FunctionStyle } from "../types.js";
-
-type ReactFunctionDefinitions =
-  | "arrow-function"
-  | "function-declaration"
-  | "function-expression";
-
-type ReactRules = Record<
-  `${"react" | "react-hooks"}/${string}`,
-  EslintRuleConfig
-> & {
-  "react/destructuring-assignment"?: EslintRuleConfig<
-    "always" | "never",
-    {
-      destructureInSignature?: "always" | "ignore";
-      ignoreClassFields?: boolean;
-    }
-  >;
-  "react/function-component-definition"?: EslintRuleConfig<{
-    namedComponents?: ReactFunctionDefinitions | ReactFunctionDefinitions[];
-    unnamedComponents?:
-      | "arrow-function"
-      | "function-expression"
-      | ("arrow-function" | "function-expression")[];
-  }>;
-};
+import type { FunctionStyle } from "../types.js";
+import type { ReactFunctionDefinitions, ReactRules } from "./types.js";
 
 /**
  * Generates ESLint rules configuration for React and React Hooks.
  * Includes settings for function component style enforcement and TypeScript-specific rules.
  *
- * @param functionStyle - The preferred style for React function components: 'arrow' for arrow functions, 'declaration' for function declarations, 'expression' for function expressions, or 'off' to disable style enforcement
- * @param typescript - Whether TypeScript-specific React rules should be enabled
+ * @param options - Configuration options
+ * @param options.functionStyle - The preferred style for React function components: 'arrow' for arrow functions, 'declaration' for function declarations, 'expression' for function expressions, or 'off' to disable style enforcement
+ * @param options.reactCompiler - Whether to use the React compiler rules from `eslint-plugin-react-hooks`
+ * @param options.typescript - Whether TypeScript-specific React rules should be enabled
  * @returns Configuration object containing ESLint rules for React and React Hooks
  */
-export const reactRules = (
-  functionStyle: "off" | FunctionStyle,
-  typescript: boolean,
-): ReactRules => {
+export const reactRules = ({
+  functionStyle,
+  reactCompiler,
+  typescript,
+}: {
+  functionStyle: "off" | FunctionStyle;
+  reactCompiler: boolean;
+  typescript: boolean;
+}): ReactRules => {
   const functionStyleMap: Record<FunctionStyle, ReactFunctionDefinitions> = {
     arrow: "arrow-function",
     declaration: "function-declaration",
     expression: "function-expression",
   };
 
+  // TODO: split out new rules into a `react-compiler` option
+
   return {
     /**
      * Disabled in favor of TypeScript for type checking
      */
     ...(typescript ? {} : { "react/prop-types": "warn" }),
+    /**
+     * Core React Hooks rules
+     */
     "react-hooks/exhaustive-deps": "warn",
-    "react-hooks/react-compiler": "warn",
     "react-hooks/rules-of-hooks": "warn",
+    /**
+     * React compiler rules
+     */
+    ...(reactCompiler ?
+      {
+        /**
+         * Does not seem to be working, and overlaps with static-components
+         */
+        // "react-hooks/component-hook-factories": "warn",
+
+        /**
+         * seems unecessary unless you're rolling your own React setup, users can always enable
+         */
+        // "react-hooks/config": "warn",
+
+        "react-hooks/error-boundaries": "warn",
+        "react-hooks/globals": "warn",
+        "react-hooks/immutability": "warn",
+        "react-hooks/incompatible-library": "warn",
+        "react-hooks/preserve-manual-memoization": "warn",
+        "react-hooks/purity": "warn",
+        "react-hooks/refs": "warn",
+        "react-hooks/set-state-in-effect": "warn",
+        "react-hooks/set-state-in-render": "warn",
+
+        /**
+         * overlaps with react/no-unstable-nested-components
+         */
+        // "react-hooks/static-components": "warn",
+
+        "react-hooks/unsupported-syntax": "warn",
+        "react-hooks/use-memo": "warn",
+      }
+    : {}),
     /**
      * Require an explicit type when using button elements.
      *
@@ -77,12 +98,6 @@ export const reactRules = (
           },
         ]
       ),
-    /**
-     * Require destructuring and symmetric naming of `useState` hook value and setter variables.
-     *
-     * 🚫 Not fixable - https://github.com/jsx-eslint/eslint-plugin-react/blob/master/docs/rules/hook-use-state.md
-     */
-    "react/hook-use-state": "warn",
     /**
      * Require consistent boolean attributes notation in JSX.
      *

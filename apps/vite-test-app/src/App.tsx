@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import reactLogo from "./assets/react.svg";
 
@@ -10,6 +10,12 @@ import "./App.css";
 
 const App = () => {
   const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    // this proves that the new react-hooks rules work
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCount((count) => count + 1);
+  }, []);
 
   return (
     <>

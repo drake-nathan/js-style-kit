@@ -12,6 +12,7 @@ import { nextjsConfig } from "./nextjs/config.js";
 import { perfectionistConfig } from "./perfectionist/config.js";
 import { preferArrowFunctionConfig } from "./prefer-arrow-function/config.js";
 import { processCustomRules } from "./process-custom-rules.js";
+import { queryConfig } from "./query/config.js";
 import { reactRefreshEslintConfig } from "./react-refresh/config.js";
 import { reactEslintConfig } from "./react/config.js";
 import { storybookConfig } from "./storybook/config.js";
@@ -37,6 +38,7 @@ export interface EslintConfigOptions {
     | {
         requireJsdoc?: boolean;
       };
+  query?: boolean;
   react?:
     | boolean
     | {
@@ -61,6 +63,7 @@ export interface EslintConfigOptions {
  * @param options.ignores - Additional paths to ignore. Already excludes `node_modules` and `dist`.
  * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
  * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
+ * @param options.query - Whether to include TanStack Query rules.
  * @param options.react - Whether to include React, React hooks, and React compiler rules.
  *                        Can specify framework as "next", "none", "react-router", "remix", or "vite" to control related configs:
  *                        - "next": Includes Next.js config, excludes React Refresh.
@@ -88,6 +91,7 @@ export const eslintConfig = (
     ignores = [],
     importPlugin = true,
     jsdoc = { requireJsdoc: false },
+    query = false,
     react = false,
     rules,
     sorting = true,
@@ -142,14 +146,16 @@ export const eslintConfig = (
   }
 
   if (react) {
+    const reactOptions = isObject(react) ? react : {};
+
     // Apply reactRefresh based on framework setting or explicit override
     const shouldUseReactRefresh =
       // Explicit setting takes precedence
-      (isObject(react) && react.reactRefresh === true) ||
+      reactOptions.reactRefresh === true ||
       // Framework-based default (vite/none use reactRefresh by default)
-      (isObject(react) &&
-        (react.framework === "vite" || react.framework === "none") &&
-        react.reactRefresh !== false);
+      ((reactOptions.framework === "vite" ||
+        reactOptions.framework === "none") &&
+        reactOptions.reactRefresh !== false);
 
     if (shouldUseReactRefresh) {
       configs.push(
@@ -158,16 +164,21 @@ export const eslintConfig = (
     }
 
     configs.push(
-      reactEslintConfig(
+      reactEslintConfig({
+        customRules: categorizedRules[configNames.react],
         functionStyle,
-        Boolean(typescript),
-        categorizedRules[configNames.react],
-      ),
+        reactCompiler: reactOptions.reactCompiler ?? true,
+        typescript: Boolean(typescript),
+      }),
     );
 
     if (usingNextjs) {
       configs.push(nextjsConfig(categorizedRules[configNames.nextjs]));
     }
+  }
+
+  if (query) {
+    configs.push(queryConfig(categorizedRules[configNames.query]));
   }
 
   if (testing !== false) {

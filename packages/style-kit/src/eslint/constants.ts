@@ -13,6 +13,7 @@ export const configNames = {
   nextjs: "nextjs",
   perfectionist: "perfectionist",
   preferArrowFunction: "prefer-arrow-function",
+  query: "@tanstack/query",
   react: "react",
   reactRefresh: "react-refresh",
   storybook: "storybook:stories",
@@ -31,6 +32,7 @@ export type ConfigName = (typeof configNames)[keyof typeof configNames];
  * This is the single source of truth for categorizing rules by plugin.
  */
 export const pluginPrefixMap = new Map<string, ConfigName>([
+  ["@tanstack/query", configNames.query],
   ["@typescript-eslint", configNames.typescript],
   ["import", configNames.import],
   ["import-x", configNames.import],

@@ -10,10 +10,5 @@
       "mode": "auto"
     }
   ],
-  "explorer.fileNesting.enabled": true,
-  "explorer.fileNesting.patterns": {
-    "package.json": "bun.lock",
-    "style-kit.config.js": "eslint.config.js, prettier.config.js"
-  },
   "typescript.tsdk": "node_modules/typescript/lib"
 }
