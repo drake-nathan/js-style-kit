@@ -7,49 +7,21 @@ A zero-configuration style guide for ESLint and Prettier that provides sensible 
 [![npm version](https://img.shields.io/npm/v/js-style-kit.svg)](https://www.npmjs.com/package/js-style-kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![codecov](https://codecov.io/gh/drake-nathan/js-style-kit/graph/badge.svg?token=C57D67JAE0)](https://codecov.io/gh/drake-nathan/js-style-kit)
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/drake-nathan/js-style-kit?labelColor=5C5C5C&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit%20Reviews)
 
-## Overview
+## Features
 
-JS Style Kit is a comprehensive, batteries-included linting and formatting solution for modern JavaScript and TypeScript projects.
-
-- ✅ All dependencies included (ESLint, Prettier, plugins) - no need to install peer deps
-- ✅ ESLint v9 flat config
-- ✅ ESM-only package
-- ✅ All rules configured as warnings
-
-### Configs Included
-
-> **Note:** All configs are optional and can be disabled or configured.
-
-- ESlint
-  - Base config - Tweaked version of "recommended" config
-  - typescript-eslint - Falls somewhere between "recommended" and "strict"
-  - eslint-plugin-perfectionist - automatically sort all imports, objects, props, etc.
-  - eslint-plugin-import-x - faster version of eslint-plugin-import
-  - eslint-plugin-unicorn - enforce consistent file names (kebab-case will save you so many headaches)
-  - eslint-plugin-react - React rules
-  - eslint-plugin-react-hooks - React hooks rules
-  - eslint-plugin-react-refresh - React Fast Refresh validation for Vite
-  - eslint-plugin-nextjs - Next.js rules
-  - eslint-plugin-storybook - Storybook rules
-  - eslint-plugin-turbo - Turborepo rules
-  - eslint-plugin-jest - Jest rules
-  - eslint-plugin-vitest - Vitest rules
-- Prettier
-  - Default config
-  - prettier-plugin-css-order
-  - prettier-plugin-curly
-  - prettier-plugin-packagejson
-  - prettier-plugin-sort-json
-  - prettier-plugin-tailwindcss
-
-> **Note:** This is very much a work in progress. I want to know what configuration changes you make, so please open an issue!
+- ✅ **Batteries included** - ESLint, Prettier, and all plugins bundled (no peer dependency headaches)
+- ✅ **ESLint v9** flat config format
+- ✅ **TypeScript** first with automatic project detection
+- ✅ **Framework support** - React, Next.js, Vite, Remix, React Router
+- ✅ **Auto-sorting** - Imports, objects, properties, and more
+- ✅ **Smart defaults** - All rules configured as warnings (not errors)
+- ✅ **Highly configurable** - Enable only what you need, what you don't use is left out of the config for efficiency
+- ✅ **ESM-only** - For modern JavaScript projects
 
 ## Requirements
 
 - Node.js v20.11.0 or higher
-- TypeScript (for TypeScript projects, not bundled)
 
 ## Installation
 
@@ -63,426 +35,266 @@ pnpm add js-style-kit --save-dev
 bun add js-style-kit --dev
 ```
 
-## ESLint Configuration
+## Quick Start
 
-### ESLint Usage
+### Option 1: CLI (Recommended)
 
-Create an `eslint.config.js` file in your project root:
+The fastest way to get started is with our CLI tool:
+
+```bash
+npx js-style-kit init
+```
+
+This will:
+
+1. Install dependencies
+2. Create `style-kit.config.js`, `eslint.config.js`, and `prettier.config.js`
+3. Add npm scripts to your `package.json`
+4. Configure VS Code settings
+
+[→ Learn more about the CLI](./bin/README.md)
+
+### Option 2: Manual Setup
+
+#### ESLint
+
+Create `eslint.config.js` (or `eslint.config.mjs` if not using `"type": "module"`):
 
 ```js
+// @ts-check
 import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig();
 ```
 
-> **Note:** If you're not using `"type": "module"` in your package.json, name your file `eslint.config.mjs` instead.
-
-Setup your `package.json` commands:
+Add scripts to `package.json`:
 
 ```json
 {
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
-    "lint:fix": "eslint . --fix --max-warnings 0"
+    "lint": "eslint . --max-warnings=0 --cache",
+    "lint:fix": "eslint . --fix --max-warnings=0 --cache"
   }
 }
 ```
 
-> **Note:** The `--max-warnings 0` option is important because all rules are set to warning by default.
+> **Note:** The `--max-warnings=0` flag is important since all rules are warnings by default.
 
-### Configuration Options
+#### Prettier
 
-The `eslintConfig()` function accepts a configuration object with the following options:
-
-```js
-import { eslintConfig } from "js-style-kit";
-
-export default eslintConfig({
-  // All options shown with their default values
-  functionStyle: "arrow", // Controls function style: "arrow", "declaration", "expression", or "off"
-  ignores: [], // Additional paths to ignore (node_modules and dist already excluded)
-  importPlugin: true, // Whether to include import plugin rules
-  jsdoc: { requireJsdoc: false }, // JSDoc configuration or false to disable
-  react: false, // Whether to include React rules, see below for options
-  rules: {}, // Custom rules to override or configure specific ESLint rules
-  sorting: true, // Whether to include sorting rules from Perfectionist
-  storybook: false, // Whether to include Storybook rules
-  testing: {
-    /* see Testing Configuration section */
-  }, // Testing configuration or false to disable
-  turbo: false, // Whether to include Turborepo rules
-  typescript: true, // Boolean or string path to tsconfig.json
-  unicorn: true, // Whether to include Unicorn rules
-});
-```
-
-#### Function Style Configuration
-
-Controls how functions should be written. Some configurations are auto-fixable, but some require manual adjustment.
+Create `prettier.config.js` (or `prettier.config.mjs` if not using `"type": "module"`):
 
 ```js
-// Enforce arrow functions (default)
-functionStyle: "arrow";
-
-// Enforce function declarations
-functionStyle: "declaration";
-
-// Enforce function expressions
-functionStyle: "expression";
-
-// Disable function style enforcement
-functionStyle: "off";
-```
-
-#### TypeScript Configuration
-
-TypeScript support is enabled by default. You can:
-
-```js
-// Enable with automatic project detection
-typescript: true;
-
-// Disable TypeScript rules
-typescript: false;
-
-// Specify path to your tsconfig.json
-typescript: "./tsconfig.json";
-```
-
-#### Import Plugin Configuration
-
-The import plugin rules are enabled by default. These rules help maintain proper import/export syntax and detect issues with imports.
-
-```js
-// Enable import plugin (default)
-importPlugin: true;
-
-// Disable import plugin
-importPlugin: false;
-```
-
-#### Custom Rules Configuration
-
-You can override or configure specific ESLint rules using the `rules` option:
-
-```js
-// Add custom rule configurations
-rules: {
-  // Format is the same as standard ESLint rule configuration
-  "no-console": ["error", { allow: ["warn", "error"] }],
-  "@typescript-eslint/no-explicit-any": "off",
-  // Any valid ESLint rule can be configured here
-}
-```
-
-#### React Configuration
-
-React support is disabled by default.
-
-```js
-// `true` enables standard react rules, react hook rules, and react compiler
-react: true
-
-// you can also pass an object to control react compiler, framework, and refresh support
-react: {
-  reactRefresh: false, // Controls React Fast Refresh validation
-  framework: "next" // "next", "vite", "none", "remix", or "react-router" to control related configurations
-}
-// Using the framework option configures related features:
-// - "next": Includes Next.js config, excludes React Refresh by default
-// - "vite" or "none": Includes React Refresh by default, excludes Next.js
-// - "remix" or "react-router": Excludes both Next.js and React Refresh (these frameworks handle their own refresh logic)
-// - The reactRefresh property can override the framework-based behavior
-```
-
-#### Testing Configuration
-
-Testing rules are enabled by default with smart defaults. You can customize them or disable them entirely:
-
-```js
-// Disable testing rules
-testing: false;
-
-// Customize testing rules
-testing: {
-  filenamePattern: "test", // "test" or "spec" for filename patterns
-  files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"], // File patterns to match
-  formattingRules: true, // Whether to include formatting rules
-  framework: "vitest", // "vitest" or "jest"
-  itOrTest: "it", // Whether to use "it" or "test" as the test function
-};
-```
-
-#### JSDoc Configuration
-
-JSDoc validation is enabled by default, but requirement rules are off:
-
-```js
-// Disable JSDoc validation completely
-jsdoc: false;
-
-// Enable JSDoc with requirement rules, ideal for libraries
-jsdoc: {
-  requireJsdoc: true;
-}
-```
-
-#### Additional Testing Options
-
-Testing support is enabled by default with Vitest configuration. You can customize it or disable it completely:
-
-```js
-// Disable testing configuration
-testing: false;
-
-// Enable with custom options
-testing: {
-  filenamePattern: "spec", // "test" (.test, default) or "spec" (.spec)
-  files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"], // Override file patterns
-  formattingRules: true, // Whether to include formatting rules like padding around blocks
-  framework: "vitest", // "vitest" (default), "jest", "node", or "bun"
-  itOrTest: "test", // "it" (default) or "test"
-}
-```
-
-#### Perfectionist (Code Organization)
-
-Sorting/organization rules from the Perfectionist plugin are enabled by default:
-
-```js
-// Disable sorting rules
-sorting: false;
-```
-
-#### Storybook Configuration
-
-Storybook support is disabled by default, but can be enabled to provide linting rules specifically for Storybook files:
-
-```js
-// Enable Storybook rules
-storybook: true;
-```
-
-When enabled, this configuration:
-
-- Applies best practices for Storybook files (_.stories._ and _.story._)
-- Includes rules for Storybook configuration files (.storybook/main.\*)
-- Ensures the .storybook directory is not ignored by ESLint (adds a negation pattern to ignores)
-
-### Adding Custom ESLint Configurations
-
-You can extend the base configuration by providing additional ESLint config objects as rest parameters:
-
-```js
-import { eslintConfig } from "js-style-kit";
-
-export default eslintConfig(
-  {
-    // Base configuration options
-    typescript: "tsconfig.eslint.json",
-    react: true,
-  },
-  // Additional custom ESLint configuration objects
-  {
-    name: "custom-globals",
-    languageOptions: {
-      globals: {
-        process: "readonly",
-        __dirname: "readonly",
-      },
-    },
-  },
-  {
-    name: "custom-rules",
-    rules: {
-      // Override or add specific rules
-      "no-console": ["error", { allow: ["warn", "error"] }],
-      "max-len": ["warn", { code: 100 }],
-      quotes: ["error", "single"],
-    },
-  },
-  // Add as many additional configs as needed
-);
-```
-
-## Prettier Configuration
-
-### Prettier Usage
-
-Create a `prettier.config.js` file in your project root:
-
-```js
+// @ts-check
 import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig();
 ```
 
-> **Note:** If you're not using `"type": "module"` in your package.json, name your file `prettier.config.mjs` instead.
-
-Setup your `package.json` commands:
+Add scripts to `package.json`:
 
 ```json
 {
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check ." // run this one in your CI
+    "format": "prettier . --write --cache",
+    "format:check": "prettier . --check --cache"
   }
 }
 ```
 
-### Prettier Configuration
+## Configuration
 
-The `prettierConfig()` function accepts a configuration object with the following options:
-
-```js
-import { prettierConfig } from "js-style-kit";
-
-export default prettierConfig({
-  // All options shown with their default values
-  cssOrderPlugin: true, // Enable CSS order plugin
-  curlyPlugin: true, // Enable curly braces enforcement for all control statements
-  jsonSortPlugin: true, // Enable JSON sorting plugin
-  packageJsonPlugin: true, // Enable package.json sorting plugin
-  tailwindPlugin: false, // Enable Tailwind CSS plugin (boolean, string[], or options object)
-
-  // You can also pass any standard Prettier options
-  printWidth: 80,
-  tabWidth: 2,
-  // etc.
-});
-```
-
-#### Tailwind CSS Support
-
-Tailwind CSS formatting is disabled by default. You can enable it in different ways:
-
-```js
-// Enable Tailwind with default utility functions (clsx, cva, cn)
-tailwindPlugin: true
-
-// Enable Tailwind with custom utility functions
-tailwindPlugin: ["clsx", "cva", "cn", "myCustomFunction"]
-
-// Enable Tailwind with custom options
-tailwindPlugin: {
-  tailwindFunctions: ["clsx", "cva", "myCustomFunction"],
-  tailwindAttributes: ["tw"]
-}
-```
-
-#### CSS Properties Order
-
-The CSS order plugin is enabled by default. It sorts CSS properties in a consistent order. You can disable it:
-
-```js
-// Disable CSS order plugin
-cssOrderPlugin: false;
-```
-
-#### Curly Braces Enforcement
-
-The curly braces plugin is disabled by default. It enforces consistent use of curly braces for all control flow statements (`if`, `for`, `while`, etc.), even for single-line statements. This is equivalent to ESLint's `curly` rule with the `all` option, but applied at the Prettier formatting level:
-
-```diff
-- if (abc) def;
-+ if (abc) {
-+   def;
-+ }
-```
-
-You can disable it:
-
-```js
-// Disable curly braces enforcement
-curlyPlugin: false;
-```
-
-#### JSON Sorting
-
-The JSON sorting plugin is enabled by default. You can disable it or configure it:
-
-```js
-// Disable JSON sorting
-jsonSortPlugin: false;
-
-// Configure JSON sorting
-jsonSortPlugin: {
-  jsonRecursiveSort: true;
-  // other plugin options...
-}
-```
-
-#### Standard Prettier Options
-
-You can pass any standard Prettier options directly:
-
-```js
-import { prettierConfig } from "js-style-kit";
-
-export default prettierConfig({
-  // Enable Tailwind
-  tailwindPlugin: true,
-
-  // Standard Prettier options
-  printWidth: 100,
-  tabWidth: 2,
-  useTabs: false,
-  semi: true,
-  singleQuote: false,
-  trailingComma: "all",
-  bracketSpacing: true,
-  endOfLine: "lf",
-});
-```
-
-## Complete Example
-
-Here's a complete example with both ESLint and Prettier configurations:
-
-### eslint.config.js
+### ESLint Options
 
 ```js
 import { eslintConfig } from "js-style-kit";
 
 export default eslintConfig(
   {
-    typescript: "tsconfig.eslint.json",
-    react: true,
-    jsdoc: { requireJsdoc: true },
-    functionStyle: "arrow",
-    // Use the built-in rules parameter for custom rules
-    rules: {
-      "no-console": ["error", { allow: ["warn", "error"] }],
-    },
-    // Configure testing
-    testing: {
-      framework: "jest",
-      itOrTest: "test",
-    },
+    // Core options
+    typescript: true, // Boolean or path to tsconfig.json
+    react: false, // React support (see React config docs)
+    functionStyle: "arrow", // "arrow" | "declaration" | "expression" | "off"
+
+    // Plugin toggles
+    importPlugin: true, // Import/export validation
+    sorting: true, // Auto-sort imports, objects, etc.
+    unicorn: true, // Enforce file naming and best practices
+    jsdoc: { requireJsdoc: false }, // JSDoc validation
+
+    // Framework & tools
+    query: false, // TanStack Query rules
+    testing: { framework: "vitest" }, // Test framework config
+    storybook: false, // Storybook rules
+    turbo: false, // Turborepo rules
+
+    // Advanced
+    ignores: [], // Additional ignore patterns
+    rules: {}, // Custom rule overrides
   },
-  // You can still add additional config objects
+  // Additional ESLint config objects
   {
-    name: "additional-config",
-    rules: {
-      // More custom rules
+    name: "custom-globals",
+    languageOptions: {
+      globals: {
+        process: "readonly",
+      },
     },
   },
 );
 ```
 
-### prettier.config.js
+### Configuration Guides
+
+Each configuration has detailed documentation:
+
+- **Core Configs**
+  - [Base ESLint Rules](./src/eslint/base/README.md)
+  - [TypeScript](./src/eslint/typescript/README.md)
+  - [Sorting (Perfectionist)](./src/eslint/perfectionist/README.md)
+  - [Import Plugin](./src/eslint/import/README.md)
+  - [Unicorn](./src/eslint/unicorn/README.md)
+
+- **Framework Configs**
+  - [React](./src/eslint/react/README.md) - React, hooks, compiler, and refresh support
+  - [TanStack Query](./src/eslint/query/README.md) - Query best practices
+
+- **Tool Configs**
+  - [Testing](./src/eslint/testing/README.md) - Vitest, Jest, Bun, Node
+  - [JSDoc](./src/eslint/jsdoc/README.md) - Documentation validation
+  - [Storybook](./src/eslint/storybook/README.md) - Component story rules
+  - [Turborepo](./src/eslint/turbo/README.md) - Monorepo rules
+
+### Prettier Options
 
 ```js
 import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
-  tailwindPlugin: true,
-  cssOrderPlugin: true,
-  printWidth: 100,
-  singleQuote: true,
+  // Plugin options
+  cssOrderPlugin: true, // Sort CSS properties
+  curlyPlugin: true, // Enforce curly braces
+  jsonSortPlugin: true, // Sort JSON keys
+  packageJsonPlugin: true, // Sort package.json
+  tailwindPlugin: false, // Boolean, path to global css file, or config object
+  parser: "oxc", // "oxc" (faster) or "default"
+
+  // Standard Prettier options
+  printWidth: 80,
+  tabWidth: 2,
+  // ... any Prettier option
 });
 ```
+
+[→ Full Prettier documentation](./src/prettier/README.md)
+
+## Framework Examples
+
+### React with Next.js
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  typescript: "./tsconfig.json",
+  react: {
+    framework: "next",
+    reactCompiler: true, // React 19 compiler rules (enabled by default)
+  },
+  testing: {
+    framework: "vitest",
+    itOrTest: "it",
+  },
+});
+```
+
+### React with Vite
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  react: {
+    framework: "vite",
+    reactRefresh: true, // Fast Refresh validation (enabled by default with vite)
+  },
+  testing: { framework: "vitest" },
+});
+```
+
+### TypeScript Library
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  typescript: "./tsconfig.json",
+  jsdoc: { requireJsdoc: true }, // Enforce JSDoc for public APIs
+  testing: { framework: "bun" },
+});
+```
+
+## Adding Custom Rules
+
+You can override any rule or add custom configurations. If you disable a rule in the `rules` object, it will be removed from the config for efficiency.
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig(
+  {
+    typescript: true,
+    react: true,
+    rules: {
+      // Override built-in rules
+      "no-console": ["error", { allow: ["warn", "error"] }],
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
+  // Additional ESLint config objects
+  {
+    name: "custom-globals",
+    languageOptions: {
+      globals: {
+        process: "readonly",
+      },
+    },
+  },
+);
+```
+
+## What's Included
+
+### ESLint Plugins
+
+- [`typescript-eslint`](https://typescript-eslint.io) - TypeScript linting
+- [`eslint-plugin-perfectionist`](https://perfectionist.dev) - Auto-sorting
+- [`eslint-plugin-import-x`](https://www.npmjs.com/package/eslint-plugin-import-x) - Import/export validation
+- [`eslint-plugin-unicorn`](https://www.npmjs.com/package/eslint-plugin-unicorn) - Best practices & naming
+- [`eslint-plugin-react`](https://www.npmjs.com/package/eslint-plugin-react) - React rules
+- [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks) - React hooks rules
+- [`eslint-plugin-react-refresh`](https://www.npmjs.com/package/eslint-plugin-react-refresh) - Fast Refresh validation
+- [`eslint-plugin-nextjs`](../eslint-plugin-nextjs/README.md) - My fork of the Next.js plugin
+- [`@tanstack/eslint-plugin-query`](https://tanstack.com/query/v4/docs/eslint/eslint-plugin-query) - TanStack Query rules
+- [`eslint-plugin-jsdoc`](https://www.npmjs.com/package/eslint-plugin-jsdoc) - JSDoc validation
+- [`eslint-plugin-storybook`](https://www.npmjs.com/package/eslint-plugin-storybook) - Storybook rules
+- [`eslint-plugin-turbo`](https://www.npmjs.com/package/eslint-plugin-turbo) - Turborepo rules
+- [`eslint-plugin-vitest`](https://www.npmjs.com/package/eslint-plugin-vitest) - Vitest rules
+- [`eslint-plugin-jest`](https://www.npmjs.com/package/eslint-plugin-jest) - Jest rules
+
+### Prettier Plugins
+
+- [`prettier-plugin-css-order`](https://www.npmjs.com/package/prettier-plugin-css-order) - CSS property ordering
+- [`prettier-plugin-curly`](https://www.npmjs.com/package/prettier-plugin-curly) - Curly brace enforcement
+- [`prettier-plugin-packagejson`](https://www.npmjs.com/package/prettier-plugin-packagejson) - package.json sorting
+- [`prettier-plugin-sort-json`](https://www.npmjs.com/package/prettier-plugin-sort-json) - JSON sorting
+- [`prettier-plugin-tailwindcss`](https://www.npmjs.com/package/prettier-plugin-tailwindcss) - Tailwind class sorting
+- [`@prettier/plugin-oxc`](https://www.npmjs.com/package/@prettier/plugin-oxc) - Faster parser (optional)
 
 ## License
 
 MIT
+
+---
+
+**Note:** This is a work in progress. Please [open an issue](https://github.com/drake-nathan/js-style-kit/issues) if you have suggestions or find any problems!
