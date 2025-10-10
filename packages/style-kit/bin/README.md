@@ -7,6 +7,7 @@ Quick setup tool to initialize JavaScript/TypeScript projects with ESLint and Pr
 ## Overview
 
 The CLI tool automates the setup process for js-style-kit in your project. It handles:
+
 - Package manager detection
 - Dependency installation
 - Configuration file creation
@@ -22,6 +23,7 @@ npx js-style-kit init
 ```
 
 That's it! The CLI will:
+
 1. ✅ Detect your package manager (bun, pnpm, yarn, or npm)
 2. ✅ Install js-style-kit as a dev dependency
 3. ✅ Create configuration files
@@ -35,11 +37,13 @@ That's it! The CLI will:
 The CLI creates these files based on your project's module type:
 
 **For ESM projects** (`"type": "module"` in package.json):
+
 - `style-kit.config.js` - Central configuration
 - `eslint.config.js` - ESLint setup (imports from style-kit.config.js)
 - `prettier.config.js` - Prettier setup (imports from style-kit.config.js)
 
 **For CommonJS projects**:
+
 - `style-kit.config.mjs` - Central configuration
 - `eslint.config.mjs` - ESLint setup
 - `prettier.config.mjs` - Prettier setup
@@ -63,6 +67,7 @@ your-project/
 The CLI uses a centralized config pattern:
 
 **style-kit.config.js:**
+
 ```js
 import { eslintConfig, prettierConfig } from "js-style-kit";
 
@@ -76,6 +81,7 @@ export const prettier = prettierConfig({
 ```
 
 **eslint.config.js:**
+
 ```js
 import { eslint } from "./style-kit.config.js";
 
@@ -83,6 +89,7 @@ export default eslint;
 ```
 
 **prettier.config.js:**
+
 ```js
 import { prettier } from "./style-kit.config.js";
 
@@ -90,6 +97,7 @@ export default prettier;
 ```
 
 **Benefits:**
+
 - Single source of truth for all styling configuration
 - Easy to see all settings in one place
 - Cleaner project root with organized configs
@@ -98,14 +106,15 @@ export default prettier;
 
 The CLI automatically detects your package manager:
 
-| Lock File | Package Manager |
-|-----------|----------------|
-| `bun.lock` | Bun |
-| `pnpm-lock.yaml` | pnpm |
-| `yarn.lock` | Yarn |
-| None of the above | npm |
+| Lock File         | Package Manager |
+| ----------------- | --------------- |
+| `bun.lock`        | Bun             |
+| `pnpm-lock.yaml`  | pnpm            |
+| `yarn.lock`       | Yarn            |
+| None of the above | npm             |
 
 It uses the detected package manager for:
+
 - Installing dependencies
 - Displaying run commands in success message
 
@@ -116,10 +125,10 @@ The CLI adds these scripts to your `package.json`:
 ```json
 {
   "scripts": {
-    "lint": "eslint lint",
-    "lint:fix": "eslint lint --fix",
     "format": "prettier format",
-    "format:check": "prettier format --check"
+    "format:check": "prettier format --check",
+    "lint": "eslint lint",
+    "lint:fix": "eslint lint --fix"
   }
 }
 ```
@@ -146,6 +155,7 @@ The CLI creates/updates `.vscode/settings.json`:
 ```
 
 **Features:**
+
 - Auto-fix ESLint issues on save
 - Format with Prettier on save
 - Nest config files under style-kit.config.js in explorer
@@ -161,12 +171,14 @@ npx js-style-kit init --dry-run
 ```
 
 **Dry run will:**
+
 - ✅ Create all configuration files
 - ✅ Update package.json scripts
 - ✅ Configure VS Code settings
 - ❌ Skip dependency installation
 
 Useful for:
+
 - Preview changes before committing
 - CI/CD pipelines
 - Testing the CLI
@@ -242,14 +254,18 @@ export const prettier = prettierConfig({
 ## Troubleshooting
 
 ### "package.json not found"
+
 Run the CLI from your project root where `package.json` exists:
+
 ```bash
 cd your-project
 npx js-style-kit init
 ```
 
 ### Wrong package manager detected
+
 Create the appropriate lock file:
+
 ```bash
 # For pnpm
 pnpm install
@@ -264,17 +280,22 @@ bun install
 Then run the CLI again.
 
 ### Config files already exist
+
 The CLI will overwrite existing config files. Back them up first:
+
 ```bash
 cp eslint.config.js eslint.config.js.backup
 npx js-style-kit init
 ```
 
 ### VS Code settings conflict
+
 The CLI merges with existing `.vscode/settings.json`. Review and adjust as needed.
 
 ### Module type issues
+
 If you see ESM errors, ensure:
+
 - Your `package.json` has `"type": "module"`, OR
 - Config files use `.mjs` extension
 

@@ -7,6 +7,7 @@ ESLint rules for Turborepo monorepos to catch common configuration issues.
 ## Overview
 
 Turbo configuration is **disabled by default** and provides:
+
 - Environment variable validation
 - Turborepo configuration best practices
 - Monorepo-specific linting
@@ -48,9 +49,11 @@ const secretKey = process.env.SECRET_KEY; // Warning!
 ```
 
 **Rule:**
+
 - `turbo/no-undeclared-env-vars` - Ensures env vars are declared in `turbo.json`
 
 **Why this matters:**
+
 - Turborepo needs to know about env vars for proper caching
 - Undeclared env vars can cause cache invalidation issues
 - Makes dependencies explicit and trackable
@@ -60,6 +63,7 @@ const secretKey = process.env.SECRET_KEY; // Warning!
 The rule checks your `turbo.json` configuration and validates that any environment variables accessed in your code are listed in the appropriate task's `env` array.
 
 ### Project-Level Configuration
+
 ```json
 // turbo.json
 {
@@ -68,25 +72,23 @@ The rule checks your `turbo.json` configuration and validates that any environme
       "env": [
         "NODE_ENV",
         "API_URL",
-        "NEXT_PUBLIC_*"  // Wildcard pattern
+        "NEXT_PUBLIC_*" // Wildcard pattern
       ]
     },
     "dev": {
-      "env": ["NODE_ENV"],
-      "cache": false
+      "cache": false,
+      "env": ["NODE_ENV"]
     }
   }
 }
 ```
 
 ### Global Environment Variables
+
 ```json
 // turbo.json
 {
-  "globalEnv": [
-    "CI",
-    "VERCEL"
-  ],
+  "globalEnv": ["CI", "VERCEL"],
   "tasks": {
     "build": {
       "env": ["API_URL"]
@@ -133,10 +135,7 @@ Add missing env vars to `turbo.json`:
 {
   "tasks": {
     "build": {
-      "env": [
-        "API_URL",
-        "SECRET_KEY"
-      ]
+      "env": ["API_URL", "SECRET_KEY"]
     }
   }
 }
@@ -151,9 +150,9 @@ Turborepo supports wildcard patterns for environment variables:
   "tasks": {
     "build": {
       "env": [
-        "NEXT_PUBLIC_*",    // Matches NEXT_PUBLIC_API_URL, etc.
-        "VITE_*",           // Matches VITE_API_URL, etc.
-        "REACT_APP_*"       // Matches REACT_APP_VERSION, etc.
+        "NEXT_PUBLIC_*", // Matches NEXT_PUBLIC_API_URL, etc.
+        "VITE_*", // Matches VITE_API_URL, etc.
+        "REACT_APP_*" // Matches REACT_APP_VERSION, etc.
       ]
     }
   }
@@ -177,11 +176,7 @@ const viteMode = process.env.VITE_MODE;
   "globalEnv": ["CI", "NODE_ENV"],
   "tasks": {
     "build": {
-      "env": [
-        "NEXT_PUBLIC_*",
-        "DATABASE_URL",
-        "API_SECRET"
-      ],
+      "env": ["NEXT_PUBLIC_*", "DATABASE_URL", "API_SECRET"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "dev": {
@@ -200,9 +195,9 @@ const viteMode = process.env.VITE_MODE;
     "build": {
       "env": [
         "NODE_ENV",
-        "NEXT_PUBLIC_*",     // Next.js apps
-        "VITE_*",            // Vite apps
-        "REACT_APP_*"        // CRA apps
+        "NEXT_PUBLIC_*", // Next.js apps
+        "VITE_*", // Vite apps
+        "REACT_APP_*" // CRA apps
       ]
     }
   }
@@ -216,18 +211,10 @@ const viteMode = process.env.VITE_MODE;
 {
   "tasks": {
     "build": {
-      "env": [
-        "DATABASE_URL",
-        "REDIS_URL",
-        "AWS_*",
-        "STRIPE_SECRET_KEY"
-      ]
+      "env": ["DATABASE_URL", "REDIS_URL", "AWS_*", "STRIPE_SECRET_KEY"]
     },
     "test": {
-      "env": [
-        "DATABASE_URL",
-        "TEST_DATABASE_URL"
-      ]
+      "env": ["DATABASE_URL", "TEST_DATABASE_URL"]
     }
   }
 }
@@ -300,6 +287,7 @@ Each package can use environment variables, but they must be declared in the roo
 ## Environment Variables Best Practices
 
 ### 1. Declare All Variables
+
 Always declare environment variables in `turbo.json` for proper cache invalidation:
 
 ```json
@@ -313,6 +301,7 @@ Always declare environment variables in `turbo.json` for proper cache invalidati
 ```
 
 ### 2. Use Wildcards for Prefixes
+
 For public/framework-specific variables:
 
 ```json
@@ -326,6 +315,7 @@ For public/framework-specific variables:
 ```
 
 ### 3. Separate by Task
+
 Different tasks can have different env vars:
 
 ```json
@@ -342,29 +332,36 @@ Different tasks can have different env vars:
 ```
 
 ### 4. Use Global Env for CI
+
 Common variables used everywhere:
 
 ```json
 {
   "globalEnv": ["CI", "NODE_ENV", "VERCEL"],
-  "tasks": { /* ... */ }
+  "tasks": {
+    /* ... */
+  }
 }
 ```
 
 ## Troubleshooting
 
 ### Rule not working
+
 - Ensure `turbo.json` exists in your project root
 - Check that the env var is being accessed as `process.env.VAR_NAME`
 - Verify the task name matches your `turbo.json` tasks
 
 ### Too many warnings
+
 - Use wildcard patterns for common prefixes
 - Add frequently-used vars to `globalEnv`
 - Consider disabling for certain files (scripts, config)
 
 ### False positives
+
 - Dynamic env var access might not be detected correctly:
+
 ```ts
 // Might not be caught
 const key = process.env[`DYNAMIC_${name}`];

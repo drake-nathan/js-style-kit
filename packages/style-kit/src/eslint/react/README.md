@@ -7,6 +7,7 @@ Comprehensive React support with ESLint rules for React, hooks, compiler, and fr
 ## Overview
 
 React support is **disabled by default** and provides:
+
 - React and JSX best practices
 - React Hooks validation
 - React Compiler support (enabled by default)
@@ -26,11 +27,13 @@ export default eslintConfig({
 ## Configuration Options
 
 ### Basic Enable
+
 ```js
-react: true // React + hooks + compiler rules
+react: true; // React + hooks + compiler rules
 ```
 
 ### Framework-Specific
+
 ```js
 react: {
   framework: "next",        // "next" | "vite" | "remix" | "react-router" | "none"
@@ -42,6 +45,7 @@ react: {
 ## Framework Configurations
 
 ### Next.js
+
 ```js
 export default eslintConfig({
   react: { framework: "next" },
@@ -49,11 +53,13 @@ export default eslintConfig({
 ```
 
 **Includes:**
+
 - ✅ Next.js-specific ESLint rules
 - ✅ Ignores `.next` directory
 - ✅ React Refresh disabled (Next.js handles it)
 
 ### Vite
+
 ```js
 export default eslintConfig({
   react: { framework: "vite" },
@@ -61,10 +67,12 @@ export default eslintConfig({
 ```
 
 **Includes:**
+
 - ✅ React Refresh validation enabled
 - ✅ No Next.js-specific rules
 
 ### Remix
+
 ```js
 export default eslintConfig({
   react: { framework: "remix" },
@@ -72,10 +80,12 @@ export default eslintConfig({
 ```
 
 **Includes:**
+
 - ✅ React Refresh disabled (Remix handles it)
 - ✅ No Next.js-specific rules
 
 ### React Router
+
 ```js
 export default eslintConfig({
   react: { framework: "react-router" },
@@ -83,10 +93,12 @@ export default eslintConfig({
 ```
 
 **Includes:**
+
 - ✅ React Refresh disabled (Router handles it)
 - ✅ No Next.js-specific rules
 
 ### Override Defaults
+
 ```js
 react: {
   framework: "next",
@@ -101,11 +113,13 @@ react: {
 **Enabled by default** when React is enabled.
 
 ### What It Checks
+
 - Proper Hook usage
 - Component purity requirements
 - Dependencies tracking
 
 ### Disable Compiler Rules
+
 ```js
 export default eslintConfig({
   react: true,
@@ -120,12 +134,14 @@ export default eslintConfig({
 [React Fast Refresh](https://www.npmjs.com/package/react-refresh) provides instant component updates without losing state. The validation ensures your components work with Fast Refresh.
 
 ### When to Enable
+
 - ✅ **Enable** for Vite SPAs
 - ❌ **Disable** for Next.js (handles its own)
 - ❌ **Disable** for Remix (handles its own)
 - ❌ **Disable** for React Router (handles its own)
 
 ### Manual Control
+
 ```js
 react: {
   framework: "vite",
@@ -134,6 +150,7 @@ react: {
 ```
 
 ### What It Validates
+
 - ✅ Components properly exported
 - ✅ No anonymous components
 - ✅ No nested component definitions
@@ -152,6 +169,7 @@ export default eslintConfig({
 ```
 
 ### Arrow Functions (default)
+
 ```jsx
 // ✅ Good
 const MyComponent = ({ name }) => {
@@ -162,6 +180,7 @@ export default () => <div>App</div>;
 ```
 
 ### Function Declarations
+
 ```jsx
 // ✅ Good
 function MyComponent({ name }) {
@@ -174,25 +193,28 @@ export default function App() {
 ```
 
 ### Function Expressions
+
 ```jsx
 // ✅ Good
-const MyComponent = function({ name }) {
+const MyComponent = function ({ name }) {
   return <div>Hello {name}</div>;
 };
 
-export default function() {
+export default function () {
   return <div>App</div>;
 }
 ```
 
 ### Disabled (Any Style)
+
 ```jsx
-functionStyle: "off" // Use any style you prefer
+functionStyle: "off"; // Use any style you prefer
 ```
 
 ## Key Rules
 
 ### React Hooks
+
 - **`react-hooks/rules-of-hooks`** - Enforces Rules of Hooks
 - **`react-hooks/exhaustive-deps`** - Validates dependency arrays
 - **`react-hooks/react-compiler`** - React Compiler compatibility (enabled by default)
@@ -201,7 +223,9 @@ functionStyle: "off" // Use any style you prefer
 // ✅ Good - hooks at top level
 const MyComponent = () => {
   const [count, setCount] = useState(0);
-  useEffect(() => { /* ... */ }, [count]); // All deps listed
+  useEffect(() => {
+    /* ... */
+  }, [count]); // All deps listed
   return <button onClick={() => setCount(count + 1)}>{count}</button>;
 };
 
@@ -214,6 +238,7 @@ const MyComponent = () => {
 ```
 
 ### JSX Best Practices
+
 - **`react/jsx-boolean-value`** - Enforce boolean prop syntax
 - **`react/jsx-curly-brace-presence`** - Avoid unnecessary JSX braces
 - **`react/jsx-fragments`** - Prefer `<>` over `<React.Fragment>`
@@ -240,6 +265,7 @@ const MyComponent = () => {
 ```
 
 ### Component Best Practices
+
 - **`react/no-array-index-key`** - Avoid array index as key
 - **`react/no-children-prop`** - Use children as JSX, not prop
 - **`react/no-danger`** - Warn on `dangerouslySetInnerHTML`
@@ -249,7 +275,7 @@ const MyComponent = () => {
 ```jsx
 // ✅ Good
 const Parent = () => {
-  return items.map(item => <Item key={item.id}>{item.name}</Item>);
+  return items.map((item) => <Item key={item.id}>{item.name}</Item>);
 };
 
 // ❌ Bad
@@ -259,7 +285,10 @@ const Parent = () => {
 
   return (
     <>
-      {items.map((item, i) => <Item key={i}>{item.name}</Item>)} {/* ❌ Index as key */}
+      {items.map((item, i) => (
+        <Item key={i}>{item.name}</Item>
+      ))}{" "}
+      {/* ❌ Index as key */}
       <img>child content</img> {/* ❌ Void element with children */}
     </>
   );
@@ -267,6 +296,7 @@ const Parent = () => {
 ```
 
 ### State Management
+
 - **`react/no-direct-mutation-state`** - No direct state mutation
 - **`react/no-unused-state`** - Detect unused state
 - **`react/prefer-stateless-function`** - Prefer functions over classes when possible
@@ -283,6 +313,7 @@ export default eslintConfig({
 ```
 
 **Additional rules:**
+
 - `react/prop-types` disabled (TypeScript handles it)
 - Type-safe prop definitions
 - JSX type checking
@@ -305,6 +336,7 @@ When `framework: "next"` is set, additional Next.js rules are included:
 ## Common Patterns
 
 ### Next.js + TypeScript
+
 ```js
 export default eslintConfig({
   typescript: "./tsconfig.json",
@@ -316,6 +348,7 @@ export default eslintConfig({
 ```
 
 ### Vite + TypeScript
+
 ```js
 export default eslintConfig({
   typescript: true,
@@ -327,6 +360,7 @@ export default eslintConfig({
 ```
 
 ### Library Development
+
 ```js
 export default eslintConfig({
   typescript: true,
@@ -359,15 +393,19 @@ export default eslintConfig({
 ## Troubleshooting
 
 ### React version detection fails
+
 Ensure React is installed in your project. The config auto-detects the version.
 
 ### Fast Refresh not working
+
 1. Check that `reactRefresh: true` is set for Vite
 2. Ensure components follow Fast Refresh patterns
 3. Review warnings from `eslint-plugin-react-refresh`
 
 ### Compiler rules too strict
+
 Disable with:
+
 ```js
 rules: {
   "react-hooks/react-compiler": "off",

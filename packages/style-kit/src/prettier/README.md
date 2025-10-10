@@ -7,6 +7,7 @@ Opinionated Prettier configuration with powerful plugins for CSS ordering, JSON 
 ## Overview
 
 The Prettier configuration includes:
+
 - **Faster parser** - OXC parser for improved performance (optional)
 - **CSS ordering** - Consistent property order
 - **Curly braces** - Enforce braces for all control statements
@@ -30,12 +31,12 @@ import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
   // Plugin options (all boolean or config object)
-  cssOrderPlugin: true,       // Sort CSS properties
-  curlyPlugin: true,          // Enforce curly braces
-  jsonSortPlugin: true,       // Sort JSON keys
-  packageJsonPlugin: true,    // Sort package.json
-  tailwindPlugin: false,      // Tailwind class sorting
-  parser: "oxc",              // "oxc" (faster) or "default"
+  cssOrderPlugin: true, // Sort CSS properties
+  curlyPlugin: true, // Enforce curly braces
+  jsonSortPlugin: true, // Sort JSON keys
+  packageJsonPlugin: true, // Sort package.json
+  tailwindPlugin: false, // Tailwind class sorting
+  parser: "oxc", // "oxc" (faster) or "default"
 
   // Standard Prettier options
   printWidth: 80,
@@ -60,6 +61,7 @@ export default prettierConfig({
 ```
 
 **Benefits:**
+
 - ⚡ Significantly faster than default parser
 - ✅ 100% compatible with Prettier
 - ✅ Written in Rust for performance
@@ -85,24 +87,25 @@ export default prettierConfig({
 .button {
   display: flex;
   align-items: center;
-  padding: 1rem;
-  background-color: blue;
   border-radius: 4px;
+  background-color: blue;
+  padding: 1rem;
 }
 
 /* Before formatting - unsorted */
 .button {
-  background-color: blue;
   display: flex;
-  border-radius: 4px;
-  padding: 1rem;
   align-items: center;
+  border-radius: 4px;
+  background-color: blue;
+  padding: 1rem;
 }
 ```
 
 Disable:
+
 ```js
-cssOrderPlugin: false
+cssOrderPlugin: false;
 ```
 
 ### Curly Braces Enforcement
@@ -127,8 +130,9 @@ for (const item of items) process(item);
 This is equivalent to ESLint's `curly: "all"` rule but applied at the formatting level.
 
 Disable:
+
 ```js
-curlyPlugin: false
+curlyPlugin: false;
 ```
 
 ### JSON Sorting
@@ -156,6 +160,7 @@ curlyPlugin: false
 **Recursive sorting** is enabled by default (sorts nested objects too).
 
 #### Customize JSON Sorting
+
 ```js
 jsonSortPlugin: {
   jsonRecursiveSort: true,        // Sort nested objects
@@ -164,8 +169,9 @@ jsonSortPlugin: {
 ```
 
 #### Disable
+
 ```js
-jsonSortPlugin: false
+jsonSortPlugin: false;
 ```
 
 ### Package.json Sorting
@@ -187,8 +193,9 @@ jsonSortPlugin: false
 Follows npm/yarn conventions for field ordering.
 
 Disable:
+
 ```js
-packageJsonPlugin: false
+packageJsonPlugin: false;
 ```
 
 ### Tailwind CSS Class Sorting
@@ -204,16 +211,19 @@ packageJsonPlugin: false
 ```
 
 #### Enable with Defaults
+
 ```js
-tailwindPlugin: true // Uses clsx, cva, cn as utility functions
+tailwindPlugin: true; // Uses clsx, cva, cn as utility functions
 ```
 
 #### Specify Utility Functions
+
 ```js
-tailwindPlugin: ["clsx", "cva", "cn", "myCustomUtil"]
+tailwindPlugin: ["clsx", "cva", "cn", "myCustomUtil"];
 ```
 
 #### Advanced Configuration
+
 ```js
 tailwindPlugin: {
   tailwindFunctions: ["clsx", "cva", "tw"],
@@ -223,8 +233,9 @@ tailwindPlugin: {
 ```
 
 #### Path to Tailwind Config
+
 ```js
-tailwindPlugin: "./tailwind.config.js"
+tailwindPlugin: "./tailwind.config.js";
 ```
 
 **Note:** The plugin is automatically patched for ESM compatibility.
@@ -235,14 +246,12 @@ tailwindPlugin: "./tailwind.config.js"
 
 ```js
 // ✅ Better formatting with experimental ternaries
-const value = condition
-  ? "long value that needs to wrap"
-  : "another long value";
+const value =
+  condition ? "long value that needs to wrap" : "another long value";
 
 // Traditional formatting
-const value = condition ?
-  "long value that needs to wrap" :
-  "another long value";
+const value =
+  condition ? "long value that needs to wrap" : "another long value";
 ```
 
 Cannot be disabled (it's a Prettier-wide feature that improves formatting).
@@ -257,24 +266,25 @@ export default prettierConfig({
   tailwindPlugin: true,
 
   // Standard options
-  printWidth: 100,              // Line length
-  tabWidth: 2,                  // Spaces per tab
-  useTabs: false,               // Use spaces
-  semi: true,                   // Semicolons
-  singleQuote: false,           // Double quotes
-  quoteProps: "as-needed",      // Quote object properties
-  trailingComma: "all",         // Trailing commas
-  bracketSpacing: true,         // { foo: bar }
-  bracketSameLine: false,       // JSX bracket on new line
-  arrowParens: "always",        // (x) => x
-  endOfLine: "lf",              // Unix line endings
-  proseWrap: "preserve",        // Markdown wrapping
+  printWidth: 100, // Line length
+  tabWidth: 2, // Spaces per tab
+  useTabs: false, // Use spaces
+  semi: true, // Semicolons
+  singleQuote: false, // Double quotes
+  quoteProps: "as-needed", // Quote object properties
+  trailingComma: "all", // Trailing commas
+  bracketSpacing: true, // { foo: bar }
+  bracketSameLine: false, // JSX bracket on new line
+  arrowParens: "always", // (x) => x
+  endOfLine: "lf", // Unix line endings
+  proseWrap: "preserve", // Markdown wrapping
 });
 ```
 
 ## Common Configurations
 
 ### Minimal (Disable Plugins)
+
 ```js
 export default prettierConfig({
   cssOrderPlugin: false,
@@ -286,6 +296,7 @@ export default prettierConfig({
 ```
 
 ### Tailwind Project
+
 ```js
 export default prettierConfig({
   tailwindPlugin: true,
@@ -295,6 +306,7 @@ export default prettierConfig({
 ```
 
 ### Library/Package
+
 ```js
 export default prettierConfig({
   packageJsonPlugin: true,
@@ -305,6 +317,7 @@ export default prettierConfig({
 ```
 
 ### Next.js Project
+
 ```js
 export default prettierConfig({
   tailwindPlugin: {
@@ -335,14 +348,14 @@ Add to `.vscode/settings.json`:
 
 ```json
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true
 }
 ```
 
@@ -380,23 +393,29 @@ Each plugin has additional options:
 ## Troubleshooting
 
 ### Prettier not formatting
+
 1. Check `.prettierignore` isn't excluding files
 2. Verify VS Code is using the right formatter
 3. Check for conflicting Prettier configs
 
 ### Tailwind classes not sorting
+
 1. Ensure `tailwindPlugin: true` is set
 2. Verify Tailwind is installed
 3. Check utility function names match your usage
 
 ### OXC parser issues
+
 Switch to default parser:
+
 ```js
-parser: "default"
+parser: "default";
 ```
 
 ### Plugin conflicts
+
 Disable plugins one-by-one to identify conflicts:
+
 ```js
 cssOrderPlugin: false,
 curlyPlugin: false,

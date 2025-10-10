@@ -7,6 +7,7 @@ Modern JavaScript/TypeScript best practices and code quality rules powered by `e
 ## Overview
 
 Unicorn configuration is **enabled by default** and provides:
+
 - File naming conventions (kebab-case)
 - Modern JavaScript best practices
 - Error handling improvements
@@ -45,6 +46,7 @@ Enforces consistent kebab-case naming for files:
 ```
 
 **Rule:**
+
 - `unicorn/filename-case` - Enforces kebab-case for all files
 
 **Note:** This is a convention that promotes consistency and avoids case-sensitivity issues across different operating systems.
@@ -66,9 +68,11 @@ import { EventEmitter } from "events";
 ```
 
 **Rule:**
+
 - `unicorn/prefer-node-protocol` - Enforces `node:` prefix (auto-fixable)
 
 **Benefits:**
+
 - Makes it clear which modules are built-in
 - Prevents conflicts with npm packages
 - Improves module resolution performance
@@ -88,6 +92,7 @@ throw new TypeError();
 ```
 
 **Rules:**
+
 - `unicorn/error-message` - Requires error messages
 - `unicorn/prefer-type-error` - Use `TypeError` for type checking (auto-fixable)
 
@@ -106,6 +111,7 @@ const pattern = /[a-zA-Z]+/; // Use /[a-z]+/i instead
 ```
 
 **Rule:**
+
 - `unicorn/better-regex` - Suggests regex improvements (auto-fixable)
 
 ### Modern JavaScript
@@ -113,6 +119,7 @@ const pattern = /[a-zA-Z]+/; // Use /[a-z]+/i instead
 Promotes modern language features:
 
 #### String Methods
+
 ```js
 // ✅ Good - replaceAll for global replacement
 const text = "hello hello".replaceAll("hello", "hi");
@@ -122,9 +129,11 @@ const text = "hello hello".replace(/hello/g, "hi");
 ```
 
 **Rule:**
+
 - `unicorn/prefer-string-replace-all` - Use `replaceAll()` over global regex (auto-fixable)
 
 #### Loop Improvements
+
 ```js
 // ✅ Good - for...of loop
 for (const item of items) {
@@ -138,9 +147,11 @@ for (let i = 0; i < items.length; i++) {
 ```
 
 **Rule:**
+
 - `unicorn/no-for-loop` - Prefer for...of over C-style for loops (auto-fixable)
 
 #### Built-in Constructors
+
 ```js
 // ✅ Good - using new with constructors
 const map = new Map();
@@ -153,6 +164,7 @@ const set = Set();
 ```
 
 **Rule:**
+
 - `unicorn/new-for-builtins` - Enforces `new` for built-ins (auto-fixable)
 
 ### Event Listeners
@@ -168,6 +180,7 @@ element.onclick = handler;
 ```
 
 **Rule:**
+
 - `unicorn/prefer-add-event-listener` - Use `addEventListener()` (auto-fixable)
 
 ### Switch Case Braces
@@ -198,6 +211,7 @@ switch (value) {
 ```
 
 **Rule:**
+
 - `unicorn/switch-case-braces` - Always use braces in case clauses (auto-fixable)
 
 ### Text Encoding
@@ -214,6 +228,7 @@ const text = new TextDecoder("UTF-8").decode(buffer);
 ```
 
 **Rule:**
+
 - `unicorn/text-encoding-identifier-case` - Lowercase encoding identifiers (auto-fixable)
 
 ### Console Improvements
@@ -231,6 +246,7 @@ console.error("Error: ", error);
 ```
 
 **Rule:**
+
 - `unicorn/no-console-spaces` - No spaces before arguments (auto-fixable)
 
 ## Complete Example
@@ -332,6 +348,7 @@ export default eslintConfig({
 ## Common Patterns
 
 ### Node.js Project
+
 ```ts
 // server.ts
 import { createServer } from "node:http";
@@ -350,6 +367,7 @@ const server = createServer(async (req, res) => {
 ```
 
 ### Frontend Project
+
 ```ts
 // api-client.ts
 export class ApiClient {
@@ -368,16 +386,19 @@ export class ApiClient {
 ## Benefits
 
 ### Code Quality
+
 - Catches common mistakes
 - Promotes modern JavaScript
 - Consistent patterns
 
 ### Maintainability
+
 - Standard file naming
 - Clear error messages
 - Readable code patterns
 
 ### Performance
+
 - Optimized regex
 - Better module resolution
 - Efficient iterations

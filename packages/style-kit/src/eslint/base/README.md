@@ -7,6 +7,7 @@ The base configuration includes core ESLint rules that apply to all JavaScript a
 ## Overview
 
 This configuration is always enabled and provides:
+
 - Modern JavaScript best practices
 - Error prevention
 - Code quality improvements
@@ -29,48 +30,65 @@ export default eslintConfig({
 ### Options
 
 #### `"arrow"` (default)
+
 Enforces arrow function expressions:
+
 ```js
 // ✅ Good
 const add = (a, b) => a + b;
 const greet = () => console.log("Hello");
 
 // ❌ Bad
-function add(a, b) { return a + b; }
+function add(a, b) {
+  return a + b;
+}
 ```
 
 #### `"declaration"`
+
 Enforces function declarations:
+
 ```js
 // ✅ Good
-function add(a, b) { return a + b; }
+function add(a, b) {
+  return a + b;
+}
 
 // ❌ Bad
 const add = (a, b) => a + b;
 ```
 
 #### `"expression"`
+
 Enforces function expressions:
+
 ```js
 // ✅ Good
-const add = function(a, b) { return a + b; };
+const add = function (a, b) {
+  return a + b;
+};
 
 // ❌ Bad
-function add(a, b) { return a + b; }
+function add(a, b) {
+  return a + b;
+}
 const add = (a, b) => a + b;
 ```
 
 #### `"off"`
+
 Disables function style enforcement - use any style you prefer.
 
 ## Key Rules
 
 ### Type Safety
+
 - **`eqeqeq`** - Require `===` and `!==` instead of `==` and `!=`
 - **`valid-typeof`** - Enforce comparing typeof expressions to valid strings
 - **`use-isnan`** - Require `isNaN()` when checking for NaN
 
 ### Modern JavaScript
+
 - **`no-var`** - Require `let` or `const` instead of `var`
 - **`prefer-const`** - Prefer `const` over `let` when variables are never reassigned
 - **`prefer-arrow-callback`** - Prefer arrow functions as callbacks (when `functionStyle: "arrow"`)
@@ -80,6 +98,7 @@ Disables function style enforcement - use any style you prefer.
 - **`object-shorthand`** - Require object literal shorthand syntax
 
 ### Error Prevention
+
 - **`no-console`** - Disallow `console` except `console.info/warn/error`
 - **`no-debugger`** - Disallow `debugger` statements
 - **`no-alert`** - Disallow `alert`, `confirm`, and `prompt`
@@ -90,6 +109,7 @@ Disables function style enforcement - use any style you prefer.
 - **`array-callback-return`** - Require `return` statements in array method callbacks
 
 ### Code Quality
+
 - **`curly`** - Require curly braces for multiline blocks
 - **`no-else-return`** - Disallow `else` after `return` in `if`
 - **`no-lonely-if`** - Disallow `if` as the only statement in `else`
@@ -98,11 +118,13 @@ Disables function style enforcement - use any style you prefer.
 - **`no-implicit-coercion`** - Disallow type conversion with shorter notations (prefer explicit conversion)
 
 ### Naming Conventions
+
 - **`camelcase`** - Enforce camelCase naming (with exceptions for `UNSAFE_` React lifecycle methods)
 - **`new-cap`** - Require constructor names to begin with a capital letter
 - **`func-names`** - Require named function expressions
 
 ### Dangerous Patterns
+
 - **`no-extend-native`** - Disallow extending native objects
 - **`no-proto`** - Disallow `__proto__` property
 - **`no-iterator`** - Disallow `__iterator__` property
@@ -142,7 +164,7 @@ export default eslintConfig({
     "no-console": "off",
 
     // Make camelcase an error instead of warning
-    "camelcase": "error",
+    camelcase: "error",
 
     // Allow bitwise operators
     "no-bitwise": "off",

@@ -7,6 +7,7 @@ ESLint rules for Storybook stories and configuration files.
 ## Overview
 
 Storybook configuration is **disabled by default** and provides:
+
 - Story file best practices
 - CSF (Component Story Format) validation
 - Story naming and structure rules
@@ -26,6 +27,7 @@ export default eslintConfig({
 ## File Scope
 
 Storybook rules apply to:
+
 - **Story files**: `**/*.stories.{ts,tsx,js,jsx,mjs,cjs}` and `**/*.story.{ts,tsx,js,jsx,mjs,cjs}`
 - **Config files**: `.storybook/main.{js,cjs,mjs,ts}`
 
@@ -56,7 +58,9 @@ export const Primary: Story = {
 };
 
 // ❌ Bad - missing default export
-export const Primary: Story = { /* ... */ };
+export const Primary: Story = {
+  /* ... */
+};
 
 // ❌ Bad - missing component in meta
 export default {
@@ -65,6 +69,7 @@ export default {
 ```
 
 **Rules:**
+
 - `storybook/default-exports` - Requires default export with meta
 - `storybook/csf-component` - Ensures `component` is defined in meta
 
@@ -74,13 +79,23 @@ Enforces consistent story naming:
 
 ```tsx
 // ✅ Good - PascalCase story names
-export const Primary: Story = { /* ... */ };
-export const Secondary: Story = { /* ... */ };
-export const WithIcon: Story = { /* ... */ };
+export const Primary: Story = {
+  /* ... */
+};
+export const Secondary: Story = {
+  /* ... */
+};
+export const WithIcon: Story = {
+  /* ... */
+};
 
 // ❌ Bad - incorrect casing
-export const primary: Story = { /* ... */ };
-export const with_icon: Story = { /* ... */ };
+export const primary: Story = {
+  /* ... */
+};
+export const with_icon: Story = {
+  /* ... */
+};
 
 // ❌ Bad - redundant story name
 export const ButtonPrimary: Story = {
@@ -89,6 +104,7 @@ export const ButtonPrimary: Story = {
 ```
 
 **Rules:**
+
 - `storybook/prefer-pascal-case` - PascalCase for story names
 - `storybook/no-redundant-story-name` - No redundant `name` property
 
@@ -116,6 +132,7 @@ const meta = {
 ```
 
 **Rules:**
+
 - `storybook/meta-inline-properties` - Inline meta properties (no spread)
 - `storybook/hierarchy-separator` - Use `/` for hierarchy, not `|`
 - `storybook/story-exports` - All exports must be stories (except default)
@@ -164,6 +181,7 @@ export const Login: Story = {
 ```
 
 **Rules:**
+
 - `storybook/context-in-play-function` - Requires context parameter in play functions
 - `storybook/await-interactions` - Ensures interactions are awaited
 - `storybook/use-storybook-expect` - Use `@storybook/test` expect
@@ -190,6 +208,7 @@ export const WithHook: Story = {
 ```
 
 **Auto-disabled:**
+
 - `import/no-anonymous-default-export` - Story meta needs anonymous default
 - `react-hooks/rules-of-hooks` - Hooks in render functions are OK
 
@@ -201,16 +220,14 @@ Additional rules for `.storybook/main.js` configuration:
 // .storybook/main.ts
 const config = {
   stories: ["../src/**/*.stories.@(ts|tsx)"],
-  addons: [
-    "@storybook/addon-essentials",
-    "@storybook/addon-interactions",
-  ],
+  addons: ["@storybook/addon-essentials", "@storybook/addon-interactions"],
 };
 
 export default config;
 ```
 
 **Rules:**
+
 - `storybook/no-uninstalled-addons` - Ensures addons are installed in `package.json`
 
 ## Examples
@@ -281,14 +298,8 @@ export const FilledForm: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.type(
-      canvas.getByLabelText("Email"),
-      "user@example.com"
-    );
-    await userEvent.type(
-      canvas.getByLabelText("Password"),
-      "password123"
-    );
+    await userEvent.type(canvas.getByLabelText("Email"), "user@example.com");
+    await userEvent.type(canvas.getByLabelText("Password"), "password123");
   },
 };
 

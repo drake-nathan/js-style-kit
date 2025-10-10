@@ -7,6 +7,7 @@ Comprehensive testing support with rules for Vitest, Jest, Bun, and Node.js test
 ## Overview
 
 Testing support is **disabled by default** and provides:
+
 - Framework-specific test rules (Vitest, Jest, Bun, Node.js)
 - Test file naming conventions
 - Test style consistency (`it` vs `test`)
@@ -25,11 +26,13 @@ export default eslintConfig({
 ## Configuration Options
 
 ### Basic Enable
+
 ```js
-testing: true // Vitest + ".test" files + "test" style + formatting
+testing: true; // Vitest + ".test" files + "test" style + formatting
 ```
 
 ### Framework-Specific
+
 ```js
 testing: {
   framework: "vitest",         // "vitest" | "jest" | "bun" | "node"
@@ -40,6 +43,7 @@ testing: {
 ```
 
 ### Custom Files
+
 ```js
 testing: {
   framework: "jest",
@@ -50,6 +54,7 @@ testing: {
 ## Framework Options
 
 ### Vitest (Default)
+
 ```js
 export default eslintConfig({
   testing: { framework: "vitest" },
@@ -57,11 +62,13 @@ export default eslintConfig({
 ```
 
 **Includes:**
+
 - ✅ Vitest-specific rules and globals
 - ✅ Test assertion best practices
 - ✅ Hook usage validation
 
 ### Jest
+
 ```js
 export default eslintConfig({
   testing: { framework: "jest" },
@@ -69,11 +76,13 @@ export default eslintConfig({
 ```
 
 **Includes:**
+
 - ✅ Jest-specific rules and globals
 - ✅ All Jest best practices
 - ✅ Snapshot testing support
 
 ### Bun
+
 ```js
 export default eslintConfig({
   testing: { framework: "bun" },
@@ -81,11 +90,13 @@ export default eslintConfig({
 ```
 
 **Includes:**
+
 - ✅ Bun test runner support
 - ✅ Uses `bun:test` global package
 - ✅ Jest-compatible rules
 
 ### Node.js
+
 ```js
 export default eslintConfig({
   testing: { framework: "node" },
@@ -93,6 +104,7 @@ export default eslintConfig({
 ```
 
 **Includes:**
+
 - ✅ Node.js native test runner
 - ✅ Uses `node:test` global package
 - ✅ Jest-compatible rules
@@ -102,6 +114,7 @@ export default eslintConfig({
 Control test file naming conventions:
 
 ### .test files (Default)
+
 ```js
 testing: {
   filenamePattern: "test", // Enforces .test.ts, .test.tsx, etc.
@@ -109,11 +122,13 @@ testing: {
 ```
 
 **Valid:**
+
 - ✅ `user.test.ts`
 - ✅ `components/button.test.tsx`
 - ❌ `user.spec.ts` (warning)
 
 ### .spec files
+
 ```js
 testing: {
   filenamePattern: "spec", // Enforces .spec.ts, .spec.tsx, etc.
@@ -121,6 +136,7 @@ testing: {
 ```
 
 **Valid:**
+
 - ✅ `user.spec.ts`
 - ✅ `components/button.spec.tsx`
 - ❌ `user.test.ts` (warning)
@@ -130,6 +146,7 @@ testing: {
 Choose between `it` and `test` function names:
 
 ### "test" Style (Default)
+
 ```js
 testing: {
   itOrTest: "test",
@@ -149,6 +166,7 @@ it("adds two numbers", () => {
 ```
 
 ### "it" Style
+
 ```js
 testing: {
   itOrTest: "it",
@@ -172,6 +190,7 @@ test("should add two numbers", () => {
 Control padding around test blocks for better readability:
 
 ### Enabled (Default)
+
 ```js
 testing: {
   formattingRules: true,
@@ -223,6 +242,7 @@ describe("Calculator", () => {
 ```
 
 ### Disabled
+
 ```js
 testing: {
   formattingRules: false, // No padding requirements
@@ -232,27 +252,33 @@ testing: {
 ## Key Rules
 
 ### Test Structure
+
 - **`vitest/consistent-test-filename`** - Enforces consistent file naming
 - **`vitest/consistent-test-it`** / **`jest/consistent-test-it`** - Enforces `it` or `test`
 - **`vitest/no-identical-title`** / **`jest/no-identical-title`** - Prevents duplicate test names
 
 ### Assertions
+
 - **`vitest/expect-expect`** / **`jest/expect-expect`** - Ensures tests have assertions
 - **`vitest/no-conditional-expect`** / **`jest/no-conditional-expect`** - No conditional assertions
 - **`vitest/valid-expect`** / **`jest/valid-expect`** - Validates expect usage
 
 ### Best Practices
+
 - **`vitest/prefer-to-be`** / **`jest/prefer-to-be`** - Use `toBe()` for primitives
 - **`vitest/prefer-to-be-truthy`** / **`jest/prefer-to-be-truthy`** - Use `toBeTruthy()`/`toBeFalsy()`
 - **`vitest/no-disabled-tests`** / **`jest/no-disabled-tests`** - Warns on `.skip` and `.only`
 
 ### TypeScript Integration
+
 When TypeScript is enabled:
+
 - **`@typescript-eslint/unbound-method`** is disabled (conflicts with test mocking)
 
 ## Examples
 
 ### Vitest + TypeScript
+
 ```js
 export default eslintConfig({
   typescript: true,
@@ -282,6 +308,7 @@ describe("createUser", () => {
 ```
 
 ### Jest + Spec Files
+
 ```js
 export default eslintConfig({
   testing: {
@@ -303,6 +330,7 @@ describe("User", () => {
 ```
 
 ### Bun Tests
+
 ```js
 export default eslintConfig({
   testing: {
@@ -321,6 +349,7 @@ test("adds numbers", () => {
 ```
 
 ### Node.js Tests
+
 ```js
 export default eslintConfig({
   testing: {
@@ -362,6 +391,7 @@ export default eslintConfig({
 ## Common Patterns
 
 ### Monorepo with Multiple Test Runners
+
 ```js
 export default eslintConfig({
   testing: { framework: "vitest" },
@@ -377,6 +407,7 @@ export default eslintConfig({
 ```
 
 ### React Component Testing
+
 ```js
 export default eslintConfig({
   typescript: true,

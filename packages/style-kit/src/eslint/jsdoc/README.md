@@ -7,6 +7,7 @@ JSDoc comment validation and formatting for better code documentation.
 ## Overview
 
 JSDoc configuration is **disabled by default** and provides:
+
 - JSDoc comment validation
 - Type and tag checking
 - Parameter and return value documentation
@@ -26,11 +27,13 @@ export default eslintConfig({
 ## Configuration Options
 
 ### Basic Enable
+
 ```js
-jsdoc: true // Validation without requiring JSDoc on all functions
+jsdoc: true; // Validation without requiring JSDoc on all functions
 ```
 
 ### Require JSDoc
+
 ```js
 jsdoc: {
   requireJsdoc: true, // Enforce JSDoc on functions and classes
@@ -40,6 +43,7 @@ jsdoc: {
 ## File Scope
 
 JSDoc rules apply to:
+
 - ✅ All `.js`, `.jsx`, `.ts`, `.tsx`, `.cjs`, `.mjs` files
 - ❌ Excluded from `.test` and `.spec` files
 
@@ -69,6 +73,7 @@ export const add = (a: number, b: number) => a + b;
 ```
 
 **Active rules:**
+
 - ✅ Validates JSDoc syntax and formatting
 - ✅ Checks parameter names match function signature
 - ✅ Verifies tag names are valid
@@ -94,6 +99,7 @@ export const add = (a: number, b: number) => a + b;
 ```
 
 **Requires JSDoc on:**
+
 - Function declarations
 - Function expressions
 - Arrow functions
@@ -114,10 +120,7 @@ When using TypeScript, JSDoc rules automatically adjust:
  * @param taxRate - Tax rate as decimal
  * @returns Total price including tax
  */
-export const calculateTotal = (
-  price: number,
-  taxRate: number
-): number => {
+export const calculateTotal = (price: number, taxRate: number): number => {
   return price * (1 + taxRate);
 };
 
@@ -127,15 +130,13 @@ export const calculateTotal = (
  * @param {number} taxRate - Tax rate
  * @returns {number} Total
  */
-export const calculateTotal = (
-  price: number,
-  taxRate: number
-): number => {
+export const calculateTotal = (price: number, taxRate: number): number => {
   return price * (1 + taxRate);
 };
 ```
 
 **TypeScript-specific behavior:**
+
 - `jsdoc/no-types` is enabled (prevents redundant `{type}` annotations)
 - `jsdoc/no-undefined-types` is disabled (TypeScript validates types)
 - Type information comes from TypeScript, not JSDoc
@@ -143,6 +144,7 @@ export const calculateTotal = (
 ## Key Rules
 
 ### Syntax Validation
+
 - **`jsdoc/check-alignment`** - Enforces proper JSDoc alignment
 - **`jsdoc/check-tag-names`** - Validates tag names are recognized
 - **`jsdoc/check-types`** - Validates JSDoc types (non-TypeScript)
@@ -150,23 +152,27 @@ export const calculateTotal = (
 - **`jsdoc/empty-tags`** - Validates tags that shouldn't have content
 
 ### Parameter Documentation
+
 - **`jsdoc/check-param-names`** - Parameter names match function signature
 - **`jsdoc/require-param`** - Requires `@param` tags (when `requireJsdoc: true`)
 - **`jsdoc/require-param-name`** - Ensures `@param` has parameter name
 - **`jsdoc/require-param-description`** - Requires parameter descriptions
 
 ### Return Documentation
+
 - **`jsdoc/require-returns`** - Requires `@returns` tag (when `requireJsdoc: true`)
 - **`jsdoc/require-returns-check`** - Validates `@returns` matches return statement
 - **`jsdoc/require-returns-description`** - Requires return value description
 
 ### Formatting
+
 - **`jsdoc/multiline-blocks`** - Enforces multiline JSDoc format
 - **`jsdoc/no-multi-asterisks`** - Prevents extra asterisks
 - **`jsdoc/require-asterisk-prefix`** - Requires asterisk on each line
 - **`jsdoc/tag-lines`** - Controls spacing between tags
 
 ### Other Rules
+
 - **`jsdoc/check-access`** - Validates `@private`, `@public`, etc.
 - **`jsdoc/check-property-names`** - Validates `@property` tag names
 - **`jsdoc/implements-on-classes`** - Ensures `@implements` on classes only
@@ -251,7 +257,7 @@ interface User {
 export const createUser = ({
   name,
   email,
-  role
+  role,
 }: {
   name: string;
   email: string;
@@ -274,7 +280,7 @@ export const createUser = ({
  */
 export const processPayment = async (
   orderId: string,
-  amount: number
+  amount: number,
 ): Promise<PaymentConfirmation> => {
   // Implementation
 };
@@ -307,6 +313,7 @@ JSDoc enforces consistent tag spacing:
 ```
 
 **Rules:**
+
 - One blank line between description and first tag
 - No blank lines between `@param` tags
 - Consistent formatting throughout

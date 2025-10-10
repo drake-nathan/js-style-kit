@@ -7,6 +7,7 @@ ESLint rules for [TanStack Query](https://tanstack.com/query) (formerly React Qu
 ## Overview
 
 TanStack Query support is **disabled by default** and provides:
+
 - Query dependency validation
 - Property ordering consistency
 - Stable query client patterns
@@ -46,13 +47,13 @@ Ensures all dependencies are declared in query keys and function scopes.
 ```ts
 // ✅ Good
 const { data } = useQuery({
-  queryKey: ['users', userId], // userId in queryKey
+  queryKey: ["users", userId], // userId in queryKey
   queryFn: () => fetchUser(userId),
 });
 
 // ❌ Bad
 const { data } = useQuery({
-  queryKey: ['users'], // Missing userId
+  queryKey: ["users"], // Missing userId
   queryFn: () => fetchUser(userId),
 });
 ```
@@ -62,7 +63,7 @@ Prevents unstable references in query keys that could cause unnecessary refetche
 
 ```ts
 // ✅ Good
-const queryKey = useMemo(() => ['users', userId], [userId]);
+const queryKey = useMemo(() => ["users", userId], [userId]);
 const { data } = useQuery({
   queryKey,
   queryFn: fetchUsers,
@@ -70,7 +71,7 @@ const { data } = useQuery({
 
 // ❌ Bad
 const { data } = useQuery({
-  queryKey: ['users', { id: userId }], // New object each render
+  queryKey: ["users", { id: userId }], // New object each render
   queryFn: fetchUsers,
 });
 ```
@@ -83,7 +84,7 @@ Enforces consistent property order in `useInfiniteQuery`:
 ```ts
 // ✅ Good - correct order
 useInfiniteQuery({
-  queryKey: ['projects'],
+  queryKey: ["projects"],
   queryFn: fetchProjects,
   getNextPageParam: (lastPage) => lastPage.nextCursor,
   initialPageParam: 0,
@@ -97,8 +98,12 @@ Enforces consistent property order in `useMutation`:
 // ✅ Good - correct order
 useMutation({
   mutationFn: createUser,
-  onSuccess: () => { /* ... */ },
-  onError: () => { /* ... */ },
+  onSuccess: () => {
+    /* ... */
+  },
+  onError: () => {
+    /* ... */
+  },
 });
 ```
 
@@ -110,14 +115,16 @@ Prevents `void` returning query functions:
 ```ts
 // ✅ Good
 useQuery({
-  queryKey: ['users'],
+  queryKey: ["users"],
   queryFn: () => fetchUsers(), // Returns Promise<User[]>
 });
 
 // ❌ Bad
 useQuery({
-  queryKey: ['users'],
-  queryFn: () => { fetchUsers(); }, // Returns void
+  queryKey: ["users"],
+  queryFn: () => {
+    fetchUsers();
+  }, // Returns void
 });
 ```
 
@@ -127,13 +134,13 @@ Prevents rest destructuring which can lead to serialization issues:
 ```ts
 // ✅ Good
 const { data, isLoading, error } = useQuery({
-  queryKey: ['users'],
+  queryKey: ["users"],
   queryFn: fetchUsers,
 });
 
 // ❌ Bad
 const { data, ...rest } = useQuery({
-  queryKey: ['users'],
+  queryKey: ["users"],
   queryFn: fetchUsers,
 });
 ```
@@ -149,9 +156,7 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      {/* ... */}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{/* ... */}</QueryClientProvider>
   );
 }
 
@@ -159,9 +164,7 @@ function App() {
 function App() {
   const queryClient = new QueryClient();
   return (
-    <QueryClientProvider client={queryClient}>
-      {/* ... */}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{/* ... */}</QueryClientProvider>
   );
 }
 ```
@@ -169,6 +172,7 @@ function App() {
 ## Common Patterns
 
 ### With React and TypeScript
+
 ```js
 export default eslintConfig({
   typescript: true,
@@ -178,6 +182,7 @@ export default eslintConfig({
 ```
 
 ### With Next.js
+
 ```js
 export default eslintConfig({
   typescript: true,
@@ -214,22 +219,24 @@ export default eslintConfig({
 ## Troubleshooting
 
 ### False positives on exhaustive-deps
+
 Ensure all variables used in `queryFn` are in `queryKey`:
 
 ```ts
 const { data } = useQuery({
-  queryKey: ['users', filter, sort], // Include all dependencies
+  queryKey: ["users", filter, sort], // Include all dependencies
   queryFn: () => fetchUsers({ filter, sort }),
 });
 ```
 
 ### Object key instability warnings
+
 Memoize object keys:
 
 ```ts
 const params = useMemo(() => ({ filter, sort }), [filter, sort]);
 const { data } = useQuery({
-  queryKey: ['users', params],
+  queryKey: ["users", params],
   queryFn: () => fetchUsers(params),
 });
 ```
