@@ -43,10 +43,17 @@ export const reactRules = ({
      */
     ...(reactCompiler ?
       {
-        "react-hooks/component-hook-factories": "warn",
-        "react-hooks/config": "warn",
+        /**
+         * Does not seem to be working, and overlaps with static-components
+         */
+        // "react-hooks/component-hook-factories": "warn",
+
+        /**
+         * seems unecessary unless you're rolling your own React setup, users can always enable
+         */
+        // "react-hooks/config": "warn",
+
         "react-hooks/error-boundaries": "warn",
-        "react-hooks/gating": "warn",
         "react-hooks/globals": "warn",
         "react-hooks/immutability": "warn",
         "react-hooks/incompatible-library": "warn",
@@ -55,7 +62,12 @@ export const reactRules = ({
         "react-hooks/refs": "warn",
         "react-hooks/set-state-in-effect": "warn",
         "react-hooks/set-state-in-render": "warn",
-        "react-hooks/static-components": "warn",
+
+        /**
+         * overlaps with react/no-unstable-nested-components
+         */
+        // "react-hooks/static-components": "warn",
+
         "react-hooks/unsupported-syntax": "warn",
         "react-hooks/use-memo": "warn",
       }
