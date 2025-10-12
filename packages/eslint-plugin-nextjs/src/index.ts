@@ -1,7 +1,6 @@
 import type { ESLint, Linter } from "eslint";
 
-import fs from "node:fs";
-
+import pkg from "../package.json" with { type: "json" };
 import { googleFontDisplay } from "./rules/google-font-display.js";
 import { googleFontPreconnect } from "./rules/google-font-preconnect.js";
 import { inlineScriptId } from "./rules/inline-script-id.js";
@@ -23,10 +22,6 @@ import { noSyncScripts } from "./rules/no-sync-scripts.js";
 import { noTitleInDocumentHead } from "./rules/no-title-in-document-head.js";
 import { noTypos } from "./rules/no-typos.js";
 import { noUnwantedPolyfillio } from "./rules/no-unwanted-polyfillio.js";
-
-const pkg = JSON.parse(
-  fs.readFileSync(new URL("../package.json", import.meta.url), "utf8"),
-);
 
 // initialize plugin so it can be referenced in config
 const plugin: ESLint.Plugin = {

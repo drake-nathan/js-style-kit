@@ -13,8 +13,8 @@ A zero-configuration style guide for ESLint and Prettier that provides sensible 
 
 This repo consists of two packages:
 
-- `js-style-kit` - The main package of this repo, a prettier/eslint style guide.
-- `eslint-plugin-nextjs` - A fork of `@nextjs/eslint-plugin-nextjs` with TypeScript and ESLint v9 support.
+- [`js-style-kit`](./packages/style-kit/README.md) - The main package of this repo, a prettier/eslint style guide.
+- [`eslint-plugin-nextjs`](./packages/eslint-plugin-nextjs/README.md) - A fork of `@next/eslint-plugin-next` with TypeScript and ESLint v9 support.
 
 ## Repository Structure
 
@@ -25,7 +25,6 @@ This is a monorepo managed with Turborepo and bun.
 ├── apps/
 │   ├── next-test-app/        # Next.js app for testing
 │   └── vite-test-app/        # Vite app for testing
-├── docs/                     # Documentation site built with Mintlify
 ├── packages/
 │   ├── eslint-plugin-nextjs/ # Fork of @nextjs/eslint-plugin-nextjs with TypeScript and ESLint v9 support
 │   ├── style-kit/            # Main package with ESLint and Prettier configurations
