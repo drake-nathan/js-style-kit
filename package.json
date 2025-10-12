@@ -15,6 +15,7 @@
     "dev": "turbo run dev",
     "format": "prettier . --write --cache",
     "format:check": "prettier . --check --cache",
+    "preinstall": "bun run scripts/check-bun-version.js",
     "lint": "eslint . --max-warnings=0 --cache --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
     "lint:fix": "eslint . --max-warnings=0 --fix --cache --ignore-pattern docs --ignore-pattern packages --ignore-pattern apps",
     "outdated": "bun outdated --filter \"js-style-kit-root\" --filter \"js-style-kit\" --filter \"js-style-kit-docs\"",
@@ -30,7 +31,6 @@
     "turbo": "^2.5.8",
     "typescript": "^5.9.3"
   },
-  "packageManager": "bun@1.2.3",
   "engines": {
     "node": ">=22"
   }

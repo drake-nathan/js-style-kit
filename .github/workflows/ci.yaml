@@ -33,7 +33,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: "package.json"
+          bun-version: ".bun-version"
 
       - name: Restore cache
         uses: actions/cache@v4
