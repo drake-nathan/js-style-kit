@@ -2,7 +2,7 @@
 
 ESLint rules for Turborepo monorepos to catch common configuration issues.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -377,4 +377,4 @@ const key = process.env[`DYNAMIC_${name}`];
 - [eslint-plugin-turbo](https://github.com/vercel/turbo/tree/main/packages/eslint-plugin-turbo)
 - [Turborepo Documentation](https://turbo.build/repo/docs)
 - [Turborepo Environment Variables](https://turbo.build/repo/docs/core-concepts/caching#environment-variables)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

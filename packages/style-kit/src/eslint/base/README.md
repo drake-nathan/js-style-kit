@@ -2,7 +2,7 @@
 
 The base configuration includes core ESLint rules that apply to all JavaScript and TypeScript projects. These rules are carefully selected from ESLint's recommended set with additional best practices.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -14,6 +14,8 @@ This configuration is always enabled and provides:
 - Function style enforcement
 
 All rules are configured as **warnings** (not errors) to distinguish them from TypeScript errors in your IDE.
+
+[See all rules here](./rules.ts)
 
 ## Function Style
 
@@ -181,4 +183,4 @@ export default eslintConfig({
 ## Learn More
 
 - [ESLint Rules Documentation](https://eslint.org/docs/latest/rules/)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

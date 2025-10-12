@@ -2,7 +2,7 @@
 
 Modern JavaScript/TypeScript best practices and code quality rules powered by `eslint-plugin-unicorn`.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -28,7 +28,7 @@ export default eslintConfig(); // Unicorn rules enabled by default
 
 ### File Naming (kebab-case)
 
-Enforces consistent kebab-case naming for files:
+Enforces consistent kebab-case naming for files. This is a convention that promotes consistency and avoids case-sensitivity issues across different operating systems.
 
 ```
 ✅ Good filenames:
@@ -49,7 +49,24 @@ Enforces consistent kebab-case naming for files:
 
 - `unicorn/filename-case` - Enforces kebab-case for all files
 
-**Note:** This is a convention that promotes consistency and avoids case-sensitivity issues across different operating systems.
+If you prefer another convention, you can override this rule in your configuration:
+
+```js
+export default eslintConfig({
+  rules: {
+    // Allow PascalCase for React components
+    "unicorn/filename-case": [
+      "warn",
+      {
+        case: "kebabCase",
+        ignore: [
+          "^[A-Z].*\\.tsx$", // Allow PascalCase for .tsx files
+        ],
+      },
+    ],
+  },
+});
+```
 
 ### Node.js Protocol
 
@@ -414,4 +431,4 @@ export class ApiClient {
 - [eslint-plugin-unicorn](https://github.com/sindresorhus/eslint-plugin-unicorn)
 - [Node.js Module System](https://nodejs.org/api/esm.html)
 - [Modern JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

@@ -25,7 +25,6 @@ This is a monorepo managed with Turborepo and bun.
 ├── apps/
 │   ├── next-test-app/        # Next.js app for testing
 │   └── vite-test-app/        # Vite app for testing
-├── docs/                     # Documentation site built with Mintlify
 ├── packages/
 │   ├── eslint-plugin-nextjs/ # Fork of @nextjs/eslint-plugin-nextjs with TypeScript and ESLint v9 support
 │   ├── style-kit/            # Main package with ESLint and Prettier configurations

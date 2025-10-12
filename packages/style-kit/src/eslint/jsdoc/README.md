@@ -2,7 +2,7 @@
 
 JSDoc comment validation and formatting for better code documentation.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -13,6 +13,8 @@ JSDoc configuration is **disabled by default** and provides:
 - Parameter and return value documentation
 - Formatting and style consistency
 - TypeScript-aware (disables redundant type rules)
+
+This plugin can be handy for libraries, but it can get annoying, so it's not for everyone. [See my configuration](./rules.ts), and feel free to customize via the `rules` option.
 
 ## Quick Start
 
@@ -394,4 +396,4 @@ export default eslintConfig({
 - [eslint-plugin-jsdoc](https://github.com/gajus/eslint-plugin-jsdoc)
 - [JSDoc Official](https://jsdoc.app/)
 - [TypeScript JSDoc Reference](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

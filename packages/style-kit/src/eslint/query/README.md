@@ -2,7 +2,7 @@
 
 ESLint rules for [TanStack Query](https://tanstack.com/query) (formerly React Query) to ensure proper usage patterns and prevent common mistakes.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -251,4 +251,4 @@ const { data } = useQuery({
 
 - [TanStack Query ESLint Plugin](https://tanstack.com/query/latest/docs/eslint/eslint-plugin-query)
 - [TanStack Query Documentation](https://tanstack.com/query/latest)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

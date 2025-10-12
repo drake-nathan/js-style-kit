@@ -2,7 +2,7 @@
 
 Comprehensive TypeScript support with type-aware linting rules from `@typescript-eslint`. The configuration strikes a balance between strict type safety and practical development.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -226,4 +226,4 @@ typescript: "./tsconfig.eslint.json";
 
 - [@typescript-eslint Documentation](https://typescript-eslint.io/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

@@ -2,7 +2,7 @@
 
 ESLint rules for Storybook stories and configuration files.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -421,4 +421,4 @@ export const InteractiveTest: Story = {
 - [Storybook](https://storybook.js.org/)
 - [Component Story Format (CSF)](https://storybook.js.org/docs/react/api/csf)
 - [Storybook Interactions](https://storybook.js.org/docs/react/writing-tests/interaction-testing)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

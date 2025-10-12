@@ -2,7 +2,7 @@
 
 Comprehensive React support with ESLint rules for React, hooks, compiler, and framework-specific configurations for Next.js, Vite, Remix, and React Router.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -108,7 +108,7 @@ react: {
 
 ## React Compiler
 
-[React Compiler](https://react.dev/learn/react-compiler) optimizes React components automatically. The `react-hooks/react-compiler` rule ensures your code is compatible with the compiler.
+[React Compiler](https://react.dev/learn/react-compiler) optimizes React components automatically. `eslint-plugin-react-hooks` provides several rules to ensure your code is compatible with the compiler. They are new, and they may conflict with some rules from `eslint-plugin-react`. If it does, open an issue to let me know!
 
 **Enabled by default** when React is enabled.
 
@@ -122,9 +122,9 @@ react: {
 
 ```js
 export default eslintConfig({
-  react: true,
-  rules: {
-    "react-hooks/react-compiler": "off",
+  react: {
+    framework: "none", // could be anything
+    reactCompiler: false,
   },
 });
 ```
@@ -217,7 +217,6 @@ functionStyle: "off"; // Use any style you prefer
 
 - **`react-hooks/rules-of-hooks`** - Enforces Rules of Hooks
 - **`react-hooks/exhaustive-deps`** - Validates dependency arrays
-- **`react-hooks/react-compiler`** - React Compiler compatibility (enabled by default)
 
 ```jsx
 // ✅ Good - hooks at top level
@@ -402,16 +401,6 @@ Ensure React is installed in your project. The config auto-detects the version.
 2. Ensure components follow Fast Refresh patterns
 3. Review warnings from `eslint-plugin-react-refresh`
 
-### Compiler rules too strict
-
-Disable with:
-
-```js
-rules: {
-  "react-hooks/react-compiler": "off",
-}
-```
-
 ## Related Configurations
 
 - [TypeScript](../typescript/README.md) - TypeScript configuration
@@ -424,4 +413,4 @@ rules: {
 - [React Hooks ESLint Plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks)
 - [React Refresh Plugin](https://github.com/ArnaudBarre/eslint-plugin-react-refresh)
 - [React Compiler](https://react.dev/learn/react-compiler)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

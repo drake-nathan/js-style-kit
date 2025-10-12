@@ -2,7 +2,7 @@
 
 Opinionated Prettier configuration with powerful plugins for CSS ordering, JSON sorting, Tailwind class sorting, and more.
 
-[← Back to main README](../README.md)
+[← Back to main README](../../README.md)
 
 ## Overview
 
@@ -14,11 +14,11 @@ The Prettier configuration includes:
 - **JSON sorting** - Alphabetical key sorting
 - **Package.json** - Consistent dependency ordering
 - **Tailwind CSS** - Class name sorting (optional)
-- **Experimental ternaries** - Better formatting for ternary operators
 
 ## Quick Start
 
 ```js
+// @ts-check
 import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig();
@@ -27,6 +27,7 @@ export default prettierConfig();
 ## Configuration Options
 
 ```js
+// @ts-check
 import { prettierConfig } from "js-style-kit";
 
 export default prettierConfig({
@@ -55,6 +56,7 @@ export default prettierConfig({
 The **OXC parser** is a faster alternative to Prettier's default parser:
 
 ```js
+// @ts-check
 export default prettierConfig({
   parser: "oxc", // Default - faster performance
 });
@@ -71,6 +73,7 @@ export default prettierConfig({
 Use Prettier's standard parser:
 
 ```js
+// @ts-check
 export default prettierConfig({
   parser: "default", // Standard Prettier parser
 });
@@ -142,18 +145,24 @@ curlyPlugin: false;
 ```json
 // ✅ Good - keys sorted
 {
-  "author": "John Doe",
-  "dependencies": {},
-  "name": "my-package",
-  "version": "1.0.0"
+  "apiUrl": "https://api.example.com",
+  "environment": "production",
+  "features": {
+    "analytics": true,
+    "darkMode": false
+  },
+  "timeout": 5000
 }
 
 // Before formatting - unsorted
 {
-  "name": "my-package",
-  "version": "1.0.0",
-  "author": "John Doe",
-  "dependencies": {}
+  "timeout": 5000,
+  "environment": "production",
+  "features": {
+    "darkMode": false,
+    "analytics": true
+  },
+  "apiUrl": "https://api.example.com"
 }
 ```
 
@@ -210,10 +219,10 @@ packageJsonPlugin: false;
 <div className="p-4 bg-blue-500 flex rounded-lg items-center justify-between" />
 ```
 
-#### Enable with Defaults
+#### Enable with path to global css file for Tailwind v4
 
 ```js
-tailwindPlugin: true; // Uses clsx, cva, cn as utility functions
+tailwindPlugin: "./src/index.css";
 ```
 
 #### Specify Utility Functions
@@ -231,30 +240,6 @@ tailwindPlugin: {
   tailwindStylesheet: "./styles/tailwind.css",
 }
 ```
-
-#### Path to Tailwind Config
-
-```js
-tailwindPlugin: "./tailwind.config.js";
-```
-
-**Note:** The plugin is automatically patched for ESM compatibility.
-
-## Experimental Ternaries
-
-**Always enabled** - Improves ternary operator formatting:
-
-```js
-// ✅ Better formatting with experimental ternaries
-const value =
-  condition ? "long value that needs to wrap" : "another long value";
-
-// Traditional formatting
-const value =
-  condition ? "long value that needs to wrap" : "another long value";
-```
-
-Cannot be disabled (it's a Prettier-wide feature that improves formatting).
 
 ## Standard Prettier Options
 
@@ -400,9 +385,9 @@ Each plugin has additional options:
 
 ### Tailwind classes not sorting
 
-1. Ensure `tailwindPlugin: true` is set
-2. Verify Tailwind is installed
-3. Check utility function names match your usage
+1. Ensure `tailwindPlugin` is set to your global css file path
+2. Reload your IDE
+3. Run the prettier CLI to see if there's an error
 
 ### OXC parser issues
 
@@ -425,4 +410,4 @@ curlyPlugin: false,
 ## Learn More
 
 - [Prettier Documentation](https://prettier.io/docs/en/)
-- [Main README](../README.md)
+- [Main README](../../README.md)

@@ -2,7 +2,7 @@
 
 Comprehensive import/export validation and organization powered by `eslint-plugin-import-x`. A faster alternative to `eslint-plugin-import`.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -394,4 +394,4 @@ export default eslintConfig({
 - [eslint-plugin-import-x](https://github.com/un-ts/eslint-plugin-import-x)
 - [eslint-import-resolver-typescript](https://github.com/import-js/eslint-import-resolver-typescript)
 - [ES Module Imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

@@ -2,7 +2,7 @@
 
 Comprehensive testing support with rules for Vitest, Jest, Bun, and Node.js test runners.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -433,4 +433,4 @@ export default eslintConfig({
 - [Node.js Test Runner](https://nodejs.org/api/test.html)
 - [eslint-plugin-vitest](https://github.com/vitest-dev/eslint-plugin-vitest)
 - [eslint-plugin-jest](https://github.com/jest-community/eslint-plugin-jest)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

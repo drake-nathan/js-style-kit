@@ -2,7 +2,7 @@
 
 Automatic code organization through intelligent sorting of imports, objects, types, and more with `eslint-plugin-perfectionist`.
 
-[← Back to main README](../../README.md)
+[← Back to main README](../../../README.md)
 
 ## Overview
 
@@ -452,4 +452,4 @@ export class ApiClient {
 
 - [eslint-plugin-perfectionist](https://github.com/azat-io/eslint-plugin-perfectionist)
 - [Natural Sort Algorithm](https://en.wikipedia.org/wiki/Natural_sort_order)
-- [Main README](../../README.md)
+- [Main README](../../../README.md)

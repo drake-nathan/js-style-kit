@@ -27,7 +27,7 @@ export const storybookConfig = (
     },
     rules: {
       // Default Storybook rules
-      "import/no-anonymous-default-export": "off",
+      "import-x/no-anonymous-default-export": "off",
       "react-hooks/rules-of-hooks": "off",
       "storybook/await-interactions": "warn",
       "storybook/context-in-play-function": "warn",
