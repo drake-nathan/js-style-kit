@@ -11,7 +11,7 @@
     process.exit(1);
   }
 
-  // Parse "bun@1.2.3" format
+  // Parse "bun@x.x.x" format
   const match = packageManager.match(/^bun@(?<version>.+)$/);
 
   if (!match) {

@@ -89,10 +89,9 @@ jobs:
       - name: Test and generate coverage reports
         id: test-coverage
         run: bun turbo run test:coverage
-        continue-on-error: true
 
       - name: Upload coverage reports to Codecov
-        if: steps.test-coverage.outcome == 'success'
+        if: always()
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
