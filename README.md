@@ -14,7 +14,7 @@ A zero-configuration style guide for ESLint and Prettier that provides sensible 
 This repo consists of two packages:
 
 - [`js-style-kit`](./packages/style-kit/README.md) - The main package of this repo, a prettier/eslint style guide.
-- [`eslint-plugin-nextjs`](./packages/eslint-plugin-nextjs/README.md) - A fork of `@nextjs/eslint-plugin-nextjs` with TypeScript and ESLint v9 support.
+- [`eslint-plugin-nextjs`](./packages/eslint-plugin-nextjs/README.md) - A fork of `@next/eslint-plugin-next` with TypeScript and ESLint v9 support.
 
 ## Repository Structure
 

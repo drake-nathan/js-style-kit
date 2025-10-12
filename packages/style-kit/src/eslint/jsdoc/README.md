@@ -31,7 +31,7 @@ export default eslintConfig({
 ### Basic Enable
 
 ```js
-jsdoc: true; // Validation without requiring JSDoc on all functions
+jsdoc: true, // Validation without requiring JSDoc on all functions
 ```
 
 ### Require JSDoc

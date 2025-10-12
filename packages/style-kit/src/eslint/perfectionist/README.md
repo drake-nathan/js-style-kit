@@ -43,12 +43,11 @@ All sorting uses **natural ascending order** by default:
 
 ```js
 // Natural sort understands numbers
-["item1", "item2", "item10", "item20"][
-  // Not: ["item1", "item10", "item2", "item20"]
+["item1", "item2", "item10", "item20"];
+// Not: ["item1", "item10", "item2", "item20"]
 
-  // Case-insensitive alphabetical
-  ("Apple", "banana", "Cherry")
-];
+// Case-insensitive alphabetical
+["Apple", "banana", "Cherry"];
 ```
 
 ## Key Features

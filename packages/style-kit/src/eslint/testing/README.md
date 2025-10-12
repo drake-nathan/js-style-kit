@@ -28,7 +28,7 @@ export default eslintConfig({
 ### Basic Enable
 
 ```js
-testing: true; // Vitest + ".test" files + "test" style + formatting
+testing: true, // Vitest + ".test" files + "test" style + formatting
 ```
 
 ### Framework-Specific
