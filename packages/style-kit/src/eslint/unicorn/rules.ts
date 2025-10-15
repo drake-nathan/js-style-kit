@@ -1,8 +1,16 @@
-import type { EslintRuleConfig } from "../types.js";
+import type { EslintRuleConfig, FilenameCase } from "../types.js";
 
 type UnicornRules = Record<`unicorn/${string}`, EslintRuleConfig>;
 
-export const rules: UnicornRules = {
+/**
+ * Generate Unicorn ESLint rules with configurable filename case.
+ *
+ * @param filenameCase - The filename case to enforce. Defaults to "kebabCase".
+ * @returns Unicorn ESLint rules configuration.
+ */
+export const rules = (
+  filenameCase: FilenameCase = "kebabCase",
+): UnicornRules => ({
   /**
    * Enforce better string content.
    *
@@ -23,7 +31,7 @@ export const rules: UnicornRules = {
   "unicorn/filename-case": [
     "warn",
     {
-      case: "kebabCase",
+      case: filenameCase,
     },
   ],
   /**
@@ -75,4 +83,4 @@ export const rules: UnicornRules = {
    * 🔧 Fixable - https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/text-encoding-identifier-case.md
    */
   "unicorn/text-encoding-identifier-case": "warn",
-};
+});

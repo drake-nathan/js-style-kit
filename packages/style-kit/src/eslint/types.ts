@@ -14,10 +14,16 @@ export type EslintRuleConfig<
   | [EslintSeverity]
   | EslintSeverity;
 
-export type FunctionStyle = "arrow" | "declaration" | "expression";
-
 export interface EslintConfigObject<
   Rules extends Linter.RulesRecord = Linter.RulesRecord,
 > extends Linter.Config<Rules> {
   name: ConfigName;
 }
+
+export type FilenameCase =
+  | "camelCase"
+  | "kebabCase"
+  | "pascalCase"
+  | "snakeCase";
+
+export type FunctionStyle = "arrow" | "declaration" | "expression";

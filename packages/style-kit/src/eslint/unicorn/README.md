@@ -21,14 +21,35 @@ The unicorn configuration is automatically enabled when you use `eslintConfig()`
 ```js
 import { eslintConfig } from "js-style-kit";
 
-export default eslintConfig(); // Unicorn rules enabled by default
+export default eslintConfig(); // Unicorn rules enabled by default with kebab-case filenames
+```
+
+### Configure Filename Case
+
+You can customize the filename case convention:
+
+```js
+import { eslintConfig } from "js-style-kit";
+
+export default eslintConfig({
+  unicorn: {
+    filenameCase: "camelCase", // "camelCase" | "kebabCase" | "pascalCase" | "snakeCase"
+  },
+});
 ```
 
 ## Key Features
 
-### File Naming (kebab-case)
+### File Naming
 
-Enforces consistent kebab-case naming for files. This is a convention that promotes consistency and avoids case-sensitivity issues across different operating systems.
+Enforces consistent filename case conventions. By default, kebab-case is used, which promotes consistency and avoids case-sensitivity issues across different operating systems.
+
+**Available Options:**
+
+- `kebabCase` (default) - `user-service.ts`, `api-client.js`
+- `camelCase` - `userService.ts`, `apiClient.js`
+- `pascalCase` - `UserService.ts`, `ApiClient.js`
+- `snakeCase` - `user_service.ts`, `api_client.js`
 
 ```
 ✅ Good filenames:
@@ -47,12 +68,33 @@ Enforces consistent kebab-case naming for files. This is a convention that promo
 
 **Rule:**
 
-- `unicorn/filename-case` - Enforces kebab-case for all files
+- `unicorn/filename-case` - Enforces consistent filename case
 
-If you prefer another convention, you can override this rule in your configuration:
+**Configuration:**
+
+```js
+// Use camelCase for all files
+export default eslintConfig({
+  unicorn: {
+    filenameCase: "camelCase",
+  },
+});
+
+// Use PascalCase for all files
+export default eslintConfig({
+  unicorn: {
+    filenameCase: "pascalCase",
+  },
+});
+```
+
+For more advanced customization (like ignoring specific patterns), you can override the rule directly:
 
 ```js
 export default eslintConfig({
+  unicorn: {
+    filenameCase: "kebabCase",
+  },
   rules: {
     // Allow PascalCase for React components
     "unicorn/filename-case": [
@@ -313,10 +355,31 @@ export class UserService {
 
 ## Customization
 
-### Override Filename Convention
+### Change Filename Convention
+
+```js
+// Use camelCase instead of kebab-case
+export default eslintConfig({
+  unicorn: {
+    filenameCase: "camelCase",
+  },
+});
+
+// Use PascalCase for component files
+export default eslintConfig({
+  unicorn: {
+    filenameCase: "pascalCase",
+  },
+});
+```
+
+### Override Filename Convention with Patterns
 
 ```js
 export default eslintConfig({
+  unicorn: {
+    filenameCase: "kebabCase",
+  },
   rules: {
     // Allow PascalCase for React components
     "unicorn/filename-case": [

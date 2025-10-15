@@ -1,6 +1,6 @@
 import type { Linter } from "eslint";
 
-import type { EslintRuleConfig, FunctionStyle } from "./types.js";
+import type { EslintRuleConfig, FilenameCase, FunctionStyle } from "./types.js";
 
 import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
@@ -52,7 +52,11 @@ export interface EslintConfigOptions {
   testing?: false | TestingConfig;
   turbo?: boolean;
   typescript?: boolean | string;
-  unicorn?: boolean;
+  unicorn?:
+    | boolean
+    | {
+        filenameCase?: FilenameCase;
+      };
 }
 
 /**
@@ -80,7 +84,7 @@ export interface EslintConfigOptions {
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
  * @param options.turbo - Whether to include Turborepo rules. Defaults to false.
- * @param options.unicorn - Whether to include Unicorn rules. Defaults to true.
+ * @param options.unicorn - Whether to include Unicorn rules. Defaults to true. Can be an object with filenameCase property.
  * @param options.rules - This is for rules that you need to alter or turn off.
  * @param additionalConfigs - Additional ESLint config objects to be merged into the final configuration.
  * @returns An array of ESLint configuration objects.
@@ -99,7 +103,7 @@ export const eslintConfig = (
     testing = defaultTestingConfig,
     turbo = false,
     typescript = true,
-    unicorn = true,
+    unicorn = { filenameCase: "kebabCase" },
   }: EslintConfigOptions = {},
   ...additionalConfigs: Linter.Config[]
 ): Linter.Config[] => {
@@ -213,7 +217,13 @@ export const eslintConfig = (
   }
 
   if (unicorn) {
-    configs.push(unicornConfig(categorizedRules[configNames.unicorn]));
+    const filenameCase = isObject(unicorn) ? unicorn.filenameCase : undefined;
+    configs.push(
+      unicornConfig({
+        customRules: categorizedRules[configNames.unicorn],
+        filenameCase,
+      }),
+    );
   }
 
   if (functionStyle === "arrow") {
