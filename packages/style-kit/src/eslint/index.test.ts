@@ -328,6 +328,26 @@ describe("eslintConfig", () => {
       expect(config.some((c) => c.name === configNames.unicorn)).toBe(false);
     });
 
+    it("uses kebabCase for filenames by default in unicorn config", () => {
+      const config = eslintConfig();
+      const unicornConfig = config.find((c) => c.name === configNames.unicorn);
+
+      expect(unicornConfig?.rules?.["unicorn/filename-case"]).toStrictEqual([
+        "warn",
+        { case: "kebabCase" },
+      ]);
+    });
+
+    it("accepts custom filenameCase in unicorn config", () => {
+      const config = eslintConfig({ unicorn: { filenameCase: "camelCase" } });
+      const unicornConfig = config.find((c) => c.name === configNames.unicorn);
+
+      expect(unicornConfig?.rules?.["unicorn/filename-case"]).toStrictEqual([
+        "warn",
+        { case: "camelCase" },
+      ]);
+    });
+
     it("excludes turbo config by default", () => {
       const config = eslintConfig();
 
@@ -810,20 +830,14 @@ describe("eslintConfig", () => {
       const glob = await import("glob");
 
       // Get all rules.ts and config.ts files
-      // Handle both running from root and from packages/style-kit
-      const cwd = process.cwd();
-      const isInPackageDir =
-        cwd.endsWith("packages/style-kit") ||
-        cwd.endsWith("packages/style-kit/");
-
-      const eslintDir = path.resolve(
-        cwd,
-        isInPackageDir ? "src/eslint" : "packages/style-kit/src/eslint",
-      );
+      // Use __dirname to find the eslint directory relative to this test file
+      // This works regardless of where the test is run from
+      const eslintDir = path.resolve(__dirname);
 
       const files = await glob.glob(["**/*rules.ts", "**/*config.ts"], {
         absolute: true,
         cwd: eslintDir,
+        ignore: ["**/*.test.ts", "**/node_modules/**"],
       });
 
       expect(files.length).toBeGreaterThan(0);

@@ -120,6 +120,8 @@ export default eslintConfig(
     importPlugin: true, // Import/export validation
     sorting: true, // Auto-sort imports, objects, etc.
     unicorn: true, // Enforce file naming and best practices
+    // or configure filename case:
+    // unicorn: { filenameCase: "kebabCase" }, // "camelCase" | "kebabCase" | "pascalCase" | "snakeCase"
     jsdoc: { requireJsdoc: false }, // JSDoc validation
 
     // Framework & tools
