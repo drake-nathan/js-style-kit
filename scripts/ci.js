@@ -135,6 +135,7 @@ const runCommand = async (cmd) => {
 
 // Run all commands
 const runAll = async () => {
+  const totalStartTime = Date.now();
   printStatus();
 
   let allSuccess = true;
@@ -147,6 +148,10 @@ const runAll = async () => {
     }
   }
 
+  // Calculate total run time
+  const totalEndTime = Date.now();
+  const totalDuration = ((totalEndTime - totalStartTime) / 1000).toFixed(2);
+
   // Final summary
   console.log("\n");
   if (allSuccess) {
@@ -157,6 +162,11 @@ const runAll = async () => {
     console.log(
       `${boldText}\x1b[31m✗ Some checks failed. Please fix the issues above.${resetColor}`,
     );
+  }
+
+  console.log(`${boldText}\nTotal run time: ${totalDuration}s${resetColor}\n`);
+
+  if (!allSuccess) {
     process.exit(1);
   }
 };
