@@ -45,6 +45,7 @@ export default eslintConfig({
 Enforces consistent filename case conventions. By default, kebab-case is used, which promotes consistency and avoids case-sensitivity issues across different operating systems.
 
 **Available Options:**
+
 - `kebabCase` (default) - `user-service.ts`, `api-client.js`
 - `camelCase` - `userService.ts`, `apiClient.js`
 - `pascalCase` - `UserService.ts`, `ApiClient.js`
