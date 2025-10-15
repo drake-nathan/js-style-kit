@@ -109,7 +109,7 @@
     "packages/typescript-config": {
       "name": "@repo/typescript-config",
       "dependencies": {
-        "typescript": "^5.9.3",
+        "typescript": "5.9.3",
       },
     },
   },
