@@ -5,6 +5,7 @@
  */
 export const configNames = {
   base: "base",
+  convex: "convex",
   disableTypeChecked: "UserConfig[1] > typescript-eslint/disable-type-checked",
   ignores: "ignores",
   import: "import",
@@ -32,6 +33,7 @@ export type ConfigName = (typeof configNames)[keyof typeof configNames];
  * This is the single source of truth for categorizing rules by plugin.
  */
 export const pluginPrefixMap = new Map<string, ConfigName>([
+  ["@convex-dev", configNames.convex],
   ["@tanstack/query", configNames.query],
   ["@typescript-eslint", configNames.typescript],
   ["import", configNames.import],

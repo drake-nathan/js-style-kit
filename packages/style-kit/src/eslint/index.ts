@@ -5,6 +5,7 @@ import type { EslintRuleConfig, FilenameCase, FunctionStyle } from "./types.js";
 import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
 import { configNames } from "./constants.js";
+import { convexConfig } from "./convex/config.js";
 import { ignoresConfig } from "./ignores.js";
 import { importConfig } from "./import/config.js";
 import { jsdocConfig } from "./jsdoc/config.js";
@@ -30,6 +31,7 @@ const defaultTestingConfig: TestingConfig = {
 };
 
 export interface EslintConfigOptions {
+  convex?: boolean;
   functionStyle?: "off" | FunctionStyle;
   ignores?: string[];
   importPlugin?: boolean;
@@ -63,6 +65,7 @@ export interface EslintConfigOptions {
  * Configures ESLint based on provided options.
  *
  * @param options - The optional configuration object.
+ * @param options.convex - Whether to include Convex rules.
  * @param options.functionStyle - The function style to enforce. Defaults to "arrow".
  * @param options.ignores - Additional paths to ignore. Already excludes `node_modules` and `dist`.
  * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
@@ -91,6 +94,7 @@ export interface EslintConfigOptions {
  */
 export const eslintConfig = (
   {
+    convex = false,
     functionStyle = "arrow",
     ignores = [],
     importPlugin = true,
@@ -183,6 +187,10 @@ export const eslintConfig = (
 
   if (query) {
     configs.push(queryConfig(categorizedRules[configNames.query]));
+  }
+
+  if (convex) {
+    configs.push(convexConfig(categorizedRules[configNames.convex]));
   }
 
   if (testing !== false) {

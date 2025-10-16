@@ -534,6 +534,60 @@ describe("eslintConfig", () => {
     });
   });
 
+  describe("convex configuration", () => {
+    it("excludes convex config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.convex)).toBe(false);
+    });
+
+    it("includes convex config when enabled", () => {
+      const config = eslintConfig({ convex: true });
+
+      expect(config.some((c) => c.name === configNames.convex)).toBe(true);
+    });
+
+    it("applies expected convex rules when enabled", () => {
+      const config = eslintConfig({ convex: true });
+      const convexConfig = config.find((c) => c.name === configNames.convex);
+
+      expect(convexConfig).toBeDefined();
+      expect(convexConfig?.plugins?.["@convex-dev"]).toBeDefined();
+
+      // Check for key Convex rules
+      expect(convexConfig?.rules?.["@convex-dev/import-wrong-runtime"]).toBe(
+        "warn",
+      );
+      expect(
+        convexConfig?.rules?.["@convex-dev/no-args-without-validator"],
+      ).toBe("warn");
+      expect(
+        convexConfig?.rules?.["@convex-dev/no-missing-args-validator"],
+      ).toBe("warn");
+      expect(
+        convexConfig?.rules?.["@convex-dev/no-old-registered-function-syntax"],
+      ).toBe("warn");
+    });
+
+    it("allows custom rules to override convex rules", () => {
+      const config = eslintConfig({
+        convex: true,
+        rules: {
+          "@convex-dev/import-wrong-runtime": "off",
+        },
+      });
+      const convexConfig = config.find((c) => c.name === configNames.convex);
+
+      expect(convexConfig?.rules?.["@convex-dev/import-wrong-runtime"]).toBe(
+        "off",
+      );
+      // Other rules should still be at default
+      expect(
+        convexConfig?.rules?.["@convex-dev/no-args-without-validator"],
+      ).toBe("warn");
+    });
+  });
+
   describe("edge cases", () => {
     it("works when all optional features are disabled", () => {
       const config = eslintConfig({
@@ -763,6 +817,8 @@ describe("eslintConfig", () => {
 
     it("distributes mixed custom rules to their respective configs", () => {
       const customRules = {
+        // Convex rules
+        "@convex-dev/import-wrong-runtime": "off" as const,
         // TypeScript rules
         "@typescript-eslint/no-explicit-any": "off" as const,
         // Import rules
@@ -775,7 +831,11 @@ describe("eslintConfig", () => {
         "react/prop-types": "off" as const,
       };
 
-      const config = eslintConfig({ react: true, rules: customRules });
+      const config = eslintConfig({
+        convex: true,
+        react: true,
+        rules: customRules,
+      });
 
       const baseConfig = config.find((c) => c.name === configNames.base);
       const tsConfig = config.find((c) => c.name === configNames.typescript);
@@ -784,6 +844,7 @@ describe("eslintConfig", () => {
       const perfectionistConfig = config.find(
         (c) => c.name === configNames.perfectionist,
       );
+      const convexConfig = config.find((c) => c.name === configNames.convex);
 
       expect(baseConfig?.rules?.["no-console"]).toBe("off");
       expect(tsConfig?.rules?.["@typescript-eslint/no-explicit-any"]).toBe(
@@ -794,16 +855,21 @@ describe("eslintConfig", () => {
       expect(perfectionistConfig?.rules?.["perfectionist/sort-imports"]).toBe(
         "off",
       );
+      expect(convexConfig?.rules?.["@convex-dev/import-wrong-runtime"]).toBe(
+        "off",
+      );
     });
 
     it("handles rules for disabled features by not applying them", () => {
       const customRules = {
+        "@convex-dev/import-wrong-runtime": "off" as const,
         "@typescript-eslint/no-explicit-any": "off" as const,
         "react/prop-types": "off" as const,
       };
 
-      // Disable React and TypeScript
+      // Disable React, TypeScript, and Convex
       const config = eslintConfig({
+        convex: false,
         react: false,
         rules: customRules,
         typescript: false,
@@ -812,6 +878,7 @@ describe("eslintConfig", () => {
       // These configs should not exist
       expect(config.some((c) => c.name === configNames.react)).toBe(false);
       expect(config.some((c) => c.name === configNames.typescript)).toBe(false);
+      expect(config.some((c) => c.name === configNames.convex)).toBe(false);
 
       // The rules should not have been applied anywhere
       // eslint-disable-next-line jest/no-conditional-in-test
@@ -819,6 +886,7 @@ describe("eslintConfig", () => {
 
       expect(allRules).not.toContain("react/prop-types");
       expect(allRules).not.toContain("@typescript-eslint/no-explicit-any");
+      expect(allRules).not.toContain("@convex-dev/import-wrong-runtime");
     });
   });
 
