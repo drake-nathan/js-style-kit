@@ -40,8 +40,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@convex-dev/eslint-plugin": "0.0.1-alpha.4",
     "@prettier/plugin-oxc": "0.0.4",
-    "@tanstack/eslint-plugin-query": "5.91.1",
+    "@tanstack/eslint-plugin-query": "5.91.2",
     "@typescript-eslint/parser": "8.46.0",
     "eslint": "9.37.0",
     "eslint-import-resolver-typescript": "4.4.4",
@@ -54,7 +55,7 @@
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.0",
     "eslint-plugin-react-refresh": "0.4.24",
-    "eslint-plugin-storybook": "9.1.10",
+    "eslint-plugin-storybook": "9.1.12",
     "eslint-plugin-turbo": "2.5.8",
     "eslint-plugin-unicorn": "61.0.2",
     "eslint-plugin-vitest": "0.5.4",

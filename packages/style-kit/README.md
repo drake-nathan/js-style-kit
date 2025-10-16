@@ -129,6 +129,7 @@ export default eslintConfig(
     testing: { framework: "vitest" }, // Test framework config
     storybook: false, // Storybook rules
     turbo: false, // Turborepo rules
+    convex: false, // Convex backend rules
 
     // Advanced
     ignores: [], // Additional ignore patterns
@@ -166,6 +167,7 @@ Each configuration has detailed documentation:
   - [JSDoc](./src/eslint/jsdoc/README.md) - Documentation validation
   - [Storybook](./src/eslint/storybook/README.md) - Component story rules
   - [Turborepo](./src/eslint/turbo/README.md) - Monorepo rules
+  - [Convex](./src/eslint/convex/README.md) - Convex backend rules
 
 ### Prettier Options
 
@@ -283,6 +285,7 @@ export default eslintConfig(
 - [`eslint-plugin-turbo`](https://www.npmjs.com/package/eslint-plugin-turbo) - Turborepo rules
 - [`eslint-plugin-vitest`](https://www.npmjs.com/package/eslint-plugin-vitest) - Vitest rules
 - [`eslint-plugin-jest`](https://www.npmjs.com/package/eslint-plugin-jest) - Jest rules
+- [`@convex-dev/eslint-plugin`](https://docs.convex.dev/eslint) - Convex backend rules
 
 ### Prettier Plugins
 
