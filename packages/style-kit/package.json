@@ -26,7 +26,8 @@
   "bin": "./dist/bin/index.cjs",
   "files": [
     "dist",
-    "src"
+    "src",
+    "!src/**/*.test.ts"
   ],
   "scripts": {
     "build": "tsup",
