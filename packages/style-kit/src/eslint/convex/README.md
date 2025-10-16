@@ -8,6 +8,8 @@ ESLint rules for Convex backend development.
 
 Convex configuration is **disabled by default** and provides rules from @convex-dev/eslint-plugin, which is Convex's own ESLint plugin.
 
+> **Note:** This plugin is currently in **alpha** and is subject to change.
+
 ## Quick Start
 
 ```js

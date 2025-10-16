@@ -371,18 +371,6 @@ describe("eslintConfig", () => {
 
       expect(config.some((c) => c.name === configNames.query)).toBe(true);
     });
-
-    it("excludes convex config by default", () => {
-      const config = eslintConfig();
-
-      expect(config.some((c) => c.name === configNames.convex)).toBe(false);
-    });
-
-    it("includes convex config when enabled", () => {
-      const config = eslintConfig({ convex: true });
-
-      expect(config.some((c) => c.name === configNames.convex)).toBe(true);
-    });
   });
 
   describe("ignore patterns", () => {

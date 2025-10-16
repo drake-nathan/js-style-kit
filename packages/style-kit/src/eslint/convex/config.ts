@@ -7,7 +7,8 @@ import type { EslintConfigObject, EslintRuleConfig } from "../types.js";
 import { configNames } from "../constants.js";
 import { convexRules } from "./rules.js";
 
-// Have to do this for now because their export is wrong
+// TODO: Replace with ESM import once @convex-dev/eslint-plugin stabilizes
+// The alpha version (0.0.1-alpha.4) doesn't have proper ESM exports yet
 const require = createRequire(import.meta.url);
 
 const convexPlugin = require("@convex-dev/eslint-plugin");
