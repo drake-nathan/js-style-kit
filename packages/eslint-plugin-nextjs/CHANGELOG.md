@@ -1,5 +1,11 @@
 # eslint-plugin-nextjs
 
+## 1.1.0
+
+### Minor Changes
+
+- 451cb8e: Include `src` in package for better IDE navigation and "go to definition" experience.
+
 ## 1.0.6
 
 ### Patch Changes
