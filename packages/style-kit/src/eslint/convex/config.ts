@@ -22,7 +22,7 @@ const convexPlugin = require("@convex-dev/eslint-plugin");
 export const convexConfig = (
   customRules?: Record<string, EslintRuleConfig>,
 ): EslintConfigObject => ({
-  files: ["**/convex/**/*.ts"],
+  files: ["**/convex/**/*.{ts,js}"],
   name: configNames.convex,
   plugins: {
     "@convex-dev": convexPlugin as unknown as ESLint.Plugin,
