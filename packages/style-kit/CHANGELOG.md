@@ -1,5 +1,18 @@
 # js-style-kit
 
+## 0.7.0
+
+### Minor Changes
+
+- 451cb8e: Include `src` in package for better IDE navigation and "go to definition" experience.
+
+### Patch Changes
+
+- 9041653: Add ability to specify filename case to the unicorn eslint config
+- a652e45: Add `@convex-dev/eslint-plugin` as an ESLint configuration option
+- Updated dependencies [451cb8e]
+  - eslint-plugin-nextjs@1.1.0
+
 ## 0.6.1
 
 ### Patch Changes
