@@ -25,7 +25,8 @@
   "types": "./dist/index.d.ts",
   "bin": "./dist/bin/index.cjs",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "build": "tsup",
