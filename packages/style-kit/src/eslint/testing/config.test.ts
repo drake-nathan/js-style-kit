@@ -1,3 +1,8 @@
+/**
+ * Unit tests for testing configuration
+ * Tests testingConfig() function in isolation to verify correct behavior
+ * for different testing frameworks (vitest, jest, node, bun) and options.
+ */
 import jest from "eslint-plugin-jest";
 import vitest from "eslint-plugin-vitest";
 import { describe, expect, it } from "vitest";
