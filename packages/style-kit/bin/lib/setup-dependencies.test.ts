@@ -61,6 +61,7 @@ describe("setupDependencies", () => {
       () => {},
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(
@@ -90,6 +91,7 @@ describe("setupDependencies", () => {
       () => {},
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(
@@ -118,6 +120,7 @@ describe("setupDependencies", () => {
       () => {},
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(
@@ -148,6 +151,7 @@ describe("setupDependencies", () => {
       () => {},
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(
@@ -175,6 +179,7 @@ describe("setupDependencies", () => {
       () => {},
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(
@@ -209,6 +214,7 @@ describe("setupDependencies", () => {
       () => {},
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(
@@ -252,6 +258,7 @@ describe("setupDependencies", () => {
       },
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(
@@ -291,6 +298,7 @@ describe("setupDependencies", () => {
       },
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(
@@ -364,6 +372,7 @@ describe("setupDependencies", () => {
       },
     );
     const execSyncSpy = spyOn(childProcess, "execSync").mockImplementation(
+      // @ts-expect-error - Mocking execSync
       () => {},
     );
     const getDependenciesSpy = spyOn(

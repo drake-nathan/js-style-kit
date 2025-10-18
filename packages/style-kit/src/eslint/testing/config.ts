@@ -4,6 +4,7 @@ import vitest from "eslint-plugin-vitest";
 import type { EslintConfigObject, EslintRuleConfig } from "../types.js";
 
 import { configNames } from "../constants.js";
+import { getImportRestrictions } from "./get-import-restrictions.js";
 import { jestRules } from "./jest-rules.js";
 import { vitestRules } from "./vitest-rules.js";
 
@@ -12,7 +13,15 @@ export interface TestingConfig {
   files?: string[];
   formattingRules?: boolean;
   framework?: "bun" | "jest" | "node" | "vitest";
+  /**
+   * Whether to enforce imports from the correct testing framework.
+   * Uses the built-in ESLint `no-restricted-imports` rule.
+   *
+   * @default true
+   */
+  importRestrictions?: boolean;
   itOrTest?: "it" | "test";
+  typescript?: boolean;
 }
 
 /**
@@ -22,24 +31,23 @@ export interface TestingConfig {
  * @param options.files - Files to include in the configuration
  * @param options.filenamePattern - ".test" or ".spec" filename pattern
  * @param options.itOrTest - "it" or "test"
- * @param options.framework - "jest" or "vitest"
+ * @param options.framework - "jest" or "vitest" or "bun" or "node"
  * @param options.formattingRules - Whether to include formatting rules like padding around blocks
+ * @param options.importRestrictions - Whether to enforce imports from the correct testing framework
+ * @param options.typescript - Whether the user is using TypeScript
  * @param customRules - Optional object containing custom rules to override or add to the testing configuration.
  * @returns ESLint configuration object
  */
 export const testingConfig = (
   {
-    filenamePattern,
+    filenamePattern = "test",
     files,
-    formattingRules,
-    framework,
-    itOrTest,
-  }: TestingConfig = {
-    filenamePattern: "test",
-    formattingRules: true,
-    framework: "vitest",
-    itOrTest: "test",
-  },
+    formattingRules = true,
+    framework = "vitest",
+    importRestrictions = true,
+    itOrTest = "test",
+    typescript = true,
+  }: TestingConfig = {},
   customRules?: Record<string, EslintRuleConfig>,
 ): EslintConfigObject => ({
   files: files ?? ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
@@ -55,8 +63,8 @@ export const testingConfig = (
     vitest,
   },
   rules: {
+    ...(typescript ? { "@typescript-eslint/unbound-method": "off" } : {}),
     // jest doesn't have a file name rule, so we'll use this one for both
-    "@typescript-eslint/unbound-method": "off",
     "vitest/consistent-test-filename": [
       "warn",
       {
@@ -76,6 +84,7 @@ export const testingConfig = (
         "jest/padding-around-test-blocks": "warn",
       }
     : {}),
+    ...(importRestrictions ? getImportRestrictions(framework) : {}),
     ...(customRules ?? {}),
   },
   ...(framework !== "jest" && framework !== "vitest" ?

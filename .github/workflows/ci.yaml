@@ -58,6 +58,9 @@ jobs:
       - name: Build
         run: bun turbo run build
 
+      - name: Typecheck
+        run: bun turbo run typecheck
+
       - name: Prettier --write
         run: bun run format
 
