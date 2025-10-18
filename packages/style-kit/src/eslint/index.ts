@@ -27,6 +27,7 @@ const defaultTestingConfig: TestingConfig = {
   files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
   formattingRules: true,
   framework: "vitest",
+  importRestrictions: true,
   itOrTest: "it",
 };
 
@@ -82,8 +83,9 @@ export interface EslintConfigOptions {
  * @param options.testing - An object with the following properties:
  *                          - `filenamePattern`: One of "spec" or "test" to determine which filename pattern to use.
  *                          - `files`: Array of file patterns to include in the configuration.
- *                          - `framework`: One of "vitest" or "jest" to determine which testing library to use.
+ *                          - `framework`: One of "vitest" or "jest" or "bun" or "node" to determine which testing library to use.
  *                          - `formattingRules`: Whether to include formatting rules like padding around blocks.
+ *                          - `importRestrictions`: Whether to enforce imports from the correct testing framework.
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
  * @param options.turbo - Whether to include Turborepo rules. Defaults to false.
@@ -201,8 +203,14 @@ export const eslintConfig = (
       : defaultTestingConfig;
 
     // Destructure from the merged config
-    const { filenamePattern, files, formattingRules, framework, itOrTest } =
-      mergedTestingConfig;
+    const {
+      filenamePattern,
+      files,
+      formattingRules,
+      framework,
+      importRestrictions,
+      itOrTest,
+    } = mergedTestingConfig;
 
     configs.push(
       testingConfig(
@@ -211,7 +219,9 @@ export const eslintConfig = (
           files,
           formattingRules,
           framework,
+          importRestrictions,
           itOrTest,
+          typescript: Boolean(typescript),
         },
         categorizedRules[configNames.testing],
       ),

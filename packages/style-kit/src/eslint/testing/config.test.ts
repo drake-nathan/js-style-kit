@@ -1,11 +1,6 @@
-/**
- * Unit tests for testing configuration
- * Tests testingConfig() function in isolation to verify correct behavior
- * for different testing frameworks (vitest, jest, node, bun) and options.
- */
+import { describe, expect, it } from "bun:test";
 import jest from "eslint-plugin-jest";
 import vitest from "eslint-plugin-vitest";
-import { describe, expect, it } from "vitest";
 
 import type { EslintConfigObject } from "../types.js";
 
@@ -13,6 +8,11 @@ import { configNames } from "../constants.js";
 import { testingConfig } from "./config.js";
 import { jestRules } from "./jest-rules.js";
 
+/**
+ * Unit tests for testing configuration
+ * Tests testingConfig() function in isolation to verify correct behavior
+ * for different testing frameworks (vitest, jest, node, bun) and options.
+ */
 describe("testingConfig", () => {
   it("returns an ESLint configuration object", () => {
     const config: EslintConfigObject = testingConfig();
@@ -135,5 +135,118 @@ describe("testingConfig", () => {
       config.rules?.["jest/padding-around-describe-blocks"],
     ).toBeUndefined();
     expect(config.rules?.["jest/padding-around-expect-groups"]).toBeUndefined();
+  });
+
+  it("enables import restrictions by default for vitest", () => {
+    const config: EslintConfigObject = testingConfig({
+      framework: "vitest",
+    });
+
+    expect(config.rules?.["no-restricted-imports"]).toBeDefined();
+    expect(config.rules?.["no-restricted-imports"]).toStrictEqual([
+      "warn",
+      {
+        paths: expect.arrayContaining([
+          expect.objectContaining({
+            name: "jest",
+          }),
+          expect.objectContaining({
+            name: "@jest/globals",
+          }),
+          expect.objectContaining({
+            name: "bun:test",
+          }),
+          expect.objectContaining({
+            name: "node:test",
+          }),
+        ]),
+      },
+    ]);
+  });
+
+  it("enables import restrictions for jest framework", () => {
+    const config: EslintConfigObject = testingConfig({
+      framework: "jest",
+    });
+
+    expect(config.rules?.["no-restricted-imports"]).toBeDefined();
+    expect(config.rules?.["no-restricted-imports"]).toStrictEqual([
+      "warn",
+      {
+        paths: expect.arrayContaining([
+          expect.objectContaining({
+            name: "vitest",
+          }),
+          expect.objectContaining({
+            name: "bun:test",
+          }),
+          expect.objectContaining({
+            name: "node:test",
+          }),
+        ]),
+      },
+    ]);
+  });
+
+  it("enables import restrictions for bun framework", () => {
+    const config: EslintConfigObject = testingConfig({
+      framework: "bun",
+    });
+
+    expect(config.rules?.["no-restricted-imports"]).toBeDefined();
+    expect(config.rules?.["no-restricted-imports"]).toStrictEqual([
+      "warn",
+      {
+        paths: expect.arrayContaining([
+          expect.objectContaining({
+            name: "vitest",
+          }),
+          expect.objectContaining({
+            name: "jest",
+          }),
+          expect.objectContaining({
+            name: "@jest/globals",
+          }),
+          expect.objectContaining({
+            name: "node:test",
+          }),
+        ]),
+      },
+    ]);
+  });
+
+  it("enables import restrictions for node framework", () => {
+    const config: EslintConfigObject = testingConfig({
+      framework: "node",
+    });
+
+    expect(config.rules?.["no-restricted-imports"]).toBeDefined();
+    expect(config.rules?.["no-restricted-imports"]).toStrictEqual([
+      "warn",
+      {
+        paths: expect.arrayContaining([
+          expect.objectContaining({
+            name: "vitest",
+          }),
+          expect.objectContaining({
+            name: "jest",
+          }),
+          expect.objectContaining({
+            name: "@jest/globals",
+          }),
+          expect.objectContaining({
+            name: "bun:test",
+          }),
+        ]),
+      },
+    ]);
+  });
+
+  it("disables import restrictions when importRestrictions is false", () => {
+    const config: EslintConfigObject = testingConfig({
+      importRestrictions: false,
+    });
+
+    expect(config.rules?.["no-restricted-imports"]).toBeUndefined();
   });
 });
