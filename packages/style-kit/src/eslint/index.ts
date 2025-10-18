@@ -1,6 +1,11 @@
 import type { Linter } from "eslint";
 
-import type { EslintRuleConfig, FilenameCase, FunctionStyle } from "./types.js";
+import type {
+  EslintRuleConfig,
+  FilenameCase,
+  FunctionStyle,
+  ReactFramework,
+} from "./types.js";
 
 import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
@@ -45,7 +50,7 @@ export interface EslintConfigOptions {
   react?:
     | boolean
     | {
-        framework?: "next" | "none" | "react-router" | "remix" | "vite";
+        framework?: ReactFramework;
         reactCompiler?: boolean;
         reactRefresh?: boolean;
       };
@@ -116,11 +121,10 @@ export const eslintConfig = (
   // Categorize user's custom rules first
   const categorizedRules = rules === undefined ? {} : processCustomRules(rules);
 
-  const usingNextjs = isObject(react) && react.framework === "next";
-
   const configs: Linter.Config[] = [
     ignoresConfig({
-      next: usingNextjs,
+      reactFramework:
+        isObject(react) && react.framework ? react.framework : "none",
       storybook,
       userIgnores: ignores,
     }),
@@ -182,7 +186,7 @@ export const eslintConfig = (
       }),
     );
 
-    if (usingNextjs) {
+    if (isObject(react) && react.framework === "next") {
       configs.push(nextjsConfig(categorizedRules[configNames.nextjs]));
     }
   }

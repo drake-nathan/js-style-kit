@@ -491,6 +491,36 @@ describe("eslintConfig", () => {
         expect.arrayContaining([".next", "something else"]),
       );
     });
+
+    it("adds .react-router to ignores when using React Router framework", () => {
+      const config = eslintConfig({
+        react: { framework: "react-router" },
+      });
+      const ignoresConfig = config[0];
+
+      expect(ignoresConfig?.ignores).toContain(".react-router");
+      expect(ignoresConfig?.ignores).not.toContain(".next");
+    });
+
+    it("does not add framework-specific ignores for frameworks without build directories", () => {
+      const frameworks: ("none" | "remix" | "vite")[] = [
+        "vite",
+        "remix",
+        "none",
+      ];
+
+      frameworks.forEach((framework) => {
+        const config = eslintConfig({
+          react: { framework },
+        });
+        const ignoresConfig = config[0];
+
+        expect(ignoresConfig?.ignores).not.toContain(".next");
+        expect(ignoresConfig?.ignores).not.toContain(".react-router");
+        // Should still have default ignores
+        expect(ignoresConfig?.ignores).toContain("**/dist/");
+      });
+    });
   });
 
   describe("additional config objects", () => {
