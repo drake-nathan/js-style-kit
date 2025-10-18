@@ -249,7 +249,11 @@ describe("reactEslintConfig", () => {
       typescript: true,
     });
 
-    expect(config.languageOptions?.parserOptions?.ecmaFeatures?.jsx).toBe(true);
+    const parserOptions = config.languageOptions?.parserOptions as
+      | undefined
+      | { ecmaFeatures?: { jsx?: boolean } };
+
+    expect(parserOptions?.ecmaFeatures?.jsx).toBe(true);
   });
 
   it("configures React version detection in settings", () => {
