@@ -37,8 +37,8 @@
     "lint": "eslint . --max-warnings=0 --cache",
     "lint:fix": "eslint . --fix --max-warnings=0 --cache",
     "lint:inspect": "eslint --inspect-config",
-    "test": "bun test",
-    "test:coverage": "bun test --coverage --coverage-reporter=lcov",
+    "test": "bun test --preload ./src/eslint/index.ts",
+    "test:coverage": "bun test --preload ./src/eslint/index.ts --coverage --coverage-reporter=lcov",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
