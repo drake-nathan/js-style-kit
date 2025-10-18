@@ -27,15 +27,6 @@ import { turboConfig } from "./turbo/config.js";
 import { tseslintConfig } from "./typescript/config.js";
 import { unicornConfig } from "./unicorn/config.js";
 
-const defaultTestingConfig: TestingConfig = {
-  filenamePattern: "test",
-  files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
-  formattingRules: true,
-  framework: "vitest",
-  importRestrictions: true,
-  itOrTest: "it",
-};
-
 export interface EslintConfigOptions {
   convex?: boolean;
   functionStyle?: "off" | FunctionStyle;
@@ -111,7 +102,7 @@ export const eslintConfig = (
     rules,
     sorting = true,
     storybook = false,
-    testing = defaultTestingConfig,
+    testing,
     turbo = false,
     typescript = true,
     unicorn = { filenameCase: "kebabCase" },
@@ -200,6 +191,16 @@ export const eslintConfig = (
   }
 
   if (testing !== false) {
+    // Define default testing config inline to avoid TDZ issues
+    const defaultTestingConfig: TestingConfig = {
+      filenamePattern: "test",
+      files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
+      formattingRules: true,
+      framework: "vitest",
+      importRestrictions: true,
+      itOrTest: "it",
+    };
+
     // Use the provided testing config or the default if testing is true
     const mergedTestingConfig: TestingConfig =
       isObject(testing) ?
