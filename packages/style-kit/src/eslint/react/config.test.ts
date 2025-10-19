@@ -1,3 +1,10 @@
+import { describe, expect, it } from "bun:test";
+import globals from "globals";
+
+import { configNames } from "../constants.js";
+import { reactEslintConfig } from "./config.js";
+import { reactRules } from "./rules.js";
+
 /**
  * Unit tests for React configuration
  * Tests reactEslintConfig() and reactRules() in isolation to verify:
@@ -7,13 +14,6 @@
  * - Config structure (plugins, globals, settings, parser options)
  * - Custom rules merging
  */
-import { describe, expect, it } from "bun:test";
-import globals from "globals";
-
-import { configNames } from "../constants.js";
-import { reactEslintConfig } from "./config.js";
-import { reactRules } from "./rules.js";
-
 describe("reactRules", () => {
   describe("typescript option", () => {
     it("excludes prop-types rule when TypeScript is enabled", () => {

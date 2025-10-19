@@ -191,7 +191,6 @@ export const eslintConfig = (
   }
 
   if (testing !== false) {
-    // Define default testing config inline to avoid TDZ issues
     const defaultTestingConfig: TestingConfig = {
       filenamePattern: "test",
       files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],

@@ -1,3 +1,10 @@
+import { describe, expect, it } from "bun:test";
+import unicorn from "eslint-plugin-unicorn";
+
+import { configNames } from "../constants.js";
+import { unicornConfig } from "./config.js";
+import { rules } from "./rules.js";
+
 /**
  * Unit tests for Unicorn configuration
  * Tests unicornConfig() and rules() in isolation to verify:
@@ -7,13 +14,6 @@
  * - Custom rules merging
  * - All core Unicorn rules are included
  */
-import { describe, expect, it } from "bun:test";
-import unicorn from "eslint-plugin-unicorn";
-
-import { configNames } from "../constants.js";
-import { unicornConfig } from "./config.js";
-import { rules } from "./rules.js";
-
 describe("rules", () => {
   describe("filenameCase parameter", () => {
     it("uses kebabCase by default", () => {

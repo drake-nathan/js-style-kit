@@ -1,3 +1,10 @@
+import { describe, expect, it } from "bun:test";
+import tseslint, { type ConfigArray } from "typescript-eslint";
+
+import { configNames } from "../constants.js";
+import { tseslintConfig } from "./config.js";
+import { tseslintRules } from "./rules.js";
+
 /**
  * Unit tests for TypeScript configuration
  * Tests tseslintConfig() in isolation to verify:
@@ -8,12 +15,6 @@
  * - Custom rules merging
  * - Type-checked rules disabled for JavaScript files
  */
-import { describe, expect, it } from "bun:test";
-import tseslint, { type ConfigArray } from "typescript-eslint";
-
-import { configNames } from "../constants.js";
-import { tseslintConfig } from "./config.js";
-import { tseslintRules } from "./rules.js";
 
 const getRules = (mainConfig: unknown): Record<string, unknown> => {
   if (!mainConfig || typeof mainConfig !== "object") {

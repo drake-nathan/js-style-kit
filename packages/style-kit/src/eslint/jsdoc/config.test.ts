@@ -1,3 +1,13 @@
+import { describe, expect, it } from "bun:test";
+import jsdoc from "eslint-plugin-jsdoc";
+
+import type { EslintRuleConfig } from "../types.js";
+import type { JsdocRules } from "./types.js";
+
+import { configNames } from "../constants.js";
+import { jsdocConfig } from "./config.js";
+import { jsdocRules } from "./rules.js";
+
 /**
  * Unit tests for JSDoc configuration
  * Tests jsdocConfig() and jsdocRules() in isolation to verify:
@@ -8,15 +18,6 @@
  * - Custom rules merging
  * - All core JSDoc rules are included
  */
-import { describe, expect, it } from "bun:test";
-import jsdoc from "eslint-plugin-jsdoc";
-
-import type { EslintRuleConfig } from "../types.js";
-import type { JsdocRules } from "./types.js";
-
-import { configNames } from "../constants.js";
-import { jsdocConfig } from "./config.js";
-import { jsdocRules } from "./rules.js";
 
 type RequireJsdocOptions =
   JsdocRules["jsdoc/require-jsdoc"] extends (
