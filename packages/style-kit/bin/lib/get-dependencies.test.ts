@@ -17,6 +17,9 @@ const mockConsole = {
 };
 
 describe("getDependencies", () => {
+  const originalFs = { ...fs };
+  const originalConsole = { ...console };
+
   beforeEach(() => {
     // Reset all mocks before each test
     mockFs.existsSync.mockReset();
@@ -32,8 +35,9 @@ describe("getDependencies", () => {
   });
 
   afterEach(() => {
-    // Clean up mocks
-    mock.restore();
+    // Restore original implementations
+    Object.assign(fs, originalFs);
+    Object.assign(console, originalConsole);
   });
 
   it("should return dependencies from node_modules package.json when file exists", () => {
