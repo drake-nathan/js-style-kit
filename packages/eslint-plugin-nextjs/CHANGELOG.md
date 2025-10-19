@@ -1,5 +1,12 @@
 # eslint-plugin-nextjs
 
+## 1.1.1
+
+### Patch Changes
+
+- 4edd771: ## Dependency Updates
+  - Updated `eslint` from 9.37.0 to 9.38.0
+
 ## 1.1.0
 
 ### Minor Changes
