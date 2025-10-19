@@ -1,6 +1,11 @@
 import type { Linter } from "eslint";
 
-import type { EslintRuleConfig, FilenameCase, FunctionStyle } from "./types.js";
+import type {
+  EslintRuleConfig,
+  FilenameCase,
+  FunctionStyle,
+  ReactFramework,
+} from "./types.js";
 
 import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
@@ -22,14 +27,6 @@ import { turboConfig } from "./turbo/config.js";
 import { tseslintConfig } from "./typescript/config.js";
 import { unicornConfig } from "./unicorn/config.js";
 
-const defaultTestingConfig: TestingConfig = {
-  filenamePattern: "test",
-  files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
-  formattingRules: true,
-  framework: "vitest",
-  itOrTest: "it",
-};
-
 export interface EslintConfigOptions {
   convex?: boolean;
   functionStyle?: "off" | FunctionStyle;
@@ -44,7 +41,7 @@ export interface EslintConfigOptions {
   react?:
     | boolean
     | {
-        framework?: "next" | "none" | "react-router" | "remix" | "vite";
+        framework?: ReactFramework;
         reactCompiler?: boolean;
         reactRefresh?: boolean;
       };
@@ -82,8 +79,9 @@ export interface EslintConfigOptions {
  * @param options.testing - An object with the following properties:
  *                          - `filenamePattern`: One of "spec" or "test" to determine which filename pattern to use.
  *                          - `files`: Array of file patterns to include in the configuration.
- *                          - `framework`: One of "vitest" or "jest" to determine which testing library to use.
+ *                          - `framework`: One of "vitest" or "jest" or "bun" or "node" to determine which testing library to use.
  *                          - `formattingRules`: Whether to include formatting rules like padding around blocks.
+ *                          - `importRestrictions`: Whether to enforce imports from the correct testing framework.
  *                          - `itOrTest`: One of "it" or "test" to determine which test function to use.
  * @param options.typescript - Whether to include TypeScript rules. Can be a boolean or a string with path to tsconfig.
  * @param options.turbo - Whether to include Turborepo rules. Defaults to false.
@@ -104,7 +102,7 @@ export const eslintConfig = (
     rules,
     sorting = true,
     storybook = false,
-    testing = defaultTestingConfig,
+    testing,
     turbo = false,
     typescript = true,
     unicorn = { filenameCase: "kebabCase" },
@@ -114,11 +112,10 @@ export const eslintConfig = (
   // Categorize user's custom rules first
   const categorizedRules = rules === undefined ? {} : processCustomRules(rules);
 
-  const usingNextjs = isObject(react) && react.framework === "next";
-
   const configs: Linter.Config[] = [
     ignoresConfig({
-      next: usingNextjs,
+      reactFramework:
+        isObject(react) && react.framework ? react.framework : "none",
       storybook,
       userIgnores: ignores,
     }),
@@ -180,7 +177,7 @@ export const eslintConfig = (
       }),
     );
 
-    if (usingNextjs) {
+    if (isObject(react) && react.framework === "next") {
       configs.push(nextjsConfig(categorizedRules[configNames.nextjs]));
     }
   }
@@ -194,6 +191,15 @@ export const eslintConfig = (
   }
 
   if (testing !== false) {
+    const defaultTestingConfig: TestingConfig = {
+      filenamePattern: "test",
+      files: ["**/*.{test,spec}.{ts,tsx,js,jsx}"],
+      formattingRules: true,
+      framework: "vitest",
+      importRestrictions: true,
+      itOrTest: "it",
+    };
+
     // Use the provided testing config or the default if testing is true
     const mergedTestingConfig: TestingConfig =
       isObject(testing) ?
@@ -201,8 +207,14 @@ export const eslintConfig = (
       : defaultTestingConfig;
 
     // Destructure from the merged config
-    const { filenamePattern, files, formattingRules, framework, itOrTest } =
-      mergedTestingConfig;
+    const {
+      filenamePattern,
+      files,
+      formattingRules,
+      framework,
+      importRestrictions,
+      itOrTest,
+    } = mergedTestingConfig;
 
     configs.push(
       testingConfig(
@@ -211,7 +223,9 @@ export const eslintConfig = (
           files,
           formattingRules,
           framework,
+          importRestrictions,
           itOrTest,
+          typescript: Boolean(typescript),
         },
         categorizedRules[configNames.testing],
       ),

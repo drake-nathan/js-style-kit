@@ -5,7 +5,19 @@ import { describe, expect, it } from "bun:test";
 import { configNames } from "./constants.js";
 import { eslintConfig } from "./index.js";
 
+/**
+ * Integration tests for the main eslintConfig() function.
+ * These tests verify that the configuration factory correctly composes
+ * various ESLint configs based on the provided options.
+ *
+ * For unit tests of individual config functions, see the respective
+ * subdirectory test files (e.g., testing/config.test.ts).
+ */
 describe("eslintConfig", () => {
+  // ============================================================================
+  // Core Configuration
+  // ============================================================================
+
   describe("default configuration", () => {
     it("returns expected default configs", () => {
       const config = eslintConfig();
@@ -88,6 +100,10 @@ describe("eslintConfig", () => {
       ]);
     });
   });
+
+  // ============================================================================
+  // Framework & Library Integrations
+  // ============================================================================
 
   describe("react configuration", () => {
     it("includes React config when enabled", () => {
@@ -267,6 +283,10 @@ describe("eslintConfig", () => {
     });
   });
 
+  // ============================================================================
+  // Language & Type Checking
+  // ============================================================================
+
   describe("jSDoc configuration", () => {
     it("includes JSDoc config by default with requirements disabled", () => {
       const config = eslintConfig();
@@ -301,11 +321,63 @@ describe("eslintConfig", () => {
     });
   });
 
-  describe("optional configurations", () => {
+  describe("typescript configuration", () => {
+    it("includes TypeScript config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.typescript)).toBe(true);
+    });
+
     it("excludes TypeScript config when disabled", () => {
       const config = eslintConfig({ typescript: false });
 
       expect(config.some((c) => c.name === configNames.typescript)).toBe(false);
+    });
+  });
+
+  describe("import configuration", () => {
+    it("includes import config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.import)).toBe(true);
+    });
+
+    it("excludes import config when disabled", () => {
+      const config = eslintConfig({ importPlugin: false });
+
+      expect(config.some((c) => c.name === configNames.import)).toBe(false);
+    });
+
+    it("works correctly with TypeScript enabled", () => {
+      const config = eslintConfig({ importPlugin: true, typescript: true });
+      const importConfig = config.find((c) => c.name === configNames.import);
+
+      expect(importConfig).toBeDefined();
+      // Import config should exist when both are enabled
+      expect(config.some((c) => c.name === configNames.import)).toBe(true);
+    });
+
+    it("works correctly with TypeScript disabled", () => {
+      const config = eslintConfig({ importPlugin: true, typescript: false });
+      const importConfig = config.find((c) => c.name === configNames.import);
+
+      expect(importConfig).toBeDefined();
+      // Import config should still exist when TypeScript is disabled
+      expect(config.some((c) => c.name === configNames.import)).toBe(true);
+    });
+  });
+
+  // ============================================================================
+  // Code Style & Quality
+  // ============================================================================
+
+  describe("sorting configuration", () => {
+    it("includes sorting config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.perfectionist)).toBe(
+        true,
+      );
     });
 
     it("excludes sorting config when disabled", () => {
@@ -315,7 +387,9 @@ describe("eslintConfig", () => {
         false,
       );
     });
+  });
 
+  describe("unicorn configuration", () => {
     it("includes unicorn config by default", () => {
       const config = eslintConfig();
 
@@ -328,7 +402,7 @@ describe("eslintConfig", () => {
       expect(config.some((c) => c.name === configNames.unicorn)).toBe(false);
     });
 
-    it("uses kebabCase for filenames by default in unicorn config", () => {
+    it("uses kebabCase for filenames by default", () => {
       const config = eslintConfig();
       const unicornConfig = config.find((c) => c.name === configNames.unicorn);
 
@@ -338,7 +412,7 @@ describe("eslintConfig", () => {
       ]);
     });
 
-    it("accepts custom filenameCase in unicorn config", () => {
+    it("accepts custom filenameCase", () => {
       const config = eslintConfig({ unicorn: { filenameCase: "camelCase" } });
       const unicornConfig = config.find((c) => c.name === configNames.unicorn);
 
@@ -347,7 +421,13 @@ describe("eslintConfig", () => {
         { case: "camelCase" },
       ]);
     });
+  });
 
+  // ============================================================================
+  // Build Tools & Development
+  // ============================================================================
+
+  describe("turbo configuration", () => {
     it("excludes turbo config by default", () => {
       const config = eslintConfig();
 
@@ -359,7 +439,9 @@ describe("eslintConfig", () => {
 
       expect(config.some((c) => c.name === configNames.turbo)).toBe(true);
     });
+  });
 
+  describe("query configuration", () => {
     it("excludes query config by default", () => {
       const config = eslintConfig();
 
@@ -372,6 +454,10 @@ describe("eslintConfig", () => {
       expect(config.some((c) => c.name === configNames.query)).toBe(true);
     });
   });
+
+  // ============================================================================
+  // Configuration Utilities
+  // ============================================================================
 
   describe("ignore patterns", () => {
     it("applies custom ignores", () => {
@@ -404,6 +490,36 @@ describe("eslintConfig", () => {
       expect(ignoresConfig?.ignores).toStrictEqual(
         expect.arrayContaining([".next", "something else"]),
       );
+    });
+
+    it("adds .react-router to ignores when using React Router framework", () => {
+      const config = eslintConfig({
+        react: { framework: "react-router" },
+      });
+      const ignoresConfig = config[0];
+
+      expect(ignoresConfig?.ignores).toContain(".react-router");
+      expect(ignoresConfig?.ignores).not.toContain(".next");
+    });
+
+    it("does not add framework-specific ignores for frameworks without build directories", () => {
+      const frameworks: ("none" | "remix" | "vite")[] = [
+        "vite",
+        "remix",
+        "none",
+      ];
+
+      frameworks.forEach((framework) => {
+        const config = eslintConfig({
+          react: { framework },
+        });
+        const ignoresConfig = config[0];
+
+        expect(ignoresConfig?.ignores).not.toContain(".next");
+        expect(ignoresConfig?.ignores).not.toContain(".react-router");
+        // Should still have default ignores
+        expect(ignoresConfig?.ignores).toContain("**/dist/");
+      });
     });
   });
 
@@ -587,6 +703,10 @@ describe("eslintConfig", () => {
       ).toBe("warn");
     });
   });
+
+  // ============================================================================
+  // Edge Cases & Advanced Scenarios
+  // ============================================================================
 
   describe("edge cases", () => {
     it("works when all optional features are disabled", () => {

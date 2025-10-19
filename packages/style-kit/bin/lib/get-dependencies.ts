@@ -16,7 +16,8 @@ export const getDependencies = (): string[] => {
   );
 
   try {
-    if (fs.existsSync(nodeModulesPath)) {
+    const exists = fs.existsSync(nodeModulesPath);
+    if (exists) {
       const jsStyleKitPackageJson = JSON.parse(
         fs.readFileSync(nodeModulesPath, "utf8"),
       );

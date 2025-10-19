@@ -27,3 +27,10 @@ export type FilenameCase =
   | "snakeCase";
 
 export type FunctionStyle = "arrow" | "declaration" | "expression";
+
+export type ReactFramework =
+  | "next"
+  | "none"
+  | "react-router"
+  | "remix"
+  | "vite";

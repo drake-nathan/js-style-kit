@@ -46,7 +46,7 @@
     "@prettier/plugin-oxc": "0.0.4",
     "@tanstack/eslint-plugin-query": "5.91.2",
     "@typescript-eslint/parser": "8.46.0",
-    "eslint": "9.37.0",
+    "eslint": "9.38.0",
     "eslint-import-resolver-typescript": "4.4.4",
     "eslint-plugin-import-x": "4.16.1",
     "eslint-plugin-jest": "29.0.1",
@@ -57,7 +57,7 @@
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.0",
     "eslint-plugin-react-refresh": "0.4.24",
-    "eslint-plugin-storybook": "9.1.12",
+    "eslint-plugin-storybook": "9.1.13",
     "eslint-plugin-turbo": "2.5.8",
     "eslint-plugin-unicorn": "61.0.2",
     "eslint-plugin-vitest": "0.5.4",
@@ -67,7 +67,7 @@
     "prettier-plugin-curly": "0.3.2",
     "prettier-plugin-packagejson": "2.5.19",
     "prettier-plugin-sort-json": "4.1.1",
-    "prettier-plugin-tailwindcss": "0.7.0",
+    "prettier-plugin-tailwindcss": "0.7.1",
     "typescript-eslint": "8.46.0"
   },
   "devDependencies": {
