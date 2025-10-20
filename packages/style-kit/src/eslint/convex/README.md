@@ -22,9 +22,10 @@ export default eslintConfig({
 
 ## File Scope
 
-Convex rules apply only to files in your `convex` directory.
+Convex rules apply only to files in your `convex` directory: `**/convex/**/*.{ts,js}`
 
 ## Learn More
 
 - [Convex ESLint Plugin](https://docs.convex.dev/eslint) - Official documentation
+- [Convex Validators](https://docs.convex.dev/functions/validation) - Argument validation guide
 - [Main README](../../../README.md)

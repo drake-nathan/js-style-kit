@@ -12,7 +12,13 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        ".env*",
+        "package.json",
+        "**/package.json",
+        "bun.lock"
+      ],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "dev": {
@@ -21,11 +27,25 @@
     },
     "lint": {
       "dependsOn": ["^lint"],
-      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "package.json",
+        "**/package.json",
+        "bun.lock",
+        "!**/node_modules/**",
+        "!**/dist/**"
+      ]
     },
     "lint:fix": {
       "dependsOn": ["^lint:fix"],
-      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "package.json",
+        "**/package.json",
+        "bun.lock",
+        "!**/node_modules/**",
+        "!**/dist/**"
+      ]
     },
     "sherif": {
       "cache": true,
@@ -37,6 +57,9 @@
       "inputs": [
         "$TURBO_DEFAULT$",
         "**/*.{js,jsx,ts,tsx}",
+        "package.json",
+        "**/package.json",
+        "bun.lock",
         "!**/node_modules/**",
         "!**/dist/**"
       ],
@@ -47,6 +70,9 @@
       "inputs": [
         "$TURBO_DEFAULT$",
         "**/*.{js,jsx,ts,tsx}",
+        "package.json",
+        "**/package.json",
+        "bun.lock",
         "!**/node_modules/**",
         "!**/dist/**"
       ],
@@ -54,7 +80,14 @@
     },
     "typecheck": {
       "dependsOn": ["^typecheck"],
-      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"]
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "package.json",
+        "**/package.json",
+        "bun.lock",
+        "!**/node_modules/**",
+        "!**/dist/**"
+      ]
     }
   }
 }

@@ -41,7 +41,7 @@
     "dev": "tsup --watch",
     "format": "prettier . --write --cache",
     "format:check": "prettier . --check --cache",
-    "lint": "eslint . --max-warnings=0",
+    "lint": "eslint . --max-warnings=0 --cache",
     "lint:fix": "eslint . --fix --max-warnings=0 --cache",
     "lint:inspect": "eslint --inspect-config",
     "test": "bun test",

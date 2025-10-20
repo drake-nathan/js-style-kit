@@ -674,12 +674,9 @@ describe("eslintConfig", () => {
       expect(convexConfig?.rules?.["@convex-dev/import-wrong-runtime"]).toBe(
         "warn",
       );
-      expect(
-        convexConfig?.rules?.["@convex-dev/no-args-without-validator"],
-      ).toBe("warn");
-      expect(
-        convexConfig?.rules?.["@convex-dev/no-missing-args-validator"],
-      ).toBe("warn");
+      expect(convexConfig?.rules?.["@convex-dev/require-args-validator"]).toBe(
+        "warn",
+      );
       expect(
         convexConfig?.rules?.["@convex-dev/no-old-registered-function-syntax"],
       ).toBe("warn");
@@ -699,7 +696,7 @@ describe("eslintConfig", () => {
       );
       // Other rules should still be at default
       expect(
-        convexConfig?.rules?.["@convex-dev/no-args-without-validator"],
+        convexConfig?.rules?.["@convex-dev/no-old-registered-function-syntax"],
       ).toBe("warn");
     });
   });
