@@ -6,20 +6,18 @@ import { eslintConfig } from "../style-kit/dist/index.js";
 
 export default eslintConfig(
   {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/prefer-optional-chain": "off",
+      "@typescript-eslint/restrict-plus-operands": "off",
+      "no-param-reassign": "off",
+    },
     testing: {
       framework: "bun",
     },
     typescript: "tsconfig.eslint.json",
   },
   eslintPlugin.configs.recommended,
-  {
-    name: "custom-overrides",
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/restrict-plus-operands": "off",
-      "no-param-reassign": "off",
-    },
-  },
   {
     files: ["test/**/*"],
     name: "test-overrides",
