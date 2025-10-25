@@ -110,7 +110,7 @@ export default eslintConfig({
 });
 ```
 
-**Special Case: Convex Integration**
+### Special Case: Convex Integration
 
 When both Unicorn and Convex configurations are enabled, Convex files automatically use **camelCase** regardless of your global filename case setting. This is because Convex files export functions that become API endpoints, and camelCase is the standard for function names.
 
