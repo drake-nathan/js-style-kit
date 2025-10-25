@@ -110,6 +110,23 @@ export default eslintConfig({
 });
 ```
 
+### Special Case: Convex Integration
+
+When both Unicorn and Convex configurations are enabled, Convex files automatically use **camelCase** regardless of your global filename case setting. This is because Convex files export functions that become API endpoints, and camelCase is the standard for function names.
+
+```js
+export default eslintConfig({
+  convex: true,
+  unicorn: { filenameCase: "kebabCase" }, // Global setting
+});
+
+// Result:
+// - Convex files (convex/**/*.{ts,js}): camelCase ✅ getUserData.ts
+// - All other files: kebabCase ✅ user-service.ts
+```
+
+[→ Learn more about Convex filename conventions](../convex/README.md#filename-convention)
+
 ### Node.js Protocol
 
 Requires using the `node:` protocol when importing Node.js built-in modules:
