@@ -187,7 +187,9 @@ export const eslintConfig = (
   }
 
   if (convex) {
-    configs.push(convexConfig(categorizedRules[configNames.convex]));
+    configs.push(
+      convexConfig(categorizedRules[configNames.convex], Boolean(unicorn)),
+    );
   }
 
   if (testing !== false) {

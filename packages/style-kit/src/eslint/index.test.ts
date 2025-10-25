@@ -699,6 +699,52 @@ describe("eslintConfig", () => {
         convexConfig?.rules?.["@convex-dev/no-old-registered-function-syntax"],
       ).toBe("warn");
     });
+
+    it("applies camelCase filename rule when unicorn is enabled", () => {
+      const config = eslintConfig({
+        convex: true,
+        unicorn: true,
+      });
+      const convexConfig = config.find((c) => c.name === configNames.convex);
+
+      // Convex files should use camelCase regardless of unicorn's global setting
+      expect(convexConfig?.rules?.["unicorn/filename-case"]).toStrictEqual([
+        "warn",
+        { case: "camelCase" },
+      ]);
+    });
+
+    it("does not apply filename rule when unicorn is disabled", () => {
+      const config = eslintConfig({
+        convex: true,
+        unicorn: false,
+      });
+      const convexConfig = config.find((c) => c.name === configNames.convex);
+
+      // Should not have unicorn/filename-case rule when unicorn is disabled
+      expect(convexConfig?.rules?.["unicorn/filename-case"]).toBeUndefined();
+    });
+
+    it("applies camelCase filename rule even when unicorn uses different case", () => {
+      const config = eslintConfig({
+        convex: true,
+        unicorn: { filenameCase: "kebabCase" },
+      });
+      const convexConfig = config.find((c) => c.name === configNames.convex);
+      const unicornConfig = config.find((c) => c.name === configNames.unicorn);
+
+      // Convex should override with camelCase
+      expect(convexConfig?.rules?.["unicorn/filename-case"]).toStrictEqual([
+        "warn",
+        { case: "camelCase" },
+      ]);
+
+      // Unicorn should still use kebabCase globally
+      expect(unicornConfig?.rules?.["unicorn/filename-case"]).toStrictEqual([
+        "warn",
+        { case: "kebabCase" },
+      ]);
+    });
   });
 
   // ============================================================================
