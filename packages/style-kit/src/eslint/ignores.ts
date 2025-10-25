@@ -25,6 +25,7 @@ export const ignoresConfig = ({
 }): Linter.Config => ({
   ignores: [
     "**/dist/",
+    "**/build/",
     ...(reactFramework === "next" ? [".next"] : []),
     ...(reactFramework === "react-router" ? [".react-router"] : []),
     ...(storybook ? ["!.storybook"] : []),

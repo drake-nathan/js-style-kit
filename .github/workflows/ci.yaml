@@ -9,10 +9,6 @@ on:
   pull_request:
     types: [opened, synchronize]
     branches: ["main"]
-  push:
-    branches: ["main"]
-    paths-ignore:
-      - "**/*[bot]@users.noreply.github.com**"
 
 jobs:
   build:

@@ -64,7 +64,7 @@ export interface EslintConfigOptions {
  * @param options - The optional configuration object.
  * @param options.convex - Whether to include Convex rules.
  * @param options.functionStyle - The function style to enforce. Defaults to "arrow".
- * @param options.ignores - Additional paths to ignore. Already excludes `node_modules` and `dist`.
+ * @param options.ignores - Additional paths to ignore. Already excludes `node_modules`, `dist`, and `build`.
  * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
  * @param options.jsdoc - Whether to include JSDoc rules. Set to false to disable, or provide an object to configure.
  * @param options.query - Whether to include TanStack Query rules.
@@ -126,11 +126,10 @@ export const eslintConfig = (
     ),
   ];
 
-  if (jsdoc !== false) {
+  if (functionStyle === "arrow") {
     configs.push(
-      jsdocConfig(
-        jsdoc.requireJsdoc ?? false,
-        categorizedRules[configNames.jsdoc],
+      preferArrowFunctionConfig(
+        categorizedRules[configNames.preferArrowFunction],
       ),
     );
   }
@@ -150,45 +149,28 @@ export const eslintConfig = (
     );
   }
 
-  if (react) {
-    const reactOptions = isObject(react) ? react : {};
-
-    // Apply reactRefresh based on framework setting or explicit override
-    const shouldUseReactRefresh =
-      // Explicit setting takes precedence
-      reactOptions.reactRefresh === true ||
-      // Framework-based default (vite/none use reactRefresh by default)
-      ((reactOptions.framework === "vite" ||
-        reactOptions.framework === "none") &&
-        reactOptions.reactRefresh !== false);
-
-    if (shouldUseReactRefresh) {
-      configs.push(
-        reactRefreshEslintConfig(categorizedRules[configNames.reactRefresh]),
-      );
-    }
-
+  if (unicorn) {
+    const filenameCase = isObject(unicorn) ? unicorn.filenameCase : undefined;
     configs.push(
-      reactEslintConfig({
-        customRules: categorizedRules[configNames.react],
-        functionStyle,
-        reactCompiler: reactOptions.reactCompiler ?? true,
-        typescript: Boolean(typescript),
+      unicornConfig({
+        customRules: categorizedRules[configNames.unicorn],
+        filenameCase,
       }),
     );
-
-    if (isObject(react) && react.framework === "next") {
-      configs.push(nextjsConfig(categorizedRules[configNames.nextjs]));
-    }
   }
 
-  if (query) {
-    configs.push(queryConfig(categorizedRules[configNames.query]));
-  }
-
-  if (convex) {
+  if (sorting) {
     configs.push(
-      convexConfig(categorizedRules[configNames.convex], Boolean(unicorn)),
+      perfectionistConfig(categorizedRules[configNames.perfectionist]),
+    );
+  }
+
+  if (jsdoc !== false) {
+    configs.push(
+      jsdocConfig(
+        jsdoc.requireJsdoc ?? false,
+        categorizedRules[configNames.jsdoc],
+      ),
     );
   }
 
@@ -234,27 +216,45 @@ export const eslintConfig = (
     );
   }
 
-  if (sorting) {
-    configs.push(
-      perfectionistConfig(categorizedRules[configNames.perfectionist]),
-    );
-  }
+  if (react) {
+    const reactOptions = isObject(react) ? react : {};
 
-  if (unicorn) {
-    const filenameCase = isObject(unicorn) ? unicorn.filenameCase : undefined;
+    // Apply reactRefresh based on framework setting or explicit override
+    const shouldUseReactRefresh =
+      // Explicit setting takes precedence
+      reactOptions.reactRefresh === true ||
+      // Framework-based default (vite/none use reactRefresh by default)
+      ((reactOptions.framework === "vite" ||
+        reactOptions.framework === "none") &&
+        reactOptions.reactRefresh !== false);
+
+    if (shouldUseReactRefresh) {
+      configs.push(
+        reactRefreshEslintConfig(categorizedRules[configNames.reactRefresh]),
+      );
+    }
+
     configs.push(
-      unicornConfig({
-        customRules: categorizedRules[configNames.unicorn],
-        filenameCase,
+      reactEslintConfig({
+        customRules: categorizedRules[configNames.react],
+        functionStyle,
+        reactCompiler: reactOptions.reactCompiler ?? true,
+        typescript: Boolean(typescript),
       }),
     );
+
+    if (isObject(react) && react.framework === "next") {
+      configs.push(nextjsConfig(categorizedRules[configNames.nextjs]));
+    }
   }
 
-  if (functionStyle === "arrow") {
+  if (query) {
+    configs.push(queryConfig(categorizedRules[configNames.query]));
+  }
+
+  if (convex) {
     configs.push(
-      preferArrowFunctionConfig(
-        categorizedRules[configNames.preferArrowFunction],
-      ),
+      convexConfig(categorizedRules[configNames.convex], Boolean(unicorn)),
     );
   }
 
