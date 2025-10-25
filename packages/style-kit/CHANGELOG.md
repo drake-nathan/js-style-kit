@@ -1,5 +1,11 @@
 # js-style-kit
 
+## 0.8.3
+
+### Patch Changes
+
+- dd2aea5: Add `build/` to ignore patterns, optimize config order
+
 ## 0.8.2
 
 ### Patch Changes
