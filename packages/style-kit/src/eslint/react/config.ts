@@ -1,3 +1,5 @@
+import type { ESLint } from "eslint";
+
 import react from "eslint-plugin-react";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
@@ -50,7 +52,7 @@ export const reactEslintConfig = ({
     name: configNames.react,
     plugins: {
       react,
-      "react-hooks": pluginReactHooks,
+      "react-hooks": pluginReactHooks as ESLint.Plugin,
     },
     rules: {
       ...reactRules({ functionStyle, reactCompiler, typescript }),
