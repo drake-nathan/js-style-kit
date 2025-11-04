@@ -747,6 +747,84 @@ describe("eslintConfig", () => {
     });
   });
 
+  describe("expo configuration", () => {
+    it("excludes expo config by default", () => {
+      const config = eslintConfig();
+
+      expect(config.some((c) => c.name === configNames.expo)).toBe(false);
+    });
+
+    it("includes expo config when enabled", () => {
+      const config = eslintConfig({ expo: true });
+
+      expect(config.some((c) => c.name === configNames.expo)).toBe(true);
+    });
+
+    it("applies expected expo rules when enabled", () => {
+      const config = eslintConfig({ expo: true });
+      const expoConfig = config.find((c) => c.name === configNames.expo);
+
+      expect(expoConfig).toBeDefined();
+      expect(expoConfig?.plugins?.expo).toBeDefined();
+
+      // Check for key Expo rules
+      expect(expoConfig?.rules?.["expo/no-dynamic-env-var"]).toBe("warn");
+      expect(expoConfig?.rules?.["expo/no-env-var-destructuring"]).toBe("warn");
+      expect(expoConfig?.rules?.["expo/use-dom-exports"]).toBe("warn");
+    });
+
+    it("allows custom rules to override expo rules", () => {
+      const config = eslintConfig({
+        expo: true,
+        rules: {
+          "expo/no-dynamic-env-var": "off",
+        },
+      });
+      const expoConfig = config.find((c) => c.name === configNames.expo);
+
+      expect(expoConfig?.rules?.["expo/no-dynamic-env-var"]).toBe("off");
+      // Other rules should still be at default
+      expect(expoConfig?.rules?.["expo/no-env-var-destructuring"]).toBe("warn");
+      expect(expoConfig?.rules?.["expo/use-dom-exports"]).toBe("warn");
+    });
+
+    it("works with React configuration", () => {
+      const config = eslintConfig({
+        expo: true,
+        react: { framework: "none" },
+      });
+
+      expect(config.some((c) => c.name === configNames.expo)).toBe(true);
+      expect(config.some((c) => c.name === configNames.react)).toBe(true);
+    });
+
+    it("works with TypeScript configuration", () => {
+      const config = eslintConfig({
+        expo: true,
+        typescript: true,
+      });
+
+      expect(config.some((c) => c.name === configNames.expo)).toBe(true);
+      expect(config.some((c) => c.name === configNames.typescript)).toBe(true);
+    });
+
+    it("can be combined with React Refresh for web development", () => {
+      const config = eslintConfig({
+        expo: true,
+        react: {
+          framework: "none",
+          reactRefresh: true,
+        },
+      });
+
+      expect(config.some((c) => c.name === configNames.expo)).toBe(true);
+      expect(config.some((c) => c.name === configNames.react)).toBe(true);
+      expect(config.some((c) => c.name === configNames.reactRefresh)).toBe(
+        true,
+      );
+    });
+  });
+
   // ============================================================================
   // Edge Cases & Advanced Scenarios
   // ============================================================================

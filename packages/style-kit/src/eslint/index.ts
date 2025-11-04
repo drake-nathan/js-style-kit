@@ -11,6 +11,7 @@ import { isObject, isString } from "../utils/is-type.js";
 import { baseEslintConfig } from "./base/config.js";
 import { configNames } from "./constants.js";
 import { convexConfig } from "./convex/config.js";
+import { expoConfig } from "./expo/config.js";
 import { ignoresConfig } from "./ignores.js";
 import { importConfig } from "./import/config.js";
 import { jsdocConfig } from "./jsdoc/config.js";
@@ -29,6 +30,7 @@ import { unicornConfig } from "./unicorn/config.js";
 
 export interface EslintConfigOptions {
   convex?: boolean;
+  expo?: boolean;
   functionStyle?: "off" | FunctionStyle;
   ignores?: string[];
   importPlugin?: boolean;
@@ -63,6 +65,7 @@ export interface EslintConfigOptions {
  *
  * @param options - The optional configuration object.
  * @param options.convex - Whether to include Convex rules.
+ * @param options.expo - Whether to include Expo rules.
  * @param options.functionStyle - The function style to enforce. Defaults to "arrow".
  * @param options.ignores - Additional paths to ignore. Already excludes `node_modules`, `dist`, and `build`.
  * @param options.importPlugin - Whether to include the import plugin. Defaults to true.
@@ -93,6 +96,7 @@ export interface EslintConfigOptions {
 export const eslintConfig = (
   {
     convex = false,
+    expo = false,
     functionStyle = "arrow",
     ignores = [],
     importPlugin = true,
@@ -256,6 +260,10 @@ export const eslintConfig = (
     configs.push(
       convexConfig(categorizedRules[configNames.convex], Boolean(unicorn)),
     );
+  }
+
+  if (expo) {
+    configs.push(expoConfig(categorizedRules[configNames.expo]));
   }
 
   if (storybook) {
