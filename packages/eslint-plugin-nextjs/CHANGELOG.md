@@ -1,5 +1,14 @@
 # eslint-plugin-nextjs
 
+## 1.1.2
+
+### Patch Changes
+
+- 07c3a67: Update dependencies to latest versions:
+  - Updated `@eslint/core` from 0.16.0 to 0.17.0
+  - Updated `eslint` from 9.38.0 to 9.39.1
+  - Updated `@types/node` from 22.18.12 to 24.10.0 (major version bump)
+
 ## 1.1.1
 
 ### Patch Changes
