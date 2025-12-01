@@ -14,9 +14,7 @@ export interface PrettierConfigOptions extends PrettierConfig {
 }
 
 export interface PrettierConfigWithPlugins
-  extends PrettierConfig,
-    SortJsonPluginOptions,
-    TailwindPluginOptions {}
+  extends PrettierConfig, SortJsonPluginOptions, TailwindPluginOptions {}
 
 /**
  * Creates a Prettier configuration object with optional Tailwind support
