@@ -102,6 +102,8 @@ Add scripts to `package.json`:
 }
 ```
 
+> **Tip:** For faster formatting, you can add the `--experimental-cli` flag to your format commands (e.g., `prettier . --write --cache --experimental-cli`). This uses Prettier's experimental CLI which can provide significant performance improvements. If you experience any issues, simply remove the flag.
+
 ## Configuration
 
 ### ESLint Options
