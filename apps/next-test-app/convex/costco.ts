@@ -88,7 +88,9 @@ const extractMetalAttributes = (
   }
 
   // Skip if not a precious metal bar/coin
-  if (!metalType) return null;
+  if (!metalType) {
+    return null;
+  }
 
   // Must be a bar, coin, or specified weight product
   const isMetalProduct =
@@ -98,7 +100,9 @@ const extractMetalAttributes = (
     name.includes("ounce") ||
     name.includes("oz");
 
-  if (!isMetalProduct) return null;
+  if (!isMetalProduct) {
+    return null;
+  }
 
   // Extract weight and purity
   const metalWeight = product.attributes.find(
@@ -221,9 +225,15 @@ export const fetchNewData = internalAction({
           timestamp,
         });
 
-        if (result.updated) productsUpdated++;
-        if (result.priceChanged) priceChanges++;
-        if (result.stockChanged) stockChanges++;
+        if (result.updated) {
+          productsUpdated++;
+        }
+        if (result.priceChanged) {
+          priceChanges++;
+        }
+        if (result.stockChanged) {
+          stockChanges++;
+        }
       }
 
       // Mark products not returned as out of stock
