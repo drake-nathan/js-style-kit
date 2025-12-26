@@ -36,6 +36,7 @@ jobs:
 
   format:
     name: Format
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
