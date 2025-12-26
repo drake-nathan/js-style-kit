@@ -54,6 +54,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Build (for prettier config)
+        run: bunx turbo run build
+
       - name: Prettier --write
         run: bun run format
 
