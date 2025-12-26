@@ -1,24 +1,13 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["bun.lock"],
   "tasks": {
-    "//#lint": {
-      "dependsOn": ["^lint"]
-    },
-    "//#lint:fix": {
-      "dependsOn": ["^lint:fix"]
-    },
-    "//#sherif": {
-      "dependsOn": ["^sherif"]
-    },
+    "//#lint": {},
+    "//#lint:fix": {},
+    "//#sherif": {},
     "build": {
       "dependsOn": ["^build"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env*",
-        "package.json",
-        "**/package.json",
-        "bun.lock"
-      ],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "dev": {
@@ -26,68 +15,34 @@
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^lint"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "package.json",
-        "**/package.json",
-        "bun.lock",
-        "!**/node_modules/**",
-        "!**/dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"],
+      "outputs": []
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "package.json",
-        "**/package.json",
-        "bun.lock",
-        "!**/node_modules/**",
-        "!**/dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"],
+      "outputs": []
     },
     "sherif": {
       "cache": true,
-      "inputs": ["**/package.json", "bun.lock"],
+      "inputs": ["**/package.json"],
       "outputs": []
     },
     "test": {
-      "dependsOn": ["^test"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "**/*.{js,jsx,ts,tsx}",
-        "package.json",
-        "**/package.json",
-        "bun.lock",
-        "!**/node_modules/**",
-        "!**/dist/**"
-      ],
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"],
       "outputs": []
     },
     "test:coverage": {
-      "dependsOn": ["^test:coverage"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "**/*.{js,jsx,ts,tsx}",
-        "package.json",
-        "**/package.json",
-        "bun.lock",
-        "!**/node_modules/**",
-        "!**/dist/**"
-      ],
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"],
       "outputs": ["coverage/**"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "package.json",
-        "**/package.json",
-        "bun.lock",
-        "!**/node_modules/**",
-        "!**/dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/node_modules/**", "!**/dist/**"],
+      "outputs": []
     }
   }
 }

@@ -10,14 +10,14 @@ on:
     types: [opened, synchronize]
     branches: ["main"]
 
-jobs:
-  build:
-    name: Build and Test
-    runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,25 +31,25 @@ jobs:
         with:
           bun-version-file: "package.json"
 
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Install global Turbo with Bun
-        run: bun add --global turbo@^2
+      # Phase 1: Build and independent checks (Turbo parallelizes these)
+      - name: Build & Sherif
+        run: bunx turbo run build sherif
 
-      - name: Sherif Monorepo Check
-        run: bun turbo run sherif
-
-      - name: Build
-        run: bun turbo run build
-
-      - name: Typecheck
-        run: bun turbo run typecheck
-
-      - name: Prettier --write
+      # Phase 2: Format (may commit changes, must run before lint)
+      - name: Format
         run: bun run format
 
-      - name: Commit Prettier changes if needed
+      - name: Commit formatting changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -57,26 +57,21 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "style: apply prettier formatting"
-            
-            # For pull requests
+
             if [ -n "${{ github.head_ref }}" ]; then
               git push origin HEAD:${{ github.head_ref }}
-            # For direct pushes to branches
             else
               git push origin HEAD:${{ github.ref_name }}
             fi
-            
+
             echo "Formatting changes were committed and pushed"
           else
             echo "No formatting changes needed"
           fi
 
-      - name: ESLint
-        run: bun turbo run lint -- --max-warnings 0
-
-      - name: Test and generate coverage reports
-        id: test-coverage
-        run: bun turbo run test:coverage
+      # Phase 3: Validation (Turbo parallelizes these)
+      - name: Typecheck, Lint & Test
+        run: bunx turbo run typecheck lint test:coverage
 
       - name: Upload coverage reports to Codecov
         if: always()
