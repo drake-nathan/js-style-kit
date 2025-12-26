@@ -10,14 +10,33 @@ on:
     types: [opened, synchronize]
     branches: ["main"]
 
-jobs:
-  build:
-    name: Build and Test
-    runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
+jobs:
+  # Phase 1: Independent checks (run in parallel)
+  sherif:
+    name: Sherif
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: "package.json"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Sherif Monorepo Check
+        run: bunx sherif
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,18 +53,6 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Install global Turbo with Bun
-        run: bun add --global turbo@^2
-
-      - name: Sherif Monorepo Check
-        run: bun turbo run sherif
-
-      - name: Build
-        run: bun turbo run build
-
-      - name: Typecheck
-        run: bun turbo run typecheck
-
       - name: Prettier --write
         run: bun run format
 
@@ -57,7 +64,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git add .
             git commit -m "style: apply prettier formatting"
-            
+
             # For pull requests
             if [ -n "${{ github.head_ref }}" ]; then
               git push origin HEAD:${{ github.head_ref }}
@@ -65,18 +72,89 @@ jobs:
             else
               git push origin HEAD:${{ github.ref_name }}
             fi
-            
+
             echo "Formatting changes were committed and pushed"
           else
             echo "No formatting changes needed"
           fi
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: "package.json"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bunx turbo run build
+
+  # Phase 2: Validation (depends on build and format)
+  typecheck:
+    name: Typecheck
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: "package.json"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bunx turbo run typecheck
+
+  lint:
+    name: Lint
+    needs: [build, format]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: "package.json"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
       - name: ESLint
-        run: bun turbo run lint -- --max-warnings 0
+        run: bunx turbo run lint -- --max-warnings 0
+
+  test:
+    name: Test
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: "package.json"
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
       - name: Test and generate coverage reports
-        id: test-coverage
-        run: bun turbo run test:coverage
+        run: bunx turbo run test:coverage
 
       - name: Upload coverage reports to Codecov
         if: always()
