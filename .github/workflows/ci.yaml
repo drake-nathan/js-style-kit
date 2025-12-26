@@ -28,12 +28,45 @@ jobs:
         with:
           bun-version-file: "package.json"
 
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
       - name: Sherif Monorepo Check
         run: bunx sherif
 
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: "package.json"
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bunx turbo run build
+
+  # Phase 2: Validation (depends on build)
   format:
     name: Format
     needs: [build]
@@ -50,6 +83,13 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: "package.json"
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
@@ -82,25 +122,6 @@ jobs:
             echo "No formatting changes needed"
           fi
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: "package.json"
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build
-        run: bunx turbo run build
-
-  # Phase 2: Validation (depends on build and format)
   typecheck:
     name: Typecheck
     needs: [build]
@@ -114,8 +135,18 @@ jobs:
         with:
           bun-version-file: "package.json"
 
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Build (for type definitions)
+        run: bunx turbo run build
 
       - name: Typecheck
         run: bunx turbo run typecheck
@@ -135,8 +166,18 @@ jobs:
         with:
           bun-version-file: "package.json"
 
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Build (for eslint config)
+        run: bunx turbo run build
 
       - name: ESLint
         run: bunx turbo run lint -- --max-warnings 0
@@ -154,8 +195,18 @@ jobs:
         with:
           bun-version-file: "package.json"
 
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Build (for test imports)
+        run: bunx turbo run build
 
       - name: Test and generate coverage reports
         run: bunx turbo run test:coverage
