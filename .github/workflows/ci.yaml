@@ -15,61 +15,8 @@ env:
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
 jobs:
-  # Phase 1: Independent checks (run in parallel)
-  sherif:
-    name: Sherif
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: "package.json"
-
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: bun-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Sherif Monorepo Check
-        run: bunx sherif
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: "package.json"
-
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: bun-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build
-        run: bunx turbo run build
-
-  # Phase 2: Validation (depends on build)
-  format:
-    name: Format
-    needs: [build]
+  ci:
+    name: CI
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -94,13 +41,15 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build (for prettier config)
-        run: bunx turbo run build
+      # Phase 1: Build and independent checks (Turbo parallelizes these)
+      - name: Build & Sherif
+        run: bunx turbo run build sherif
 
-      - name: Prettier --write
+      # Phase 2: Format (may commit changes, must run before lint)
+      - name: Format
         run: bun run format
 
-      - name: Commit Prettier changes if needed
+      - name: Commit formatting changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -109,10 +58,8 @@ jobs:
             git add .
             git commit -m "style: apply prettier formatting"
 
-            # For pull requests
             if [ -n "${{ github.head_ref }}" ]; then
               git push origin HEAD:${{ github.head_ref }}
-            # For direct pushes to branches
             else
               git push origin HEAD:${{ github.ref_name }}
             fi
@@ -122,94 +69,9 @@ jobs:
             echo "No formatting changes needed"
           fi
 
-  typecheck:
-    name: Typecheck
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: "package.json"
-
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: bun-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build (for type definitions)
-        run: bunx turbo run build
-
-      - name: Typecheck
-        run: bunx turbo run typecheck
-
-  lint:
-    name: Lint
-    needs: [build, format]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: "package.json"
-
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: bun-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build (for eslint config)
-        run: bunx turbo run build
-
-      - name: ESLint
-        run: bunx turbo run lint -- --max-warnings 0
-
-  test:
-    name: Test
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: "package.json"
-
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: bun-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build (for test imports)
-        run: bunx turbo run build
-
-      - name: Test and generate coverage reports
-        run: bunx turbo run test:coverage
+      # Phase 3: Validation (Turbo parallelizes these)
+      - name: Typecheck, Lint & Test
+        run: bunx turbo run typecheck lint test:coverage
 
       - name: Upload coverage reports to Codecov
         if: always()
