@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 /* eslint-disable jest/no-conditional-in-test */
 import { afterEach, describe, expect, it } from "bun:test";
-import { execSync } from "node:child_process";
+import { execSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -64,28 +64,15 @@ describe("cli Integration Tests", () => {
         // Create bun.lock to simulate bun project
         fs.writeFileSync(path.join(testDir, "bun.lock"), "");
 
-        const originalCwd = process.cwd();
-        try {
-          process.chdir(testDir);
+        const result = spawnSync("node", [CLI_PATH, "init"], {
+          cwd: testDir,
+          encoding: "utf8",
+        });
 
-          try {
-            const output = execSync(`node ${CLI_PATH} init`, {
-              encoding: "utf8",
-            });
+        // Even if installation fails, we should see the package manager detection
+        const output = result.stdout || result.stderr || "";
 
-            expect(output).toContain("Using package manager: bun");
-          } catch (error: unknown) {
-            // Even if installation fails, we should see the package manager detection
-            const output =
-              (error as { stderr?: string; stdout?: string }).stdout ||
-              (error as { stderr?: string; stdout?: string }).stderr ||
-              "";
-
-            expect(output).toContain("Using package manager: bun");
-          }
-        } finally {
-          process.chdir(originalCwd);
-        }
+        expect(output).toContain("Using package manager: bun");
       },
       { timeout: 10_000 },
     );

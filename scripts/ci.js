@@ -14,7 +14,7 @@ const phases = [
   },
   {
     commands: [
-      { color: "\x1b[36m", command: "bun run format:check", name: "format" }, // Cyan
+      { color: "\x1b[36m", command: "bun run format", name: "format" }, // Cyan
       { color: "\x1b[37m", command: "turbo run typecheck", name: "typecheck" }, // White
       { color: "\x1b[33m", command: "turbo run lint", name: "lint" }, // Yellow
       { color: "\x1b[35m", command: "turbo run test", name: "test" }, // Magenta

@@ -3,6 +3,7 @@
 ---
 
 Updated dependencies:
+
 - `typescript-eslint` to 8.52.0
 - `eslint-plugin-jest` to 29.12.1
 - `eslint-plugin-jsdoc` to 62.0.0
