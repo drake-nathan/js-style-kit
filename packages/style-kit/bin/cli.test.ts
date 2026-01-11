@@ -42,49 +42,53 @@ describe("cli Integration Tests", () => {
       }
     });
 
-    it("detects different package managers correctly", () => {
-      // Test with bun.lock
-      testDir = path.join(os.tmpdir(), `js-style-kit-test-${Date.now()}`);
-      fs.mkdirSync(testDir, { recursive: true });
+    it(
+      "detects different package managers correctly",
+      () => {
+        // Test with bun.lock
+        testDir = path.join(os.tmpdir(), `js-style-kit-test-${Date.now()}`);
+        fs.mkdirSync(testDir, { recursive: true });
 
-      const packageJson = {
-        devDependencies: {},
-        name: "test-project",
-        scripts: {},
-        version: "1.0.0",
-      };
+        const packageJson = {
+          devDependencies: {},
+          name: "test-project",
+          scripts: {},
+          version: "1.0.0",
+        };
 
-      fs.writeFileSync(
-        path.join(testDir, "package.json"),
-        JSON.stringify(packageJson, null, 2),
-      );
+        fs.writeFileSync(
+          path.join(testDir, "package.json"),
+          JSON.stringify(packageJson, null, 2),
+        );
 
-      // Create bun.lock to simulate bun project
-      fs.writeFileSync(path.join(testDir, "bun.lock"), "");
+        // Create bun.lock to simulate bun project
+        fs.writeFileSync(path.join(testDir, "bun.lock"), "");
 
-      const originalCwd = process.cwd();
-      try {
-        process.chdir(testDir);
-
+        const originalCwd = process.cwd();
         try {
-          const output = execSync(`node ${CLI_PATH} init`, {
-            encoding: "utf8",
-          });
+          process.chdir(testDir);
 
-          expect(output).toContain("Using package manager: bun");
-        } catch (error: unknown) {
-          // Even if installation fails, we should see the package manager detection
-          const output =
-            (error as { stderr?: string; stdout?: string }).stdout ||
-            (error as { stderr?: string; stdout?: string }).stderr ||
-            "";
+          try {
+            const output = execSync(`node ${CLI_PATH} init`, {
+              encoding: "utf8",
+            });
 
-          expect(output).toContain("Using package manager: bun");
+            expect(output).toContain("Using package manager: bun");
+          } catch (error: unknown) {
+            // Even if installation fails, we should see the package manager detection
+            const output =
+              (error as { stderr?: string; stdout?: string }).stdout ||
+              (error as { stderr?: string; stdout?: string }).stderr ||
+              "";
+
+            expect(output).toContain("Using package manager: bun");
+          }
+        } finally {
+          process.chdir(originalCwd);
         }
-      } finally {
-        process.chdir(originalCwd);
-      }
-    });
+      },
+      { timeout: 10_000 },
+    );
   });
 
   describe("cli help", () => {

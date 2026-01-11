@@ -164,7 +164,6 @@ export const noHtmlLinkForPages: RuleDefinition = {
   // eslint-disable-next-line eslint-plugin/require-meta-default-options
   meta: {
     docs: {
-      category: "HTML",
       description:
         "Prevent usage of `<a>` elements to navigate to internal Next.js pages.",
       recommended: true,
