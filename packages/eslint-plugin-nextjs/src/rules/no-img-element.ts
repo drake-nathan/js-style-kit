@@ -61,7 +61,6 @@ export const noImgElement: RuleDefinition = {
   },
   meta: {
     docs: {
-      category: "HTML",
       description:
         "Prevent usage of `<img>` element due to slower LCP and higher bandwidth.",
       recommended: true,

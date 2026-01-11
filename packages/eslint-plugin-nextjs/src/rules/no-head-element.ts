@@ -37,7 +37,6 @@ export const noHeadElement: RuleDefinition = {
   }),
   meta: {
     docs: {
-      category: "HTML",
       description: "Prevent usage of `<head>` element.",
       recommended: true,
       url,
