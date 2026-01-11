@@ -1,5 +1,11 @@
 # eslint-plugin-nextjs
 
+## 1.1.4
+
+### Patch Changes
+
+- 97b4ad3: Fixed compatibility with `@eslint/core` 1.0.1 by removing deprecated `category` property from rule metadata.
+
 ## 1.1.3
 
 ### Patch Changes
