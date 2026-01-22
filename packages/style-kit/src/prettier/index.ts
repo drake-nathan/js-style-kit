@@ -4,17 +4,21 @@ import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tai
 
 import { isObject, isString } from "../utils/is-type.js";
 
-export interface PrettierConfigOptions extends PrettierConfig {
+export type PrettierConfigOptions = Omit<PrettierConfig, "jsonSortOrder"> & {
   cssOrderPlugin?: boolean;
   curlyPlugin?: boolean;
+  jsonSortOrder?: SortJsonPluginOptions["jsonSortOrder"] | string;
   jsonSortPlugin?: boolean | SortJsonPluginOptions;
   packageJsonPlugin?: boolean;
   parser?: "default" | "oxc";
   tailwindPlugin?: boolean | string | TailwindPluginOptions;
-}
+};
 
-export interface PrettierConfigWithPlugins
-  extends PrettierConfig, SortJsonPluginOptions, TailwindPluginOptions {}
+export type PrettierConfigWithPlugins = Omit<PrettierConfig, "jsonSortOrder"> &
+  Omit<SortJsonPluginOptions, "jsonSortOrder"> &
+  TailwindPluginOptions & {
+    jsonSortOrder?: string;
+  };
 
 /**
  * Creates a Prettier configuration object with optional Tailwind support
@@ -42,6 +46,7 @@ export const prettierConfig = (
   const {
     cssOrderPlugin = true,
     curlyPlugin = true,
+    jsonSortOrder,
     jsonSortPlugin = true,
     packageJsonPlugin = true,
     parser = "oxc",
@@ -54,6 +59,11 @@ export const prettierConfig = (
     experimentalTernaries: true,
     ...rest,
   };
+
+  if (jsonSortOrder !== undefined) {
+    config.jsonSortOrder =
+      isString(jsonSortOrder) ? jsonSortOrder : JSON.stringify(jsonSortOrder);
+  }
 
   if (parser === "oxc") {
     plugins.push("@prettier/plugin-oxc");
@@ -71,7 +81,14 @@ export const prettierConfig = (
     plugins.push("prettier-plugin-sort-json");
 
     if (isObject(jsonSortPlugin)) {
-      Object.assign(config, jsonSortPlugin);
+      if (jsonSortPlugin.jsonSortOrder !== undefined) {
+        const { jsonSortOrder: pluginJsonSortOrder, ...pluginOptions } =
+          jsonSortPlugin;
+        Object.assign(config, pluginOptions);
+        config.jsonSortOrder = JSON.stringify(pluginJsonSortOrder);
+      } else {
+        Object.assign(config, jsonSortPlugin);
+      }
     } else {
       config.jsonRecursiveSort = true;
     }
