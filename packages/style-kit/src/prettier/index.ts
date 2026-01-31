@@ -4,17 +4,18 @@ import type { PluginOptions as TailwindPluginOptions } from "prettier-plugin-tai
 
 import { isObject, isString } from "../utils/is-type.js";
 
-export interface PrettierConfigOptions extends PrettierConfig {
+export type PrettierConfigOptions = Omit<PrettierConfig, "jsonSortOrder"> & {
   cssOrderPlugin?: boolean;
   curlyPlugin?: boolean;
   jsonSortPlugin?: boolean | SortJsonPluginOptions;
   packageJsonPlugin?: boolean;
   parser?: "default" | "oxc";
   tailwindPlugin?: boolean | string | TailwindPluginOptions;
-}
+};
 
-export interface PrettierConfigWithPlugins
-  extends PrettierConfig, SortJsonPluginOptions, TailwindPluginOptions {}
+export type PrettierConfigWithPlugins = Omit<PrettierConfig, "jsonSortOrder"> &
+  SortJsonPluginOptions &
+  TailwindPluginOptions;
 
 /**
  * Creates a Prettier configuration object with optional Tailwind support
