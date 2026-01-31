@@ -126,11 +126,9 @@ describe("prettierConfig", () => {
 
     expect(config.plugins).toContain("prettier-plugin-sort-json");
     expect(config.jsonRecursiveSort).toBe(false);
-    expect(config.jsonSortOrder).toBe(
-      JSON.stringify({
-        something: "caseInsensitiveReverseLexical",
-      }),
-    );
+    expect(config.jsonSortOrder).toStrictEqual({
+      something: "caseInsensitiveReverseLexical",
+    });
   });
 
   it("should pass through standard prettier options", () => {
@@ -160,11 +158,9 @@ describe("prettierConfig", () => {
     expect(config.plugins).toContain("prettier-plugin-sort-json");
     expect(config.plugins).toContain("prettier-plugin-packagejson");
     expect(config.plugins).toContain("prettier-plugin-tailwindcss");
-    expect(config.jsonSortOrder).toBe(
-      JSON.stringify({
-        something: "caseInsensitiveReverseLexical",
-      }),
-    );
+    expect(config.jsonSortOrder).toStrictEqual({
+      something: "caseInsensitiveReverseLexical",
+    });
     expect(config.tailwindFunctions).toStrictEqual(["clsx", "cva", "cn"]);
     expect(config.tabWidth).toBe(2);
   });

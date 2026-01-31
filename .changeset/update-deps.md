@@ -10,6 +10,8 @@ Update dependencies:
 - `eslint-plugin-storybook`: 10.1.11 → 10.2.0
 - `eslint-plugin-turbo`: 2.7.3 → 2.7.5
 - `prettier`: 3.7.4 → 3.8.1
-- `prettier-plugin-packagejson`: 2.5.20 → 3.0.0
+- `prettier-plugin-packagejson`: 2.5.20 → 3.0.0 (major)
 - `prettier-plugin-sort-json`: 4.1.1 → 4.2.0
 - `typescript-eslint`: 8.52.0 → 8.53.1
+
+Adapt to breaking change in `prettier-plugin-sort-json` where `jsonSortOrder` must now be a JSON string. The `prettierConfig` function now handles this internally, so users can continue passing objects.
