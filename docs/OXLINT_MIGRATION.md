@@ -285,7 +285,7 @@ Added optional peer deps for every JS plugin to `packages/style-kit/package.json
 
 ---
 
-### [ ] T10 — Implement `oxfmtConfig`
+### [x] T10 — Implement `oxfmtConfig`
 
 **Context.** oxfmt has a much smaller config surface than prettier. We expose only the native knobs we care about; everything else is dropped (see decisions table).
 
@@ -302,7 +302,9 @@ Added optional peer deps for every JS plugin to `packages/style-kit/package.json
 
 **Acceptance.** `oxfmtConfig({ tailwind: true })` produces a config that enables tailwind class sorting. Defaults match a sensible "format what we currently format" baseline.
 
-**Outcome:** _(fill in)_
+**Outcome:** Wrote `src/oxfmt/index.ts` returning oxfmt's `OxfmtConfig` via `defineConfig`. Defaults: `sortImports: true`, `sortPackageJson: true`, `jsdoc: false`, `sortTailwindcss` only emitted when `tailwind` is truthy with `clsx`/`cva`/`cn` as default class-detection helpers (matches the legacy prettier setup). 8 tests / 16 assertions.
+
+Also: updated `packages/style-kit/package.json` test script from `bun test` to `bun test src` because `bun test` from the package dir was discovering the legacy `_legacy/**/*.test.ts` files (tsconfig's `include` doesn't influence bun's test discovery). The legacy test files import the now-relocated source.
 
 ---
 
