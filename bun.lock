@@ -64,9 +64,13 @@
         "typescript": "5.9.3",
       },
       "peerDependencies": {
+        "eslint-plugin-react-hooks": ">=7.0.0",
         "oxfmt": ">=0.51.0",
         "oxlint": ">=1.66.0",
       },
+      "optionalPeers": [
+        "eslint-plugin-react-hooks",
+      ],
     },
     "packages/typescript-config": {
       "name": "@repo/typescript-config",

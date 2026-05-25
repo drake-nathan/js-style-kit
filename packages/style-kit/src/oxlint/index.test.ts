@@ -177,4 +177,68 @@ describe("oxlintConfig", () => {
       expect(cfg.rules?.["jsdoc/require-returns"]).toBe("warn");
     });
   });
+
+  describe("react", () => {
+    it("does not register react plugins when react is false", () => {
+      const cfg = oxlintConfig();
+      expect(cfg.plugins).not.toContain("react");
+      expect(cfg.plugins).not.toContain("jsx-a11y");
+      expect(cfg.rules?.["react/rules-of-hooks"]).toBeUndefined();
+      expect(cfg.jsPlugins).toEqual([]);
+    });
+
+    it("enables react + jsx-a11y when react: true", () => {
+      const cfg = oxlintConfig({ react: true });
+      expect(cfg.plugins).toContain("react");
+      expect(cfg.plugins).toContain("jsx-a11y");
+      expect(cfg.rules?.["react/rules-of-hooks"]).toBe("warn");
+      expect(cfg.rules?.["react/exhaustive-deps"]).toBe("warn");
+      expect(cfg.rules?.["react/jsx-key"]).toBe("warn");
+    });
+
+    it("loads aliased react-hooks-js JS plugin with React 19 rules", () => {
+      const cfg = oxlintConfig({ react: true });
+      const aliased = cfg.jsPlugins?.find(
+        (p): p is { name: string; specifier: string } =>
+          typeof p !== "string" && p.name === "react-hooks-js",
+      );
+      expect(aliased?.specifier).toBe("eslint-plugin-react-hooks");
+      expect(cfg.rules?.["react-hooks-js/preserve-manual-memoization"]).toBe(
+        "warn",
+      );
+      expect(cfg.rules?.["react-hooks-js/purity"]).toBe("warn");
+    });
+
+    it("enables only-export-components for vite framework", () => {
+      const cfg = oxlintConfig({ react: { framework: "vite" } });
+      const rule = cfg.rules?.["react/only-export-components"];
+      expect(Array.isArray(rule)).toBe(true);
+    });
+
+    it("enables only-export-components for 'none' (default)", () => {
+      const cfg = oxlintConfig({ react: true });
+      expect(cfg.rules?.["react/only-export-components"]).toBeDefined();
+    });
+
+    it("disables only-export-components for next framework", () => {
+      const cfg = oxlintConfig({ react: { framework: "next" } });
+      expect(cfg.rules?.["react/only-export-components"]).toBeUndefined();
+    });
+
+    it("disables only-export-components for remix and react-router", () => {
+      const remix = oxlintConfig({ react: { framework: "remix" } });
+      const rr = oxlintConfig({ react: { framework: "react-router" } });
+      expect(remix.rules?.["react/only-export-components"]).toBeUndefined();
+      expect(rr.rules?.["react/only-export-components"]).toBeUndefined();
+    });
+
+    it("enables nextjs plugin and rules only for next framework", () => {
+      const next = oxlintConfig({ react: { framework: "next" } });
+      const vite = oxlintConfig({ react: { framework: "vite" } });
+      expect(next.plugins).toContain("nextjs");
+      expect(next.rules?.["nextjs/no-html-link-for-pages"]).toBe("warn");
+      expect(vite.plugins).not.toContain("nextjs");
+      expect(vite.rules?.["nextjs/no-html-link-for-pages"]).toBeUndefined();
+    });
+  });
 });

@@ -216,7 +216,7 @@ Notable shape decisions:
 
 ---
 
-### [ ] T07 — Wire React via native + JS-plugin alias for `eslint-plugin-react-hooks`
+### [x] T07 — Wire React via native + JS-plugin alias for `eslint-plugin-react-hooks`
 
 **Context.** oxlint has `react`, `react-hooks`, and `react-refresh` natively, but its `react-hooks` port lags the upstream plugin (React 19 added new rules). We load the upstream plugin via `jsPlugins` aliased as `react-hooks-js` to get the new rules without conflicting with the built-in.
 
@@ -232,7 +232,9 @@ Notable shape decisions:
 
 **Acceptance.** A consumer with `react: { framework: "next", reactCompiler: true }` gets the same effective behavior they'd want today, with all hook-related rules covered by the aliased JS plugin.
 
-**Outcome:** _(fill in)_
+**Outcome:** Added `src/oxlint/plugins/react.ts` (with both `buildReactRules` and `buildReactHooksJsRules`) and `src/oxlint/plugins/nextjs.ts`. Wired into `oxlintConfig()` under the `react` option. When `react` is truthy: native plugins `react` + `jsx-a11y` enabled (and `nextjs` when `framework === "next"`), aliased JS plugin `react-hooks-js` registered against `eslint-plugin-react-hooks` for the React 19 additions (error-boundaries, immutability, preserve-manual-memoization, purity, refs, set-state-in-effect/render, unsupported-syntax, use-memo, globals, incompatible-library). `react/only-export-components` (oxlint's native equivalent of `eslint-plugin-react-refresh/only-export-components`) is enabled for vite/none frameworks, off for next/remix/react-router. Added `eslint-plugin-react-hooks >=7.0.0` as an optional peer dep on `js-style-kit`. 8 new tests / 21 new assertions; full suite now 31 tests / 72 assertions.
+
+**Diverged from plan.** The plan said to add `react-refresh` as a separate native plugin entry. oxlint doesn't expose a `react-refresh` plugin — but it does ship `react/only-export-components` (1:1 with the upstream rule), so we use that natively instead of a JS plugin. `jsx-a11y` was added natively here (not T06) since it's only useful when react is on. Several legacy `react/*` rules with no oxlint equivalent are intentionally dropped: `destructuring-assignment`, `function-component-definition` (general function-style is covered by `func-style`/prefer-arrow-functions in T08), `jsx-no-leaked-render`, `jsx-uses-react`, `jsx-uses-vars`, `no-deprecated`, `prop-types`.
 
 ---
 

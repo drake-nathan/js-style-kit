@@ -42,8 +42,14 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
+    "eslint-plugin-react-hooks": ">=7.0.0",
     "oxfmt": ">=0.51.0",
     "oxlint": ">=1.66.0"
+  },
+  "peerDependenciesMeta": {
+    "eslint-plugin-react-hooks": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

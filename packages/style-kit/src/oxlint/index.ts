@@ -3,6 +3,8 @@ import { type OxlintConfig, defineConfig } from "oxlint";
 import type {
   JsdocOptions,
   OxlintOptions,
+  ReactFramework,
+  ReactOptions,
   RulesRecord,
   UnicornOptions,
 } from "../types.js";
@@ -10,6 +12,11 @@ import type {
 import { buildBaseRules } from "./base-rules.js";
 import { buildImportRules } from "./plugins/import.js";
 import { buildJsdocRules } from "./plugins/jsdoc.js";
+import { buildNextjsRules } from "./plugins/nextjs.js";
+import {
+  buildReactHooksJsRules,
+  buildReactRules,
+} from "./plugins/react.js";
 import { buildTypescriptRules } from "./plugins/typescript.js";
 import { buildUnicornRules } from "./plugins/unicorn.js";
 
@@ -36,6 +43,7 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
     importPlugin = true,
     jsdoc = { requireJsdoc: false },
     overrides: userOverrides = [],
+    react = false,
     rules: userRules,
     typescript = true,
     unicorn = { filenameCase: "kebabCase" },
@@ -43,6 +51,9 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
 
   const ignorePatterns = [...DEFAULT_IGNORES, ...ignores];
   const tsOn = Boolean(typescript);
+  const reactOn = Boolean(react);
+  const reactOpts = isObject<ReactOptions>(react) ? react : {};
+  const framework: ReactFramework = reactOpts.framework ?? "none";
 
   // Plugin list (native, Rust-backed). Order matters for readability only.
   const plugins: OxlintConfig["plugins"] = ["eslint"];
@@ -50,6 +61,20 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
   if (importPlugin) plugins.push("import");
   if (unicorn) plugins.push("unicorn");
   if (jsdoc !== false) plugins.push("jsdoc");
+  if (reactOn) {
+    plugins.push("react");
+    plugins.push("jsx-a11y");
+    if (framework === "next") plugins.push("nextjs");
+  }
+
+  // JS plugins (alpha). Aliased to avoid colliding with native names.
+  const jsPlugins: OxlintConfig["jsPlugins"] = [];
+  if (reactOn) {
+    jsPlugins.push({
+      name: "react-hooks-js",
+      specifier: "eslint-plugin-react-hooks",
+    });
+  }
 
   // Assemble rules.
   let rules: RulesRecord = { ...buildBaseRules(functionStyle, tsOn) };
@@ -72,6 +97,16 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
       : false;
     rules = { ...rules, ...buildJsdocRules(requireJsdoc) };
   }
+  if (reactOn) {
+    rules = {
+      ...rules,
+      ...buildReactRules(framework),
+      ...buildReactHooksJsRules(),
+    };
+    if (framework === "next") {
+      rules = { ...rules, ...buildNextjsRules() };
+    }
+  }
 
   // User overrides win (shallow merge).
   if (userRules) {
@@ -80,7 +115,7 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
 
   return defineConfig({
     ignorePatterns,
-    jsPlugins: [],
+    jsPlugins,
     options: {
       // Type-aware rules. Default ON when `typescript` is truthy and the
       // host has `oxlint-tsgolint` installed; oxlint surfaces its own
