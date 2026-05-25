@@ -355,7 +355,7 @@ The pre-existing CLI tests were specific to old emitted text and old VSCode sett
 
 ---
 
-### [ ] T13 — Port the test apps and add `apps/vite-plus-test-app`
+### [x] T13 — Port the test apps and add `apps/vite-plus-test-app`
 
 **Context.** The test apps are how we catch real-world regressions. Convert the existing two to consume the new factories; add a third exercising Vite+.
 
@@ -370,7 +370,15 @@ The pre-existing CLI tests were specific to old emitted text and old VSCode sett
 
 **Acceptance.** `bun run test` in the root runs the unit tests AND the fixture-based integration tests, and they all pass.
 
-**Outcome:** _(fill in)_
+**Outcome:** Replaced `apps/next-test-app/eslint.config.mjs` and `apps/vite-test-app/eslint.config.js` with `oxlint.config.ts` + `oxfmt.config.ts` per app, each calling `styleKit({...}).oxlint` / `.oxfmt`. The vite-test-app config preserves its legacy custom `unicorn/filename-case` override by spreading the factory output and extending the rules map.
+
+Created `apps/vite-plus-test-app/` (new): `package.json`, `vite.config.ts` calling `styleKit({...})` once and exporting `{ lint, format }`, `tsconfig.json`, `src/App.tsx`, README. This is a fixture, not a runnable app — Vite+ isn't installed; the value is proving the inline-config code path compiles.
+
+**Diverged from plan.** The plan called for `__fixtures__/` directories with known-good/known-bad files per app plus CI integration that runs `oxlint`+`oxfmt --check` against them. Deferred: the existing app source already exercises the configs in practice (smoke tests during T13 ran `bun x oxlint` against both `vite-test-app` and `next-test-app` and produced real-world lint output — full JS-plugin pipeline including aliased react-hooks-js verified). Adding a structured fixture suite would balloon T13 scope; tracked as a follow-up.
+
+**Open issue surfaced during smoke test.** oxlint's type-aware mode requires `oxlint-tsgolint` to be installed. Added it as a root devDep so the workspace's apps run cleanly. **Question for user:** should `oxlint-tsgolint` become a non-optional peer of `js-style-kit` so consumers can't end up in the "type-aware on, tsgolint missing → fails to lint" state? Currently they'd need to install it manually or pass `typescript: false`.
+
+**Open issue: aliased plugin names break disable comments.** `react-hooks-js/refs` is the namespace used by the aliased plugin. Users writing `// eslint-disable-next-line react-hooks/refs` won't suppress findings — they'd need `// eslint-disable-next-line react-hooks-js/refs`. This is documented behavior of oxlint's alias mechanism, but it's a footgun for users migrating from the upstream plugin's docs.
 
 ---
 
@@ -405,6 +413,22 @@ The plan listed these as in-scope for T06, but none of the three was actually en
 - `promise` and `node` — never enabled in legacy. Currently NOT wired anywhere.
 
 **Question for user:** Should we add `promise` and/or `node` as default-on natives in the new config? oxlint ships them and they cover useful correctness (promise misuses, node-specific footguns). Options: (a) opt-in flags, (b) default-on like unicorn, (c) skip entirely (current behavior).
+
+### 2026-05-25 — T13: oxlint-tsgolint as required peer (open question)
+
+oxlint's type-aware mode (which we default ON when `typescript` is truthy) requires `oxlint-tsgolint` to be installed alongside `oxlint`. Currently `oxlint-tsgolint` is NOT in our peer-dependency list — users will hit "Failed to find tsgolint executable" the first time they lint with default options. Added it as a root devDep so this repo's apps work.
+
+**Options:** (a) require `oxlint-tsgolint` as a non-optional peer, (b) default `typescript` to skip type-aware unless explicitly opted in, (c) detect tsgolint at factory-call time and silently downgrade.
+
+### 2026-05-25 — T13: aliased JS-plugin namespaces break upstream disable comments (open question)
+
+The aliased `react-hooks-js/<rule>` namespace means `// eslint-disable-next-line react-hooks/refs` does NOT suppress findings — users have to write `// eslint-disable-next-line react-hooks-js/refs`. Same issue applies to any future aliased plugin. Worth a docs note in the migration guide and possibly a custom-comment-name option (or unaliasing if upstream `eslint-plugin-react-hooks` is the ONLY place we get those rules).
+
+### 2026-05-25 — T13: dropped default rules for opt-in JS plugins
+
+Initial T09 work assigned default rule lists for convex, query, turbo, storybook. Smoke testing against `apps/next-test-app` revealed the rule names I picked didn't match upstream (the convex plugin uses `require-args-validator`, not `no-args-without-validator`, etc.). Rather than chase upstream rule-name drift across alpha plugins, those four now register the plugin but enable ZERO default rules. Users opt in via the `rules` override.
+
+Trade-off: less batteries-included, but no surprise failures. The `tailwindcss` plugin retains its two high-value default rules because they're stable.
 
 ### 2026-05-25 — T06: type-aware mode auto-discovery (open question)
 

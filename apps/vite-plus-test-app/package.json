@@ -1,0 +1,22 @@
+{
+  "name": "vite-plus-test-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite-plus dev",
+    "format": "vite-plus format",
+    "format:check": "vite-plus format --check",
+    "lint": "vite-plus lint",
+    "lint:fix": "vite-plus lint --fix"
+  },
+  "dependencies": {
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.10",
+    "@types/react-dom": "19.2.3",
+    "js-style-kit": "workspace:*",
+    "typescript": "5.9.3"
+  }
+}

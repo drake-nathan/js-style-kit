@@ -5,9 +5,15 @@ import type {
 } from "../../types.js";
 
 /**
- * `oxlint-tailwindcss` JS plugin. Minimal default rule set; users can
- * extend via the `rules` override.
+ * Default rule sets for opt-in JS plugins are intentionally minimal —
+ * we register the plugin but don't pin specific rules so we don't
+ * have to chase rule-name drift across the upstream alpha plugins.
+ * Users opt in via the `rules` override.
+ *
+ * Exception: `tailwindcss` has a couple of high-value built-in rules
+ * we can name reliably.
  */
+
 export const buildTailwindLintRules = (
   _tailwind: TailwindOptions | true,
 ): RulesRecord => ({
@@ -15,44 +21,18 @@ export const buildTailwindLintRules = (
   "tailwindcss/no-contradicting-classname": "warn",
 });
 
-/**
- * `@tanstack/eslint-plugin-query`.
- */
-export const buildQueryRules = (): RulesRecord => ({
-  "query/exhaustive-deps": "warn",
-  "query/no-rest-destructuring": "warn",
-});
+export const buildQueryRules = (): RulesRecord => ({});
+
+export const buildConvexRules = (): RulesRecord => ({});
+
+export const buildTurboRules = (): RulesRecord => ({});
 
 /**
- * `@convex-dev/eslint-plugin`.
- */
-export const buildConvexRules = (): RulesRecord => ({
-  "convex/no-args-without-validator": "warn",
-  "convex/no-old-registered-function-syntax": "warn",
-});
-
-/**
- * `eslint-plugin-turbo`.
- */
-export const buildTurboRules = (): RulesRecord => ({
-  "turbo/no-undeclared-env-vars": "warn",
-});
-
-/**
- * `eslint-plugin-storybook` — scoped via overrides to `*.stories.*` and
- * `.storybook/` files.
+ * Storybook still gets a scoped override so the plugin's rules apply
+ * only to `*.stories.*` and `.storybook/`. No specific rules pinned —
+ * users opt in via overrides[*].rules.
  */
 export const buildStorybookOverride = (): RuleOverride => ({
   files: ["**/*.stories.@(js|jsx|ts|tsx|mjs|cjs)", "**/.storybook/**"],
-  rules: {
-    "storybook/await-interactions": "warn",
-    "storybook/csf-component": "warn",
-    "storybook/default-exports": "warn",
-    "storybook/hierarchy-separator": "warn",
-    "storybook/no-redundant-story-name": "warn",
-    "storybook/prefer-pascal-case": "warn",
-    "storybook/story-exports": "warn",
-    "storybook/use-storybook-expect": "warn",
-    "storybook/use-storybook-testing-library": "warn",
-  },
+  rules: {},
 });

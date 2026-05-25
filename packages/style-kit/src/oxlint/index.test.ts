@@ -280,16 +280,15 @@ describe("oxlintConfig", () => {
       expect(cfg.rules?.["tailwindcss/classnames-order"]).toBe("warn");
     });
 
-    it("query: registers @tanstack/eslint-plugin-query", () => {
+    it("query: registers @tanstack/eslint-plugin-query (no default rules)", () => {
       const cfg = oxlintConfig({ query: true });
       const reg = cfg.jsPlugins?.some(
         (p) => typeof p !== "string" && p.name === "query",
       );
       expect(reg).toBe(true);
-      expect(cfg.rules?.["query/exhaustive-deps"]).toBe("warn");
     });
 
-    it("convex: registers @convex-dev/eslint-plugin", () => {
+    it("convex: registers @convex-dev/eslint-plugin (no default rules)", () => {
       const cfg = oxlintConfig({ convex: true });
       const reg = cfg.jsPlugins?.some(
         (p) => typeof p !== "string" && p.name === "convex",
@@ -297,18 +296,20 @@ describe("oxlintConfig", () => {
       expect(reg).toBe(true);
     });
 
-    it("turbo: registers eslint-plugin-turbo", () => {
+    it("turbo: registers eslint-plugin-turbo (no default rules)", () => {
       const cfg = oxlintConfig({ turbo: true });
-      expect(cfg.rules?.["turbo/no-undeclared-env-vars"]).toBe("warn");
+      const reg = cfg.jsPlugins?.some(
+        (p) => typeof p !== "string" && p.name === "turbo",
+      );
+      expect(reg).toBe(true);
     });
 
-    it("storybook: adds override scoped to *.stories.*", () => {
+    it("storybook: adds an empty rule-set override scoped to *.stories.*", () => {
       const cfg = oxlintConfig({ storybook: true });
       const sb = cfg.overrides?.find((o) =>
         o.files.some((f) => f.includes(".stories.")),
       );
       expect(sb).toBeDefined();
-      expect(sb?.rules?.["storybook/default-exports"]).toBe("warn");
     });
 
     it("none of the opt-ins fire when their flags are off", () => {

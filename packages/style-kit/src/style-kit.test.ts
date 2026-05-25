@@ -62,14 +62,18 @@ describe("styleKit", () => {
     expect(oxfmt.sortPackageJson).toBe(false);
   });
 
-  it("convex/storybook/turbo flags are lint-only", () => {
+  it("convex/storybook/turbo flags register the respective JS plugins", () => {
     const { oxlint } = styleKit({
       convex: true,
       storybook: true,
       turbo: true,
     });
-    expect(oxlint.rules?.["convex/no-args-without-validator"]).toBe("warn");
-    expect(oxlint.rules?.["turbo/no-undeclared-env-vars"]).toBe("warn");
+    const names = (oxlint.jsPlugins ?? []).map((p) =>
+      typeof p === "string" ? p : p.name,
+    );
+    expect(names).toContain("convex");
+    expect(names).toContain("turbo");
+    expect(names).toContain("storybook");
     expect(
       oxlint.overrides?.some((o) =>
         o.files.some((f) => f.includes(".stories.")),
