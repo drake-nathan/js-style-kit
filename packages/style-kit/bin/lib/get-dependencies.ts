@@ -46,7 +46,6 @@ export const getDependencies = (): string[] => {
     "eslint-plugin-import-x",
     "eslint-plugin-jest",
     "eslint-plugin-jsdoc",
-    "eslint-plugin-nextjs",
     "eslint-plugin-perfectionist",
     "eslint-plugin-prefer-arrow-functions",
     "eslint-plugin-react",

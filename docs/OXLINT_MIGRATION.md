@@ -82,7 +82,7 @@ T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 
 
 ---
 
-### [ ] T15 — Delete `packages/eslint-plugin-nextjs`
+### [x] T15 — Delete `packages/eslint-plugin-nextjs`
 
 **Context.** This fork existed to give the old `@next/eslint-plugin-next` ESM + ESLint v9 support. oxlint ships a built-in `nextjs` plugin, so the fork is dead weight.
 
@@ -96,7 +96,7 @@ T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 
 
 **Acceptance.** No file under `packages/eslint-plugin-nextjs/` exists. No code or config in the rest of the repo references it. Changeset present.
 
-**Outcome:** _(fill in)_
+**Outcome:** Deleted the package directory; removed the `eslint-plugin-nextjs` dependency from `packages/style-kit/package.json` and from the CLI install list in `packages/style-kit/bin/lib/get-dependencies.ts`; added `.changeset/remove-eslint-plugin-nextjs.md`; refreshed `bun.lock`. Note: `packages/style-kit/src/eslint/nextjs/config.ts` still imports `eslint-plugin-nextjs`; it lives under `src/eslint/` which T03 relocates to `_legacy/` and `bun run build:stylekit` is currently broken because of T02 prerequisites — both expected and tracked.
 
 ---
 
