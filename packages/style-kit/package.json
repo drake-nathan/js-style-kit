@@ -42,11 +42,19 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
+    "eslint-plugin-perfectionist": ">=4.0.0",
+    "eslint-plugin-prefer-arrow-functions": ">=3.0.0",
     "eslint-plugin-react-hooks": ">=7.0.0",
     "oxfmt": ">=0.51.0",
     "oxlint": ">=1.66.0"
   },
   "peerDependenciesMeta": {
+    "eslint-plugin-perfectionist": {
+      "optional": true
+    },
+    "eslint-plugin-prefer-arrow-functions": {
+      "optional": true
+    },
     "eslint-plugin-react-hooks": {
       "optional": true
     }

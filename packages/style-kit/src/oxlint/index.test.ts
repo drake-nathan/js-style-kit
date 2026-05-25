@@ -59,9 +59,8 @@ describe("oxlintConfig", () => {
       expect(cfg.options?.typeAware).toBe(true);
     });
 
-    it("starts with empty jsPlugins and overrides arrays", () => {
+    it("starts with no overrides", () => {
       const cfg = oxlintConfig();
-      expect(cfg.jsPlugins).toEqual([]);
       expect(cfg.overrides).toEqual([]);
     });
   });
@@ -184,7 +183,11 @@ describe("oxlintConfig", () => {
       expect(cfg.plugins).not.toContain("react");
       expect(cfg.plugins).not.toContain("jsx-a11y");
       expect(cfg.rules?.["react/rules-of-hooks"]).toBeUndefined();
-      expect(cfg.jsPlugins).toEqual([]);
+      // react-hooks-js alias only registered when react is on
+      const hasReactHooksJs = cfg.jsPlugins?.some(
+        (p) => typeof p !== "string" && p.name === "react-hooks-js",
+      );
+      expect(hasReactHooksJs).toBeFalsy();
     });
 
     it("enables react + jsx-a11y when react: true", () => {
@@ -239,6 +242,48 @@ describe("oxlintConfig", () => {
       expect(next.rules?.["nextjs/no-html-link-for-pages"]).toBe("warn");
       expect(vite.plugins).not.toContain("nextjs");
       expect(vite.rules?.["nextjs/no-html-link-for-pages"]).toBeUndefined();
+    });
+  });
+
+  describe("perfectionist (non-import sorting)", () => {
+    it("enables by default", () => {
+      const cfg = oxlintConfig();
+      expect(cfg.jsPlugins).toContain("eslint-plugin-perfectionist");
+      expect(cfg.rules?.["perfectionist/sort-objects"]).toBeDefined();
+      expect(cfg.rules?.["perfectionist/sort-jsx-props"]).toBeDefined();
+    });
+
+    it("does NOT enable perfectionist/sort-imports (owned by oxfmt)", () => {
+      const cfg = oxlintConfig();
+      expect(cfg.rules?.["perfectionist/sort-imports"]).toBeUndefined();
+    });
+
+    it("can be turned off", () => {
+      const cfg = oxlintConfig({ sorting: false });
+      expect(cfg.jsPlugins).not.toContain("eslint-plugin-perfectionist");
+      expect(cfg.rules?.["perfectionist/sort-objects"]).toBeUndefined();
+    });
+  });
+
+  describe("prefer-arrow-functions (functionStyle=arrow)", () => {
+    it("loads the JS plugin and rule when arrow (default)", () => {
+      const cfg = oxlintConfig();
+      expect(cfg.jsPlugins).toContain("eslint-plugin-prefer-arrow-functions");
+      expect(
+        cfg.rules?.["prefer-arrow-functions/prefer-arrow-functions"],
+      ).toBeDefined();
+    });
+
+    it("does NOT load the JS plugin for non-arrow function styles", () => {
+      for (const fs of ["declaration", "expression", "off"] as const) {
+        const cfg = oxlintConfig({ functionStyle: fs });
+        expect(cfg.jsPlugins).not.toContain(
+          "eslint-plugin-prefer-arrow-functions",
+        );
+        expect(
+          cfg.rules?.["prefer-arrow-functions/prefer-arrow-functions"],
+        ).toBeUndefined();
+      }
     });
   });
 });

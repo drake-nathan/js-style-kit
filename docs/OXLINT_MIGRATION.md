@@ -238,7 +238,7 @@ Notable shape decisions:
 
 ---
 
-### [ ] T08 — Wire perfectionist (non-import) and `functionStyle` JS plugins
+### [x] T08 — Wire perfectionist (non-import) and `functionStyle` JS plugins
 
 **Context.** Perfectionist's non-import sorting rules (objects, interfaces, JSX props, enums, switch cases, etc.) have no oxlint native equivalent. Load the full eslint plugin via `jsPlugins`. For `functionStyle: "arrow"`, conditionally load `eslint-plugin-prefer-arrow-functions`.
 
@@ -253,7 +253,7 @@ Notable shape decisions:
 
 **Acceptance.** Same effective sorting + function style enforcement as the legacy config, modulo the import-sorting move to oxfmt.
 
-**Outcome:** _(fill in)_
+**Outcome:** Added `src/oxlint/plugins/perfectionist.ts` (ports the legacy non-import sorting rules with `order: "asc"`, `type: "natural"`) and `src/oxlint/plugins/prefer-arrow-functions.ts` (the `prefer-arrow-functions/prefer-arrow-functions` rule). Both wired into `oxlintConfig()`: `sorting` (default `true`) registers `eslint-plugin-perfectionist` in `jsPlugins` and emits the non-import rules; `functionStyle === "arrow"` registers `eslint-plugin-prefer-arrow-functions`. Explicitly does NOT enable `perfectionist/sort-imports` — oxfmt's `sortImports` owns that. Added both as optional peer deps. Full suite: 36 tests / 85 assertions pass.
 
 ---
 

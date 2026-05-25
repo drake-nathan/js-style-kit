@@ -13,6 +13,8 @@ import { buildBaseRules } from "./base-rules.js";
 import { buildImportRules } from "./plugins/import.js";
 import { buildJsdocRules } from "./plugins/jsdoc.js";
 import { buildNextjsRules } from "./plugins/nextjs.js";
+import { buildPerfectionistRules } from "./plugins/perfectionist.js";
+import { buildPreferArrowRules } from "./plugins/prefer-arrow-functions.js";
 import {
   buildReactHooksJsRules,
   buildReactRules,
@@ -45,6 +47,7 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
     overrides: userOverrides = [],
     react = false,
     rules: userRules,
+    sorting = true,
     typescript = true,
     unicorn = { filenameCase: "kebabCase" },
   } = options;
@@ -74,6 +77,12 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
       name: "react-hooks-js",
       specifier: "eslint-plugin-react-hooks",
     });
+  }
+  if (sorting) {
+    jsPlugins.push("eslint-plugin-perfectionist");
+  }
+  if (functionStyle === "arrow") {
+    jsPlugins.push("eslint-plugin-prefer-arrow-functions");
   }
 
   // Assemble rules.
@@ -106,6 +115,12 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
     if (framework === "next") {
       rules = { ...rules, ...buildNextjsRules() };
     }
+  }
+  if (sorting) {
+    rules = { ...rules, ...buildPerfectionistRules() };
+  }
+  if (functionStyle === "arrow") {
+    rules = { ...rules, ...buildPreferArrowRules() };
   }
 
   // User overrides win (shallow merge).
