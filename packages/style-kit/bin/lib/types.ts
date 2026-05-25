@@ -1,2 +1,2 @@
 export type PackageManager = "bun" | "npm" | "pnpm" | "yarn";
-export type Extension = ".js" | ".mjs";
+export type Extension = ".js" | ".mjs" | ".ts";

@@ -326,7 +326,7 @@ Also: updated `packages/style-kit/package.json` test script from `bun test` to `
 
 ---
 
-### [ ] T12 — Port the `bin/index.ts` CLI with Vite+ detection
+### [x] T12 — Port the `bin/index.ts` CLI with Vite+ detection
 
 **Context.** The CLI initializes projects: writes config files, installs deps, adds scripts, sets VSCode settings. Two emit paths now: standalone (writes `oxlint.config.ts` + `oxfmt.config.ts`) or Vite+ inline (writes nothing and prints instructions for editing `vite.config.ts`).
 
@@ -342,7 +342,16 @@ Also: updated `packages/style-kit/package.json` test script from `bun test` to `
 
 **Acceptance.** Running `bunx js-style-kit init` in a fresh dir scaffolds a working oxlint/oxfmt setup. Running in a Vite+ project prints the inline instructions and does not write standalone config files.
 
-**Outcome:** _(fill in)_
+**Outcome:**
+- `bin/lib/detect-vite-plus.ts`: looks for `vite-plus` or any `@viteplus/*` package in deps or devDeps.
+- `bin/lib/setup-config-files.ts`: writes `oxlint.config.ts` + `oxfmt.config.ts` (both call `styleKit({}).oxlint`/`.oxfmt`); skips and prints inline Vite+ instructions when detected. Returns `".ts" | null`.
+- `bin/lib/setup-scripts.ts`: scripts → oxlint/oxfmt with `--deny-warnings`.
+- `bin/lib/setup-vscode-settings.ts`: sets `source.fixAll.oxc`, `oxc.enable`, drops the legacy `source.fixAll.eslint` action on upgrade, preserves the tailwind class-function list.
+- `bin/lib/get-dependencies.ts`: now returns BOTH the list of legacy packages to UNINSTALL and a new `getInstallDependencies()` returning `js-style-kit` + `oxlint` + `oxfmt`.
+- `bin/lib/setup-dependencies.ts`: installs the new triple in one call; uninstall behavior unchanged (just operates over the larger legacy list).
+- Type `Extension` now includes `.ts`.
+
+The pre-existing CLI tests were specific to old emitted text and old VSCode settings — they were deleted and replaced with smaller fixture-driven suites for each lib file plus a new `detect-vite-plus.test.ts` (also deleted: `bin/cli.test.ts` which exercised the full init flow against the old emit). Full repo suite: 101 tests / 269 assertions across 9 files.
 
 ---
 

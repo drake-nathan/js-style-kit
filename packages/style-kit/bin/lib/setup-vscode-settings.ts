@@ -2,7 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 
 /**
- * Sets up VS Code settings
+ * Sets up VS Code settings to recommend the oxc.oxlint extension and
+ * disable the legacy prettier / eslint integrations.
  */
 export const setupVSCodeSettings = (): void => {
   console.info("Setting up VS Code settings...");
@@ -11,27 +12,31 @@ export const setupVSCodeSettings = (): void => {
     const vscodeDir = path.join(process.cwd(), ".vscode");
     const settingsPath = path.join(vscodeDir, "settings.json");
 
-    // Create .vscode directory if it doesn't exist
     if (!fs.existsSync(vscodeDir)) {
       fs.mkdirSync(vscodeDir);
     }
 
-    // Read existing settings or create new ones
     let settings: Record<string, unknown> = {};
     if (fs.existsSync(settingsPath)) {
       settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
     }
 
-    // Update settings
+    const existingActions = (settings["editor.codeActionsOnSave"] ?? {}) as Record<
+      string,
+      unknown
+    >;
+    // Drop the legacy eslint action if present so we don't leave a
+    // half-converted config behind.
+    delete existingActions["source.fixAll.eslint"];
+
     settings = {
       ...settings,
       "editor.codeActionsOnSave": {
-        ...(settings["editor.codeActionsOnSave"] || {}),
-        "source.fixAll.eslint": "explicit",
+        ...existingActions,
+        "source.fixAll.oxc": "explicit",
       },
-      "editor.defaultFormatter": "esbenp.prettier-vscode",
       "editor.formatOnSave": true,
-      "eslint.runtime": "node",
+      "oxc.enable": true,
       "tailwindCSS.classFunctions": ["cn", "cva", "clsx"],
     };
 

@@ -2,42 +2,57 @@ import fs from "node:fs";
 
 import type { Extension } from "./types.js";
 
+import { detectVitePlus } from "./detect-vite-plus.js";
+
+const OXLINT_CONFIG = `import { styleKit } from "js-style-kit";
+
+export default styleKit({}).oxlint;
+`;
+
+const OXFMT_CONFIG = `import { styleKit } from "js-style-kit";
+
+export default styleKit({}).oxfmt;
+`;
+
+const VITE_PLUS_INSTRUCTIONS = `
+Vite+ detected — skipping standalone config files.
+
+Add this to your vite.config.ts:
+
+  import { defineConfig } from "vite-plus";
+  import { styleKit } from "js-style-kit";
+
+  const { oxlint, oxfmt } = styleKit({});
+
+  export default defineConfig({
+    lint: oxlint,
+    format: oxfmt,
+  });
+`;
+
 /**
- * Creates configuration files based on whether the project uses ESM
+ * Writes oxlint.config.ts and oxfmt.config.ts in the cwd, or — when
+ * Vite+ is detected — prints instructions for adding the inline
+ * styleKit() call to the user's vite.config.ts.
  *
- * @returns The file extension used for configuration files
+ * @returns The file extension used for written config files, or
+ *   `null` when nothing was written (Vite+ path).
  */
-export const setupConfigFiles = (): Extension => {
+export const setupConfigFiles = (): Extension | null => {
+  if (detectVitePlus()) {
+    console.info(VITE_PLUS_INSTRUCTIONS);
+    return null;
+  }
+
   console.info("Creating configuration files...");
 
-  let extension: Extension = ".js";
-
   try {
-    const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
-    const isEsm = packageJson.type === "module";
-    extension = isEsm ? ".js" : ".mjs";
-
-    // Create prettier.config.js/mjs
-    const prettierConfigContent = `//@ts-check
-import { prettierConfig } from "js-style-kit";
-
-export default prettierConfig({});
-    `;
-
-    // Create eslint.config.js/mjs
-    const eslintConfigContent = `//@ts-check
-import { eslintConfig } from "js-style-kit";
-
-export default eslintConfig({});
-    `;
-
-    fs.writeFileSync(`prettier.config${extension}`, prettierConfigContent);
-    fs.writeFileSync(`eslint.config${extension}`, eslintConfigContent);
-    console.info(`Created configuration files with ${extension} extension`);
+    fs.writeFileSync("oxlint.config.ts", OXLINT_CONFIG);
+    fs.writeFileSync("oxfmt.config.ts", OXFMT_CONFIG);
+    console.info("Created oxlint.config.ts and oxfmt.config.ts");
+    return ".ts";
   } catch (error) {
     console.error("Failed to create configuration files:", error);
     process.exit(1);
   }
-
-  return extension;
 };

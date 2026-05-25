@@ -1,7 +1,7 @@
 import fs from "node:fs";
 
 /**
- * Updates package.json scripts
+ * Updates package.json scripts to call oxlint / oxfmt.
  */
 export const setupScripts = (): void => {
   console.info("Setting up package.json scripts...");
@@ -9,13 +9,12 @@ export const setupScripts = (): void => {
   try {
     const packageJson = JSON.parse(fs.readFileSync("package.json", "utf8"));
 
-    // Add or update scripts
     packageJson.scripts = {
       ...packageJson.scripts,
-      format: "prettier . --write --cache",
-      "format:check": "prettier . --check --cache",
-      lint: "eslint .",
-      "lint:fix": "eslint . --fix",
+      format: "oxfmt .",
+      "format:check": "oxfmt --check .",
+      lint: "oxlint --deny-warnings",
+      "lint:fix": "oxlint --fix --deny-warnings",
     };
 
     fs.writeFileSync(

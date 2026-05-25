@@ -3,7 +3,7 @@ import fs from "node:fs";
 
 import type { PackageManager } from "./types.js";
 
-import { getDependencies } from "./get-dependencies.js";
+import { getDependencies, getInstallDependencies } from "./get-dependencies.js";
 
 /**
  * Installs js-style-kit and removes overlapping dependencies
@@ -17,20 +17,20 @@ export const setupDependencies = (
 ): void => {
   console.info(`Using package manager: ${packageManager}`);
 
-  // Install js-style-kit
+  const installList = getInstallDependencies().join(" ");
+
   if (dryRun) {
-    console.info("Would install js-style-kit (dry run)");
+    console.info(`Would install: ${installList} (dry run)`);
   } else {
-    console.info("Installing js-style-kit...");
+    console.info(`Installing ${installList}...`);
 
-    const installCommands = {
-      bun: "bun add --dev js-style-kit",
-      npm: "npm install --save-dev js-style-kit",
-      pnpm: "pnpm add --save-dev js-style-kit",
-      yarn: "yarn add --dev js-style-kit",
-    } as const;
+    const installCommands: Record<PackageManager, string> = {
+      bun: `bun add --dev ${installList}`,
+      npm: `npm install --save-dev ${installList}`,
+      pnpm: `pnpm add --save-dev ${installList}`,
+      yarn: `yarn add --dev ${installList}`,
+    };
 
-    // Get installation command for the detected package manager
     const installCmd = installCommands[packageManager];
     execSync(installCmd, { stdio: "inherit" });
   }

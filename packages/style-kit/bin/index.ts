@@ -74,7 +74,7 @@ program
           `  - ${runCmd[packageManager]} lint:fix - Automatically fix linting issues`,
         );
         console.info(
-          `  - ${runCmd[packageManager]} format - Format code with Prettier`,
+          `  - ${runCmd[packageManager]} format - Format code with oxfmt`,
         );
         console.info(
           `  - ${runCmd[packageManager]} format:check - Check if code is properly formatted`,
