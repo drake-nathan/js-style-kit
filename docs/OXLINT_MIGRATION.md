@@ -192,7 +192,7 @@ Notable shape decisions:
 
 ---
 
-### [ ] T06 — Wire native oxlint plugins (typescript, import, unicorn, jsdoc, jsx-a11y, promise, node)
+### [x] T06 — Wire native oxlint plugins (typescript, import, unicorn, jsdoc, jsx-a11y, promise, node)
 
 **Context.** These plugins ship in oxlint natively. Enable them in `plugins` based on option flags, then translate each old rule from `src/_legacy/eslint/<plugin>/rules.ts` into the matching oxlint rule name (most map 1:1 under the same plugin prefix).
 
@@ -206,7 +206,13 @@ Notable shape decisions:
 
 **Acceptance.** All previously-native rules in `_legacy/` are accounted for: either present in the new config, intentionally dropped (note why), or moved to a JS plugin (handled in T07–T09).
 
-**Outcome:** _(fill in)_
+**Outcome:** Added `src/oxlint/plugins/{typescript,import,unicorn,jsdoc}.ts` rule builders and wired them into `oxlintConfig()` based on options. Plugin list now: `eslint` always; `typescript` when `typescript !== false`; `import` when `importPlugin !== false`; `unicorn` when `unicorn !== false`; `jsdoc` when `jsdoc !== false`. `options.typeAware` mirrors the boolean form of `typescript`. Per-file plugin notes in source list every legacy rule intentionally dropped (camelcase, no-octal*, jsdoc coverage gap including check-alignment/multiline-blocks/tag-lines/etc., import-x/no-extraneous-dependencies/no-relative-packages/no-useless-path-segments, unicorn/better-regex/no-for-loop, @typescript-eslint/no-array-constructor/no-empty-function/no-useless-constructor). 23 tests / 51 assertions pass.
+
+**Diverged from plan.** The plan listed `jsx-a11y`, `promise`, `node` as in-scope for T06. They were never enabled in the legacy config:
+- `jsx-a11y` is React-only and now hops to T07 where it can be scoped to `react: true` users.
+- `promise` and `node` had no legacy presence. **Open question for user (logged below):** should we add either as default-on, opt-in, or skip them entirely?
+
+**Type-aware deferred decision.** The plan called for fs-level auto-discovery of `tsconfig.json` at factory-call time. Current implementation just sets `options.typeAware: true` when `typescript` is truthy and trusts oxlint to find the tsconfig. This avoids tying the factory to the filesystem. **Open question:** is the lazier behavior acceptable, or do we still want fs.existsSync logic? (oxlint surfaces its own error if tsconfig is missing.)
 
 ---
 
@@ -368,4 +374,20 @@ Notable shape decisions:
 
 ## Open issues / decisions changed mid-flight
 
-_(append dated notes here when a task surfaces something that changes a locked decision)_
+### 2026-05-25 — T03: `_legacy/` kept as tracked git renames
+
+Plan said "git-ignore `_legacy/`". Implementation used `git mv` which made the move appear as tracked renames. Trade-off: easier to browse + `git log --follow` works, doesn't bloat npm publish because `files: ["dist", "src"]` already excludes `_legacy/`. **No user decision required** unless you want me to convert to an untracked snapshot retroactively.
+
+### 2026-05-25 — T06: `jsx-a11y`, `promise`, `node` plugins (open question)
+
+The plan listed these as in-scope for T06, but none of the three was actually enabled in the legacy config:
+- `jsx-a11y` is React-only — deferred to T07 and only enabled when `react` is on.
+- `promise` and `node` — never enabled in legacy. Currently NOT wired anywhere.
+
+**Question for user:** Should we add `promise` and/or `node` as default-on natives in the new config? oxlint ships them and they cover useful correctness (promise misuses, node-specific footguns). Options: (a) opt-in flags, (b) default-on like unicorn, (c) skip entirely (current behavior).
+
+### 2026-05-25 — T06: type-aware mode auto-discovery (open question)
+
+Plan said "fs-level auto-discover tsconfig.json at project root". Current implementation just sets `options.typeAware: true` when `typescript` is truthy and trusts oxlint to find the tsconfig itself. No `fs.existsSync` at factory-call time, no warn-once log.
+
+**Question for user:** Is the lazier behavior acceptable, or do you want the explicit fs check + warn? The lazier behavior keeps the factory pure and lets oxlint surface its own error; the eager check gives a friendlier message but couples the factory to the filesystem.
