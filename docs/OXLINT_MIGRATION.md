@@ -308,7 +308,7 @@ Also: updated `packages/style-kit/package.json` test script from `bun test` to `
 
 ---
 
-### [ ] T11 — Implement unified `styleKit()` factory
+### [x] T11 — Implement unified `styleKit()` factory
 
 **Context.** The unified entry point is what Vite+ users (and anyone who wants a single source of truth) will call. It MUST be the only place where shared concerns are reconciled — e.g. `tailwind: true` toggles both the lint and format sides; `react.framework` propagates only to oxlint.
 
@@ -322,7 +322,7 @@ Also: updated `packages/style-kit/package.json` test script from `bun test` to `
 
 **Acceptance.** `styleKit()` is consumable from a single import and produces equivalent output to calling the two factories separately.
 
-**Outcome:** _(fill in)_
+**Outcome:** Wrote `src/style-kit.ts` exporting `styleKit(options)` returning `{ oxlint, oxfmt }`. Shared options (`tailwind`, `react`, `typescript`, `ignores`, `functionStyle`, `convex`, `storybook`, `turbo`) routed to the right side(s). `lint?` / `format?` escape hatches pass through with `Omit<>`-typed surfaces from T04 preventing collisions. `tailwind` is the canonical shared-concern test: setting it once toggles `oxlint-tailwindcss` lint rules AND oxfmt's `sortTailwindcss` — verified in tests. Full suite: 80 tests / 212 assertions.
 
 ---
 
