@@ -140,7 +140,7 @@ T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 
 
 ---
 
-### [ ] T04 — Define the shared options type surface
+### [x] T04 — Define the shared options type surface
 
 **Context.** Three factories share many options (tailwind, react framework, typescript, ignores, etc.). Centralizing the types prevents drift.
 
@@ -157,7 +157,15 @@ T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 
 
 **Acceptance.** `src/types.ts` exists, exports the three option types, and is consumed by the stubs from T03.
 
-**Outcome:** _(fill in)_
+**Outcome:** Wrote `src/types.ts` with `OxlintOptions`, `OxfmtOptions`, `StyleKitOptions` and the supporting primitives (`RuleSeverity`, `RuleEntry`, `RulesRecord`, `RuleOverride`) and enums (`FilenameCase`, `FunctionStyle` — now includes `"off"`, `ReactFramework`, `TestFramework`). Sub-shapes (`ReactOptions`, `JsdocOptions`, `UnicornOptions`, `TestingOptions`, `TailwindOptions`, `JsdocFormatOptions`, `SortImportsOptions`) are extracted as named interfaces so consumers can compose them.
+
+Notable shape decisions:
+- `StyleKitOptions` puts shared concerns at top level (`tailwind`, `react`, `typescript`, `convex`, `storybook`, `turbo`, `functionStyle`, `ignores`) and uses `lint`/`format` escape hatches (typed as `Omit<>` of the per-side options) for everything that doesn't have a shared knob.
+- `vitePlus?: boolean` on `StyleKitOptions` is a CLI-emit hint (default auto-detect from package.json).
+- `react.reactCompiler` from the legacy options is dropped per the grilling decision: the plugin is dead and new rules will be served by the aliased `eslint-plugin-react-hooks` JS plugin without a separate flag.
+- `OxlintOptions.tailwind` and `OxfmtOptions.tailwind` are accepted on both sides separately so users of standalone factories can still toggle each independently. `styleKit()` collapses them into one shared option.
+
+`bun run build` and `bun run typecheck` both green; `dist/index.d.ts` exports the full type surface.
 
 ---
 
