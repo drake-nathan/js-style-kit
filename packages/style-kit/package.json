@@ -42,13 +42,24 @@
     "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
+    "@convex-dev/eslint-plugin": ">=1.0.0",
+    "@tanstack/eslint-plugin-query": ">=5.0.0",
     "eslint-plugin-perfectionist": ">=4.0.0",
     "eslint-plugin-prefer-arrow-functions": ">=3.0.0",
     "eslint-plugin-react-hooks": ">=7.0.0",
+    "eslint-plugin-storybook": ">=0.10.0",
+    "eslint-plugin-turbo": ">=2.0.0",
     "oxfmt": ">=0.51.0",
-    "oxlint": ">=1.66.0"
+    "oxlint": ">=1.66.0",
+    "oxlint-tailwindcss": ">=0.1.0"
   },
   "peerDependenciesMeta": {
+    "@convex-dev/eslint-plugin": {
+      "optional": true
+    },
+    "@tanstack/eslint-plugin-query": {
+      "optional": true
+    },
     "eslint-plugin-perfectionist": {
       "optional": true
     },
@@ -56,6 +67,15 @@
       "optional": true
     },
     "eslint-plugin-react-hooks": {
+      "optional": true
+    },
+    "eslint-plugin-storybook": {
+      "optional": true
+    },
+    "eslint-plugin-turbo": {
+      "optional": true
+    },
+    "oxlint-tailwindcss": {
       "optional": true
     }
   },

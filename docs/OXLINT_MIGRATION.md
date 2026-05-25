@@ -257,7 +257,7 @@ Notable shape decisions:
 
 ---
 
-### [ ] T09 — Wire opt-in JS plugins (testing, tailwind, query, convex, storybook, turbo)
+### [x] T09 — Wire opt-in JS plugins (testing, tailwind, query, convex, storybook, turbo)
 
 **Context.** All remaining plugins from the legacy config are opt-in and load via `jsPlugins`. Group them in one task because each is a small, mechanical addition.
 
@@ -274,7 +274,14 @@ Notable shape decisions:
 
 **Acceptance.** Every opt-in flag from the legacy `EslintConfigOptions` interface still toggles the equivalent behavior.
 
-**Outcome:** _(fill in)_
+**Outcome:** Added `src/oxlint/plugins/testing.ts` (full vitest + jest rule ports keyed off `framework` and `itOrTest`; `bun`/`node` use the jest plugin since both are jest-compatible at the API level) and `src/oxlint/plugins/opt-in.ts` (tailwind, query, convex, turbo as flat rule sets; storybook returns a `RuleOverride` scoped to `*.stories.*` + `.storybook/`). Wired into `oxlintConfig()`:
+- Native plugins: testing pushes `vitest` or `jest` to `plugins[]` matching the framework.
+- JS plugins (jsPlugins): tailwindcss, query, convex, storybook, turbo each registered with aliased name → upstream specifier.
+- Overrides: testing override appended by default (`testing !== false`), storybook override appended when `storybook: true`. User-supplied overrides come first so built-ins win subsequent merges naturally.
+
+Coverage drops from legacy: `vitest/consistent-test-filename` (legacy used it as the filename-pattern enforcer), `importRestrictions` (legacy used core `no-restricted-imports` with custom payloads — not ported; users can re-add via `rules` if needed), and the legacy `formattingRules` set is trimmed to just the rules oxlint exposes natively (`jest/padding-around-after-all-blocks`, `jest/padding-around-test-blocks`).
+
+Added optional peer deps for every JS plugin to `packages/style-kit/package.json`. 11 new tests / 24 new assertions; full suite: 47 tests / 109 assertions.
 
 ---
 

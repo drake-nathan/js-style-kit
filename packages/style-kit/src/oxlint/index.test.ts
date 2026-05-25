@@ -59,9 +59,13 @@ describe("oxlintConfig", () => {
       expect(cfg.options?.typeAware).toBe(true);
     });
 
-    it("starts with no overrides", () => {
+    it("includes the testing override by default (vitest, test glob)", () => {
       const cfg = oxlintConfig();
-      expect(cfg.overrides).toEqual([]);
+      expect(cfg.overrides).toHaveLength(1);
+      expect(cfg.overrides?.[0]?.files).toEqual([
+        "**/*.{test,spec}.{ts,tsx,js,jsx}",
+      ]);
+      expect(cfg.plugins).toContain("vitest");
     });
   });
 
@@ -96,9 +100,10 @@ describe("oxlintConfig", () => {
   });
 
   describe("overrides passthrough", () => {
-    it("forwards user overrides", () => {
+    it("forwards user overrides ahead of built-in ones", () => {
       const cfg = oxlintConfig({
         overrides: [{ files: ["*.test.ts"], rules: { "no-console": "off" } }],
+        testing: false,
       });
       expect(cfg.overrides).toHaveLength(1);
       expect(cfg.overrides?.[0]?.files).toEqual(["*.test.ts"]);
@@ -262,6 +267,101 @@ describe("oxlintConfig", () => {
       const cfg = oxlintConfig({ sorting: false });
       expect(cfg.jsPlugins).not.toContain("eslint-plugin-perfectionist");
       expect(cfg.rules?.["perfectionist/sort-objects"]).toBeUndefined();
+    });
+  });
+
+  describe("opt-in JS plugins", () => {
+    it("tailwind: registers oxlint-tailwindcss JS plugin and rules", () => {
+      const cfg = oxlintConfig({ tailwind: true });
+      const reg = cfg.jsPlugins?.some(
+        (p) => typeof p !== "string" && p.name === "tailwindcss",
+      );
+      expect(reg).toBe(true);
+      expect(cfg.rules?.["tailwindcss/classnames-order"]).toBe("warn");
+    });
+
+    it("query: registers @tanstack/eslint-plugin-query", () => {
+      const cfg = oxlintConfig({ query: true });
+      const reg = cfg.jsPlugins?.some(
+        (p) => typeof p !== "string" && p.name === "query",
+      );
+      expect(reg).toBe(true);
+      expect(cfg.rules?.["query/exhaustive-deps"]).toBe("warn");
+    });
+
+    it("convex: registers @convex-dev/eslint-plugin", () => {
+      const cfg = oxlintConfig({ convex: true });
+      const reg = cfg.jsPlugins?.some(
+        (p) => typeof p !== "string" && p.name === "convex",
+      );
+      expect(reg).toBe(true);
+    });
+
+    it("turbo: registers eslint-plugin-turbo", () => {
+      const cfg = oxlintConfig({ turbo: true });
+      expect(cfg.rules?.["turbo/no-undeclared-env-vars"]).toBe("warn");
+    });
+
+    it("storybook: adds override scoped to *.stories.*", () => {
+      const cfg = oxlintConfig({ storybook: true });
+      const sb = cfg.overrides?.find((o) =>
+        o.files.some((f) => f.includes(".stories.")),
+      );
+      expect(sb).toBeDefined();
+      expect(sb?.rules?.["storybook/default-exports"]).toBe("warn");
+    });
+
+    it("none of the opt-ins fire when their flags are off", () => {
+      const cfg = oxlintConfig();
+      const jsPluginNames = (cfg.jsPlugins ?? []).map((p) =>
+        typeof p === "string" ? p : p.name,
+      );
+      expect(jsPluginNames).not.toContain("tailwindcss");
+      expect(jsPluginNames).not.toContain("query");
+      expect(jsPluginNames).not.toContain("convex");
+      expect(jsPluginNames).not.toContain("turbo");
+      expect(jsPluginNames).not.toContain("storybook");
+    });
+  });
+
+  describe("testing", () => {
+    it("uses jest plugin when framework=jest", () => {
+      const cfg = oxlintConfig({ testing: { framework: "jest" } });
+      expect(cfg.plugins).toContain("jest");
+      expect(cfg.plugins).not.toContain("vitest");
+      const override = cfg.overrides?.find((o) =>
+        o.files.some((f) => f.includes("test")),
+      );
+      expect(override?.rules?.["jest/expect-expect"]).toBe("warn");
+    });
+
+    it("uses jest plugin for bun framework", () => {
+      const cfg = oxlintConfig({ testing: { framework: "bun" } });
+      expect(cfg.plugins).toContain("jest");
+    });
+
+    it("disables testing entirely when testing: false", () => {
+      const cfg = oxlintConfig({ testing: false });
+      expect(cfg.plugins).not.toContain("vitest");
+      expect(cfg.plugins).not.toContain("jest");
+      expect(cfg.overrides).toEqual([]);
+    });
+
+    it("respects custom files glob", () => {
+      const cfg = oxlintConfig({
+        testing: { files: ["src/**/*.spec.ts"] },
+      });
+      const override = cfg.overrides?.[0];
+      expect(override?.files).toEqual(["src/**/*.spec.ts"]);
+    });
+
+    it("itOrTest threads through to consistent-test-it", () => {
+      const cfg = oxlintConfig({ testing: { itOrTest: "test" } });
+      const override = cfg.overrides?.[0];
+      const rule = override?.rules?.["vitest/consistent-test-it"];
+      if (Array.isArray(rule)) {
+        expect((rule[1] as { fn: string }).fn).toBe("test");
+      }
     });
   });
 

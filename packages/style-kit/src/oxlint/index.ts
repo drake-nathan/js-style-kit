@@ -5,7 +5,10 @@ import type {
   OxlintOptions,
   ReactFramework,
   ReactOptions,
+  RuleOverride,
   RulesRecord,
+  TailwindOptions,
+  TestingOptions,
   UnicornOptions,
 } from "../types.js";
 
@@ -13,12 +16,20 @@ import { buildBaseRules } from "./base-rules.js";
 import { buildImportRules } from "./plugins/import.js";
 import { buildJsdocRules } from "./plugins/jsdoc.js";
 import { buildNextjsRules } from "./plugins/nextjs.js";
+import {
+  buildConvexRules,
+  buildQueryRules,
+  buildStorybookOverride,
+  buildTailwindLintRules,
+  buildTurboRules,
+} from "./plugins/opt-in.js";
 import { buildPerfectionistRules } from "./plugins/perfectionist.js";
 import { buildPreferArrowRules } from "./plugins/prefer-arrow-functions.js";
 import {
   buildReactHooksJsRules,
   buildReactRules,
 } from "./plugins/react.js";
+import { buildTestingOverride } from "./plugins/testing.js";
 import { buildTypescriptRules } from "./plugins/typescript.js";
 import { buildUnicornRules } from "./plugins/unicorn.js";
 
@@ -40,14 +51,20 @@ const isObject = <T extends object>(value: unknown): value is T =>
  */
 export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
   const {
+    convex = false,
     functionStyle = "arrow",
     ignores = [],
     importPlugin = true,
     jsdoc = { requireJsdoc: false },
     overrides: userOverrides = [],
+    query = false,
     react = false,
     rules: userRules,
     sorting = true,
+    storybook = false,
+    tailwind = false,
+    testing,
+    turbo = false,
     typescript = true,
     unicorn = { filenameCase: "kebabCase" },
   } = options;
@@ -84,6 +101,28 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
   if (functionStyle === "arrow") {
     jsPlugins.push("eslint-plugin-prefer-arrow-functions");
   }
+  if (tailwind) {
+    jsPlugins.push({
+      name: "tailwindcss",
+      specifier: "oxlint-tailwindcss",
+    });
+  }
+  if (query) {
+    jsPlugins.push({ name: "query", specifier: "@tanstack/eslint-plugin-query" });
+  }
+  if (convex) {
+    jsPlugins.push({ name: "convex", specifier: "@convex-dev/eslint-plugin" });
+  }
+  if (storybook) {
+    jsPlugins.push({ name: "storybook", specifier: "eslint-plugin-storybook" });
+  }
+  if (turbo) {
+    jsPlugins.push({ name: "turbo", specifier: "eslint-plugin-turbo" });
+  }
+
+  // Testing toggles between native vitest/jest — handled in the testing
+  // block below so we can register the override-scoped rules in lockstep.
+  let testingPluginToRegister: "jest" | "vitest" | null = null;
 
   // Assemble rules.
   let rules: RulesRecord = { ...buildBaseRules(functionStyle, tsOn) };
@@ -122,6 +161,36 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
   if (functionStyle === "arrow") {
     rules = { ...rules, ...buildPreferArrowRules() };
   }
+  if (tailwind) {
+    const tailwindOpts: TailwindOptions | true =
+      tailwind === true ? true : (tailwind as TailwindOptions);
+    rules = { ...rules, ...buildTailwindLintRules(tailwindOpts) };
+  }
+  if (query) {
+    rules = { ...rules, ...buildQueryRules() };
+  }
+  if (convex) {
+    rules = { ...rules, ...buildConvexRules() };
+  }
+  if (turbo) {
+    rules = { ...rules, ...buildTurboRules() };
+  }
+
+  // Build the overrides[] array. Testing + storybook plug in here.
+  const overrides: RuleOverride[] = [...userOverrides];
+  if (testing !== false) {
+    const testingOpts: TestingOptions =
+      testing === undefined ? {} : (testing as TestingOptions);
+    const { override, plugin } = buildTestingOverride(testingOpts);
+    overrides.push(override);
+    testingPluginToRegister = plugin;
+  }
+  if (storybook) {
+    overrides.push(buildStorybookOverride());
+  }
+  if (testingPluginToRegister) {
+    plugins.push(testingPluginToRegister);
+  }
 
   // User overrides win (shallow merge).
   if (userRules) {
@@ -138,7 +207,7 @@ export const oxlintConfig = (options: OxlintOptions = {}): OxlintConfig => {
       // missing. The user can pass `typescript: false` to disable.
       typeAware: tsOn,
     },
-    overrides: userOverrides,
+    overrides,
     plugins,
     rules,
   });
