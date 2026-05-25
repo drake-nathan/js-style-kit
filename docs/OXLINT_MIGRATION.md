@@ -382,7 +382,7 @@ Created `apps/vite-plus-test-app/` (new): `package.json`, `vite.config.ts` calli
 
 ---
 
-### [ ] T14 — Update README, root CLAUDE.md (already done in this PR), and add a migration guide
+### [x] T14 — Update README, root CLAUDE.md (already done in this PR), and add a migration guide
 
 **Context.** Existing users will land on the README expecting prettier/eslint instructions. They need a migration path.
 
@@ -396,7 +396,7 @@ Created `apps/vite-plus-test-app/` (new): `package.json`, `vite.config.ts` calli
 
 **Acceptance.** A user upgrading from v1 to v2 can do it by reading `MIGRATION_FROM_V1.md` alone.
 
-**Outcome:** _(fill in)_
+**Outcome:** Rewrote root [README.md](../README.md) to reflect the new toolchain, monorepo structure, and pointers into `docs/`. Rewrote [packages/style-kit/README.md](../packages/style-kit/README.md) with installation steps, the optional-peers table, four consumer setups (CLI, unified factory, Vite+ inline, individual factories), and a full reference table for `OxlintOptions` / `OxfmtOptions` / `StyleKitOptions`. Created [docs/MIGRATION_FROM_V1.md](./MIGRATION_FROM_V1.md) with side-by-side v1↔v2 snippets for the most common configurations (default, Next.js, Vite+Tailwind, Storybook+Convex), a breaking-behavior list (dropped reactCompiler, aliased disable-comment namespaces, dropped legacy rules with no oxlint equivalent), and pointers to the open-questions section. Updated the T01 changeset to remove the "(added later)" hedge on the migration-guide reference. All 15 tasks now checked off.
 
 ---
 

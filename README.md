@@ -1,35 +1,52 @@
 # `js-style-kit`
 
-A zero-configuration style guide for ESLint and Prettier that provides sensible default settings and flexible configuration options.
+A zero-configuration style guide for [oxlint](https://oxc.rs) and [oxfmt](https://oxc.rs/docs/guide/usage/formatter).
 
 [![CI](https://github.com/drake-nathan/js-style-kit/actions/workflows/ci.yaml/badge.svg)](https://github.com/drake-nathan/js-style-kit/actions/workflows/ci.yaml)
 [![Release](https://github.com/drake-nathan/js-style-kit/actions/workflows/release.yaml/badge.svg)](https://github.com/drake-nathan/js-style-kit/actions/workflows/release.yaml)
 [![npm version](https://img.shields.io/npm/v/js-style-kit.svg)](https://www.npmjs.com/package/js-style-kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![codecov](https://codecov.io/gh/drake-nathan/js-style-kit/graph/badge.svg?token=C57D67JAE0)](https://codecov.io/gh/drake-nathan/js-style-kit)
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/drake-nathan/js-style-kit?labelColor=5C5C5C&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit%20Reviews)
+
+## Status
+
+`js-style-kit` v2 is a breaking rewrite that swaps ESLint + Prettier for oxlint + oxfmt. If you're on v1, see [MIGRATION_FROM_V1.md](./docs/MIGRATION_FROM_V1.md). The conversion plan and outstanding decisions live in [OXLINT_MIGRATION.md](./docs/OXLINT_MIGRATION.md).
 
 ## Overview
 
-This repo consists of two packages:
+This monorepo ships:
 
-- [`js-style-kit`](./packages/style-kit/README.md) - The main package of this repo, a prettier/eslint style guide.
-- [`eslint-plugin-nextjs`](./packages/eslint-plugin-nextjs/README.md) - A fork of `@next/eslint-plugin-next` with TypeScript and ESLint v9 support.
+- [`js-style-kit`](./packages/style-kit/README.md) — the main package. Three factory exports (`oxlintConfig`, `oxfmtConfig`, `styleKit`) for wiring oxlint and oxfmt.
+- [`@repo/typescript-config`](./packages/typescript-config/) — shared TypeScript configs used by the monorepo's apps and packages.
 
 ## Repository Structure
-
-This is a monorepo managed with Turborepo and bun.
 
 ```sh
 /
 ├── apps/
-│   ├── next-test-app/        # Next.js app for testing
-│   └── vite-test-app/        # Vite app for testing
+│   ├── next-test-app/        # Next.js app for validating configs
+│   ├── vite-test-app/        # Vite app for validating configs
+│   └── vite-plus-test-app/   # Vite+ fixture for the inline-config path
 ├── packages/
-│   ├── eslint-plugin-nextjs/ # Fork of @nextjs/eslint-plugin-nextjs with TypeScript and ESLint v9 support
-│   ├── style-kit/            # Main package with ESLint and Prettier configurations
-│   └── typescript-config/    # Shared TypeScript configurations for the monorepo
+│   ├── style-kit/            # Main package: oxlint + oxfmt factories
+│   └── typescript-config/    # Shared TypeScript configurations
+├── docs/
+│   ├── OXLINT_MIGRATION.md   # Conversion plan + open questions
+│   └── MIGRATION_FROM_V1.md  # Upgrade guide for v1 users
 ├── .changeset/               # Changesets for versioning
 ├── .github/                  # GitHub Actions workflows
 └── turbo.json                # Turborepo configuration
 ```
+
+## Local Development
+
+```bash
+bun install
+bun run build:stylekit
+bun run test
+```
+
+See [CLAUDE.md](./CLAUDE.md) for the full list of repo-level commands.
+
+## License
+
+MIT
