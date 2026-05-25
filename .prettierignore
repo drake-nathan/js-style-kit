@@ -1,4 +1,0 @@
-*.hbs
-dist
-coverage
-bun.lock

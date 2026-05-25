@@ -2,8 +2,8 @@
   "name": "@repo/typescript-config",
   "private": true,
   "scripts": {
-    "format": "prettier . --write --cache",
-    "format:check": "prettier . --check --cache"
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "typescript": "5.9.3"

@@ -100,7 +100,7 @@ T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 
 
 ---
 
-### [ ] T02 — Strip prettier/eslint runtime + dev dependencies from root and style-kit
+### [x] T02 — Strip prettier/eslint runtime + dev dependencies from root and style-kit
 
 **Context.** The repo currently lints/formats itself with eslint+prettier. We need to remove those tools from the dev workflow before introducing oxlint/oxfmt so we don't end up running both. Replace root scripts (`lint`, `format`) with stubs that point at oxlint/oxfmt CLIs (binaries may not yet be configured — that's fine, the next tasks wire them up).
 
@@ -119,7 +119,7 @@ T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 
 
 **Acceptance.** `rg -i 'eslint|prettier' --type-add 'json:*.json' -t json` returns only references inside lockfiles, changelogs, and this doc.
 
-**Outcome:** _(fill in)_
+**Outcome:** Root `package.json` and `packages/style-kit/package.json` cleaned of every eslint/prettier dep; `oxlint` and `oxfmt` installed as devDeps + peerDeps on style-kit. Scripts in root, style-kit, `apps/next-test-app`, `apps/vite-test-app`, and `packages/typescript-config` swapped to `oxlint`/`oxfmt` invocations. Deleted `eslint.config.js`, `prettier.config.js`, `.prettierignore`, `.eslintcache` at repo root; updated `.gitignore` (`.eslintcache` → `.oxlintcache`). Description/keywords on `js-style-kit` updated to reflect new toolchain. The note in T15 about a broken style-kit build still applies — the legacy `src/eslint/*` modules import packages that no longer exist; T03 will relocate them.
 
 ---
 

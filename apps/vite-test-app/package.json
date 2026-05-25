@@ -4,9 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "lint": "eslint . --max-warnings=0 --cache",
-    "lint:fix": "eslint . --fix --max-warnings=0 --cache",
-    "lint:inspect": "eslint --inspect-config",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint --deny-warnings",
+    "lint:fix": "oxlint --fix --deny-warnings",
     "preview": "vite preview"
   },
   "dependencies": {
