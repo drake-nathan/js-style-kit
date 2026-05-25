@@ -67,7 +67,7 @@ T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 
 
 ## Tasks
 
-### [ ] T01 — Add the `js-style-kit` v2 changeset and major-bump scaffolding
+### [x] T01 — Add the `js-style-kit` v2 changeset and major-bump scaffolding
 
 **Context.** This conversion is a breaking change. Before any code moves, land a changeset announcing the major bump so the release plumbing is set up and CHANGELOG entries can accumulate.
 
@@ -78,7 +78,7 @@ T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 
 
 **Acceptance.** A `.changeset/*.md` file exists declaring `"js-style-kit": major` with rationale referencing this migration plan.
 
-**Outcome:** _(fill in)_
+**Outcome:** Added `.changeset/convert-to-oxlint-oxfmt.md` declaring the major bump, summarizing the new three-factory API, and pointing at this plan doc and the (forthcoming) `MIGRATION_FROM_V1.md`.
 
 ---
 
