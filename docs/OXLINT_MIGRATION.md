@@ -169,7 +169,7 @@ Notable shape decisions:
 
 ---
 
-### [ ] T05 — Implement `ignores` + base rule scaffolding for oxlint
+### [x] T05 — Implement `ignores` + base rule scaffolding for oxlint
 
 **Context.** Every oxlint config has the same outer shape: `plugins`, `categories`, `rules`, `overrides`, `ignorePatterns`, `jsPlugins`. Build the skeleton once before adding plugin-specific rules.
 
@@ -188,7 +188,7 @@ Notable shape decisions:
 
 **Acceptance.** `bun test src/oxlint/index.test.ts` passes. The function returns a valid oxlint config object accepted by `defineConfig`.
 
-**Outcome:** _(fill in)_
+**Outcome:** Implemented `oxlintConfig()` against `OxlintConfig` from `oxlint`. Always-on ignores: `node_modules`, `dist`, `build` (as `**/<dir>/**`). Calls `defineConfig({...})` so consumer-side type inference works when they spread the result. Base ESLint correctness rules ported into `src/oxlint/base-rules.ts` (`buildBaseRules`); intentionally drops rules with no oxlint equivalent: `camelcase`, `no-octal`, `no-octal-escape`, `no-undef-init`, `no-unreachable-loop`, `prefer-named-capture-group`, `yoda`. `functionStyle: "arrow"|"off"` skips `func-style`; `"declaration"|"expression"` wires it with `allowArrowFunctions: true`. User `rules` shallow-merged over the base. 12 tests / 26 assertions pass. Notable: had to drop `readonly` from `RuleEntry` tuples in `src/types.ts` because oxlint's `DummyRule` is mutable.
 
 ---
 

@@ -27,9 +27,9 @@ export type RuleSeverity = "allow" | "deny" | "error" | "off" | "warn";
  */
 export type RuleEntry =
   | RuleSeverity
-  | readonly [RuleSeverity]
-  | readonly [RuleSeverity, unknown]
-  | readonly [RuleSeverity, unknown, unknown];
+  | [RuleSeverity]
+  | [RuleSeverity, unknown]
+  | [RuleSeverity, unknown, unknown];
 
 /** Free-form `rules` map shallow-merged onto the final config. */
 export type RulesRecord = Record<string, RuleEntry>;
