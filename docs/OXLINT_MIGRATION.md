@@ -1,0 +1,363 @@
+# oxlint + oxfmt Migration Plan
+
+> **Status:** in progress. This document is the single source of truth for the conversion of `js-style-kit` from `prettier` + `eslint` to `oxfmt` + `oxlint`. Each task is self-contained so an agent (or human) can pick up any single task and execute it without re-reading the whole document.
+>
+> When you finish a task: flip its checkbox, leave a short note under **Outcome**, and update the **Status** line at the top of the affected task if anything diverged from the plan.
+
+---
+
+## North Star
+
+A single `js-style-kit` package providing `oxlintConfig()`, `oxfmtConfig()`, and a unified `styleKit()` factory. Consumers wire it up either via standalone `oxlint.config.ts` / `oxfmt.config.ts` files OR inline in Vite+'s `vite.config.ts`. Major version bump. No prettier/eslint backwards compatibility.
+
+---
+
+## Architectural decisions (locked)
+
+These were resolved during planning. Treat as constraints, not open questions.
+
+| Topic | Decision |
+| --- | --- |
+| Package name | Keep `js-style-kit`. Major version bump. No backcompat with prettier/eslint. |
+| Exports | Three: `oxlintConfig(options)`, `oxfmtConfig(options)`, `styleKit(options)` returning `{ oxlint, oxfmt }`. |
+| Consumer surface | Standalone `oxlint.config.ts` / `oxfmt.config.ts` OR inline in Vite+ `vite.config.ts`. |
+| oxlint config shape | One root object with `overrides: [{ files, rules }]` for file-scoping. NOT an array of configs. |
+| Type-aware rules | On by default. Auto-discover `tsconfig.json` at project root. |
+| Rule override API | Shallow-merge user `rules` into final map. Drop `processCustomRules`. |
+| `functionStyle` | Hybrid — built-in `func-style` for `declaration`/`expression`; load `eslint-plugin-prefer-arrow-functions` as JS plugin only when `arrow`. |
+| Sorting | Imports via oxfmt `sortImports`. Everything else (objects/interfaces/JSX props/etc.) via `eslint-plugin-perfectionist` loaded as JS plugin. |
+| React rules | Use oxlint built-in `react` + `react-hooks` + `react-refresh`. Alias-load `eslint-plugin-react-hooks` as JS plugin to cover React 19 rules oxlint's port lacks. Drop dead `react-compiler` plugin. |
+| Tailwind | Shared `tailwind` flag drives both oxfmt's `sortTailwindcss` AND oxlint via `oxlint-tailwindcss` JS plugin. |
+| Opt-in JS plugins | `@tanstack/query`, `convex`, `storybook`, `turbo` — same opt-in flags as today, loaded via `jsPlugins`. |
+| oxfmt options | Trim to natives only: `sortImports`, `sortTailwindcss`, `sortPackageJson`, `jsdoc`. Drop css-order, curly (moves to oxlint rule), generic JSON sort, parser option. |
+| `eslint-plugin-nextjs` sub-package | Delete entirely. Use oxlint's built-in `nextjs` plugin. |
+| Test apps | Keep `apps/next-test-app` and `apps/vite-test-app`, port to oxlint/oxfmt. Add `apps/vite-plus-test-app`. |
+| Testing depth | Shape tests on factory output + run oxlint/oxfmt against fixture apps in CI. |
+| CLI | Port `bin/index.ts` 1:1. Add Vite+ detection: if found, emit Vite+ inline instructions instead of standalone config files; swap VSCode Prettier extension setting for `oxc.oxlint`. |
+| JS plugin alpha risk | Accept. Pin oxlint versions tightly. |
+
+---
+
+## How to work a task
+
+1. Pick a task whose checkbox is unchecked AND whose dependencies are all checked.
+2. Re-read this doc's **Architectural decisions** table and the task's own **Context** + **Acceptance** blocks. That should be enough to act.
+3. Implement. Open a draft PR or commit on a feature branch.
+4. Check the box. Add an **Outcome:** line under the task describing what shipped and any divergences.
+5. If you discover a decision needs revisiting, add a note to the bottom under **Open issues / decisions changed mid-flight** rather than silently changing course.
+
+---
+
+## Task graph
+
+```
+T01 ─┬─ T02 ─ T03 ─ T04 ─ T05 ─ T06 ─┬─ T10 ─ T11 ─ T12 ─ T13 ─ T14
+     │                               ├─ T07
+     └─ T15                          ├─ T08
+                                     └─ T09
+```
+
+- T01..T05 are foundational: clear the old code, set up new scaffolding.
+- T06 is the core oxlint factory; T07–T09 are independent plugin slices that can run in parallel once T06 lands.
+- T10..T12 cover oxfmt, the unified factory, and the CLI.
+- T13..T14 cover validation, fixtures, and release prep.
+- T15 (delete `eslint-plugin-nextjs`) is independent and can be done early.
+
+---
+
+## Tasks
+
+### [ ] T01 — Add the `js-style-kit` v2 changeset and major-bump scaffolding
+
+**Context.** This conversion is a breaking change. Before any code moves, land a changeset announcing the major bump so the release plumbing is set up and CHANGELOG entries can accumulate.
+
+**Steps.**
+1. `bun run changeset` (or hand-write a file under `.changeset/`) with a **major** bump for `js-style-kit`. Title: "Convert to oxlint + oxfmt".
+2. Body: short summary of breaking change + link to this doc.
+3. Do NOT bump `eslint-plugin-nextjs`'s version here — T15 will remove it as its own changeset.
+
+**Acceptance.** A `.changeset/*.md` file exists declaring `"js-style-kit": major` with rationale referencing this migration plan.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T15 — Delete `packages/eslint-plugin-nextjs`
+
+**Context.** This fork existed to give the old `@next/eslint-plugin-next` ESM + ESLint v9 support. oxlint ships a built-in `nextjs` plugin, so the fork is dead weight.
+
+**Steps.**
+1. Remove `packages/eslint-plugin-nextjs/` entirely.
+2. Remove its entry from any root workspace globs that target it explicitly (root `package.json` workspaces already uses `packages/*`, so likely no change needed there).
+3. Remove references in `turbo.json` if any.
+4. Remove from `apps/next-test-app/package.json` and `apps/vite-test-app/package.json` dependencies if present.
+5. Add a changeset noting the deprecation/removal.
+6. Confirm `bun install && bun run ci` is green (ignore failures that are unrelated to this removal — flag them in this doc's **Open issues** section).
+
+**Acceptance.** No file under `packages/eslint-plugin-nextjs/` exists. No code or config in the rest of the repo references it. Changeset present.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T02 — Strip prettier/eslint runtime + dev dependencies from root and style-kit
+
+**Context.** The repo currently lints/formats itself with eslint+prettier. We need to remove those tools from the dev workflow before introducing oxlint/oxfmt so we don't end up running both. Replace root scripts (`lint`, `format`) with stubs that point at oxlint/oxfmt CLIs (binaries may not yet be configured — that's fine, the next tasks wire them up).
+
+**Depends on:** T01.
+
+**Steps.**
+1. From the root `package.json`: remove `eslint`, `prettier`, and any related plugins; add `oxlint` and `oxfmt` as devDeps (latest stable).
+2. Replace root scripts:
+   - `lint` → `oxlint`
+   - `lint:fix` → `oxlint --fix`
+   - `format` → `oxfmt`
+   - `format:check` → `oxfmt --check`
+3. From `packages/style-kit/package.json`: remove every `eslint-plugin-*`, `@typescript-eslint/*`, `prettier-plugin-*`, and `prettier` dep. Add `oxlint` and `oxfmt` as peer deps. Plugins that will be loaded via `jsPlugins` (perfectionist, react-hooks, prefer-arrow-functions, oxlint-tailwindcss, tanstack/query, convex, storybook, turbo) move to `peerDependenciesMeta` as optional peers so consumers only install what they enable.
+4. Delete `eslint.config.js`, `prettier.config.js`, `.prettierignore`, `.eslintcache` at repo root.
+5. Run `bun install`.
+
+**Acceptance.** `rg -i 'eslint|prettier' --type-add 'json:*.json' -t json` returns only references inside lockfiles, changelogs, and this doc.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T03 — Empty out `packages/style-kit/src/` of old config code
+
+**Context.** The current `src/eslint/` and `src/prettier/` directories are dense with plugin-specific config builders. Rather than mutate them in-place we wipe them and rebuild — most files are 1:1 plugin wrappers that don't map cleanly to oxlint's flat rule namespace.
+
+**Depends on:** T02.
+
+**Steps.**
+1. Move `packages/style-kit/src/eslint/` and `packages/style-kit/src/prettier/` to a `_legacy/` directory at the same level (don't delete yet — useful as a rule-name reference while porting). Git-ignore `_legacy/`.
+2. Re-stub `src/index.ts` to export from `./oxlint/index.js`, `./oxfmt/index.js`, and `./style-kit.js` (files will be created in later tasks; stub them as empty modules with named exports throwing "not implemented" so TS builds).
+3. Keep `src/utils/` (e.g. `is-type.ts`) — those will still be useful.
+
+**Acceptance.** `bun run build:stylekit` succeeds, producing a `dist/` with the three top-level exports stubbed.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T04 — Define the shared options type surface
+
+**Context.** Three factories share many options (tailwind, react framework, typescript, ignores, etc.). Centralizing the types prevents drift.
+
+**Depends on:** T03.
+
+**Steps.**
+1. Create `src/types.ts` containing:
+   - `StyleKitOptions` — superset (everything `oxlint` and `oxfmt` care about, plus shared concerns).
+   - `OxlintOptions` — subset for `oxlintConfig`.
+   - `OxfmtOptions` — subset for `oxfmtConfig`.
+   - Re-export `FunctionStyle`, `FilenameCase`, `ReactFramework` from the old types where they still apply.
+2. Document each option with a TSDoc comment including: default value, what plugin/rule it controls, whether it's "native" or "JS plugin" backed.
+3. Add `tailwind`, `vitePlus` (boolean — affects CLI emit only), and any other newly-shared knobs identified during T05–T11.
+
+**Acceptance.** `src/types.ts` exists, exports the three option types, and is consumed by the stubs from T03.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T05 — Implement `ignores` + base rule scaffolding for oxlint
+
+**Context.** Every oxlint config has the same outer shape: `plugins`, `categories`, `rules`, `overrides`, `ignorePatterns`, `jsPlugins`. Build the skeleton once before adding plugin-specific rules.
+
+**Depends on:** T04.
+
+**Steps.**
+1. Create `src/oxlint/index.ts` exporting `oxlintConfig(options: OxlintOptions): OxlintConfigObject` (type from `oxlint`'s `defineConfig`).
+2. Implement:
+   - Always-on `ignorePatterns` covering `node_modules`, `dist`, `build`, plus user-supplied `ignores`.
+   - Base ESLint correctness rules (the equivalent of the old `base/config.ts` ruleset, expressed as oxlint rule names).
+   - Empty `plugins`, `jsPlugins`, `rules`, `overrides` arrays that downstream tasks fill in.
+3. Add shape tests in `src/oxlint/index.test.ts` asserting:
+   - Default invocation produces an object with the expected ignore patterns.
+   - User-passed `ignores` are appended.
+   - User-passed `rules` are shallow-merged onto the final `rules` map (verifies the simplification from `processCustomRules`).
+
+**Acceptance.** `bun test src/oxlint/index.test.ts` passes. The function returns a valid oxlint config object accepted by `defineConfig`.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T06 — Wire native oxlint plugins (typescript, import, unicorn, jsdoc, jsx-a11y, promise, node)
+
+**Context.** These plugins ship in oxlint natively. Enable them in `plugins` based on option flags, then translate each old rule from `src/_legacy/eslint/<plugin>/rules.ts` into the matching oxlint rule name (most map 1:1 under the same plugin prefix).
+
+**Depends on:** T05.
+
+**Steps.**
+1. For each plugin: add to `plugins` when the corresponding option is truthy; add rules under the `<plugin>/<rule>` namespace in the root `rules` map.
+2. Type-aware TypeScript rules: enable when `typescript === true` AND we can resolve a `tsconfig.json`. Add a `tsconfig` field to the config output pointing at the discovered path. Skip type-aware rules if discovery fails (warn via `console.warn` once).
+3. `unicorn.filenameCase` → translate to oxlint's `unicorn/filename-case` options.
+4. Shape tests asserting each plugin's rules appear when its option is on and disappear when off.
+
+**Acceptance.** All previously-native rules in `_legacy/` are accounted for: either present in the new config, intentionally dropped (note why), or moved to a JS plugin (handled in T07–T09).
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T07 — Wire React via native + JS-plugin alias for `eslint-plugin-react-hooks`
+
+**Context.** oxlint has `react`, `react-hooks`, and `react-refresh` natively, but its `react-hooks` port lags the upstream plugin (React 19 added new rules). We load the upstream plugin via `jsPlugins` aliased as `react-hooks-js` to get the new rules without conflicting with the built-in.
+
+**Depends on:** T06.
+
+**Steps.**
+1. Under the `react` option: add `react`, `react-hooks` (and `react-refresh` when framework is `vite`/`none`, NOT for `next`/`remix`/`react-router`) to `plugins`.
+2. Add `{ name: "react-hooks-js", specifier: "eslint-plugin-react-hooks" }` to `jsPlugins`.
+3. Enable the built-in `react-hooks/rules-of-hooks` and `react-hooks/exhaustive-deps`. Enable the React 19 additions under `react-hooks-js/<rule>` — diff the upstream plugin's rule list against oxlint's docs to identify which to alias-enable. Document the list in a comment.
+4. Drop `react-compiler` plugin references entirely (it's archived; its rules merged into upstream react-hooks).
+5. Framework-aware behavior: when `framework === "next"`, add `nextjs` to `plugins` and enable next/* rules.
+6. Shape tests for each framework value.
+
+**Acceptance.** A consumer with `react: { framework: "next", reactCompiler: true }` gets the same effective behavior they'd want today, with all hook-related rules covered by the aliased JS plugin.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T08 — Wire perfectionist (non-import) and `functionStyle` JS plugins
+
+**Context.** Perfectionist's non-import sorting rules (objects, interfaces, JSX props, enums, switch cases, etc.) have no oxlint native equivalent. Load the full eslint plugin via `jsPlugins`. For `functionStyle: "arrow"`, conditionally load `eslint-plugin-prefer-arrow-functions`.
+
+**Depends on:** T06.
+
+**Steps.**
+1. When `sorting !== false`: add `eslint-plugin-perfectionist` to `jsPlugins`. Enable all the non-import perfectionist rules used in `_legacy/eslint/perfectionist/rules.ts`. Do NOT enable `perfectionist/sort-imports` — that's oxfmt's job.
+2. `functionStyle: "declaration" | "expression"` → enable `func-style` core rule with the corresponding option.
+3. `functionStyle: "arrow"` → enable `func-style` AND add `eslint-plugin-prefer-arrow-functions` to `jsPlugins`, enabling its rule with the same options used in `_legacy/eslint/prefer-arrow-function/rules.ts`.
+4. `functionStyle: "off"` → no rules added.
+5. Shape tests for all four function-style values.
+
+**Acceptance.** Same effective sorting + function style enforcement as the legacy config, modulo the import-sorting move to oxfmt.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T09 — Wire opt-in JS plugins (testing, tailwind, query, convex, storybook, turbo)
+
+**Context.** All remaining plugins from the legacy config are opt-in and load via `jsPlugins`. Group them in one task because each is a small, mechanical addition.
+
+**Depends on:** T06.
+
+**Steps.**
+1. Testing (`testing` option): use oxlint's built-in `vitest`/`jest` plugins when `framework` matches. For `bun` / `node`, no plugin needed beyond core. Implement `formattingRules`, `importRestrictions`, `itOrTest`, `filenamePattern` → translate to the matching rule overrides scoped via an `overrides[]` entry on the `files` glob.
+2. Tailwind (`tailwind` option, sourced from `StyleKitOptions`): add `oxlint-tailwindcss` to `jsPlugins`. Enable its lint rules. (The format side is handled in T10.)
+3. `query: true` → add `@tanstack/eslint-plugin-query` to `jsPlugins`.
+4. `convex: true` → add `eslint-plugin-convex` to `jsPlugins`.
+5. `storybook: true` → add `eslint-plugin-storybook` to `jsPlugins`; scope its rules via an `overrides[]` entry on `*.stories.*` files.
+6. `turbo: true` → add `eslint-plugin-turbo` to `jsPlugins`.
+7. Shape tests for each opt-in.
+
+**Acceptance.** Every opt-in flag from the legacy `EslintConfigOptions` interface still toggles the equivalent behavior.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T10 — Implement `oxfmtConfig`
+
+**Context.** oxfmt has a much smaller config surface than prettier. We expose only the native knobs we care about; everything else is dropped (see decisions table).
+
+**Depends on:** T04 (types) — does NOT depend on T05–T09.
+
+**Steps.**
+1. Create `src/oxfmt/index.ts` exporting `oxfmtConfig(options: OxfmtOptions)`. Use `defineConfig` from `oxfmt`.
+2. Wire options:
+   - `sortImports`: pass-through (default to the perfectionist-style groups shown in oxfmt's docs).
+   - `tailwind`: when truthy, enable `sortTailwindcss` (accept boolean or `{ stylesheet, functions }` config matching the old tailwind plugin's shape).
+   - `sortPackageJson`: default `true`.
+   - `jsdoc`: pass-through, default `false`.
+3. Add shape tests asserting default output and each option toggle.
+
+**Acceptance.** `oxfmtConfig({ tailwind: true })` produces a config that enables tailwind class sorting. Defaults match a sensible "format what we currently format" baseline.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T11 — Implement unified `styleKit()` factory
+
+**Context.** The unified entry point is what Vite+ users (and anyone who wants a single source of truth) will call. It MUST be the only place where shared concerns are reconciled — e.g. `tailwind: true` toggles both the lint and format sides; `react.framework` propagates only to oxlint.
+
+**Depends on:** T07, T08, T09, T10.
+
+**Steps.**
+1. Create `src/style-kit.ts` exporting `styleKit(options: StyleKitOptions): { oxlint, oxfmt }`.
+2. Internally call `oxlintConfig(deriveOxlintOptions(options))` and `oxfmtConfig(deriveOxfmtOptions(options))`. Each derivation is a small pure function — write them inline or in `src/derive.ts`.
+3. Document with TSDoc the consumer flow for both standalone and Vite+ inline usage (with code blocks).
+4. Test: passing `{ tailwind: true }` to `styleKit` results in `oxlint.jsPlugins` containing `oxlint-tailwindcss` AND `oxfmt.sortTailwindcss` being enabled.
+
+**Acceptance.** `styleKit()` is consumable from a single import and produces equivalent output to calling the two factories separately.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T12 — Port the `bin/index.ts` CLI with Vite+ detection
+
+**Context.** The CLI initializes projects: writes config files, installs deps, adds scripts, sets VSCode settings. Two emit paths now: standalone (writes `oxlint.config.ts` + `oxfmt.config.ts`) or Vite+ inline (writes nothing and prints instructions for editing `vite.config.ts`).
+
+**Depends on:** T11.
+
+**Steps.**
+1. Replace `setupConfigFiles` to emit `oxlint.config.ts` and `oxfmt.config.ts` that import and call `oxlintConfig` / `oxfmtConfig` from `js-style-kit`.
+2. Replace `setupDependencies` to install `oxlint`, `oxfmt`, and `js-style-kit`.
+3. Replace `setupScripts` to add `lint`, `lint:fix`, `format`, `format:check` scripts targeting oxlint/oxfmt.
+4. Replace `setupVSCodeSettings` to recommend the `oxc.oxlint` extension and configure `editor.defaultFormatter` to the oxfmt extension (or whichever is canonical at the time of writing).
+5. Add Vite+ detection: check `package.json` deps for `vite-plus` / `@viteplus/*`. If detected, skip writing standalone configs; print step-by-step instructions for adding `styleKit()` to `vite.config.ts`.
+6. Keep the `--dry-run` flag working.
+
+**Acceptance.** Running `bunx js-style-kit init` in a fresh dir scaffolds a working oxlint/oxfmt setup. Running in a Vite+ project prints the inline instructions and does not write standalone config files.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T13 — Port the test apps and add `apps/vite-plus-test-app`
+
+**Context.** The test apps are how we catch real-world regressions. Convert the existing two to consume the new factories; add a third exercising Vite+.
+
+**Depends on:** T11.
+
+**Steps.**
+1. `apps/next-test-app`: remove eslint/prettier configs, add `oxlint.config.ts` + `oxfmt.config.ts` calling the new factories with `styleKit({ react: { framework: "next" } })` (or the equivalent).
+2. `apps/vite-test-app`: same shape with `react: { framework: "vite" }`.
+3. Create `apps/vite-plus-test-app`: a Vite+ project that calls `styleKit()` inline in `vite.config.ts`. Smallest possible app that exercises the inline path.
+4. Each app gets a `__fixtures__/` directory with at least one "should lint clean" file and one "should produce errors" file covering rules we care about (e.g. a no-unused-vars violation, a hook-rules violation, a perfectionist-sort violation, an unformatted file).
+5. Wire each fixture into the package's test script: run `oxlint` and `oxfmt --check` and assert exit codes match expectations.
+
+**Acceptance.** `bun run test` in the root runs the unit tests AND the fixture-based integration tests, and they all pass.
+
+**Outcome:** _(fill in)_
+
+---
+
+### [ ] T14 — Update README, root CLAUDE.md (already done in this PR), and add a migration guide
+
+**Context.** Existing users will land on the README expecting prettier/eslint instructions. They need a migration path.
+
+**Depends on:** T12, T13.
+
+**Steps.**
+1. Rewrite `README.md` to describe the oxlint/oxfmt API and the three consumption styles.
+2. Add a `docs/MIGRATION_FROM_V1.md` with side-by-side before/after snippets for the most common configs (default, react+next, react+vite, with-tailwind, with-storybook).
+3. Update the changeset from T01 to link to the migration guide.
+4. Ensure this doc (OXLINT_MIGRATION.md) has every task checked off; consider moving it to `docs/_archive/` once shipped.
+
+**Acceptance.** A user upgrading from v1 to v2 can do it by reading `MIGRATION_FROM_V1.md` alone.
+
+**Outcome:** _(fill in)_
+
+---
+
+## Open issues / decisions changed mid-flight
+
+_(append dated notes here when a task surfaces something that changes a locked decision)_

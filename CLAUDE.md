@@ -4,12 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a monorepo for `js-style-kit`, a zero-configuration style guide for ESLint and Prettier. The repository is managed with Turborepo and uses Bun as the package manager.
+This is a monorepo for `js-style-kit`, a zero-configuration style guide for **oxlint and oxfmt**. The repository is managed with Turborepo and uses Bun as the package manager.
+
+> **In-progress migration:** the codebase is being converted from `prettier` + `eslint` to `oxfmt` + `oxlint`. This is a breaking, non-backwards-compatible rewrite. See [docs/OXLINT_MIGRATION.md](docs/OXLINT_MIGRATION.md) for the plan, task breakdown, and per-task context. Until the migration completes, parts of the live code still reference the old toolchain.
 
 ### Main Packages
 
-- **js-style-kit** (`packages/style-kit/`) - The main package providing ESLint and Prettier configurations
-- **eslint-plugin-nextjs** (`packages/eslint-plugin-nextjs/`) - A fork of `@nextjs/eslint-plugin-nextjs` with TypeScript and ESLint v9 support
+- **js-style-kit** (`packages/style-kit/`) - The main package providing oxlint and oxfmt configurations
+- **typescript-config** (`packages/typescript-config/`) - Shared TypeScript configurations
 
 ## Common Development Commands
 
@@ -67,16 +69,10 @@ bun run changeset
 ### Single Package Development
 
 ```bash
-# For style-kit package
 cd packages/style-kit
 bun run build
 bun run test
 bun run typecheck
-
-# For eslint-plugin-nextjs package
-cd packages/eslint-plugin-nextjs
-bun run build
-bun run test
 ```
 
 ## Architecture Overview
@@ -84,40 +80,34 @@ bun run test
 ### Monorepo Structure
 
 - **Root workspace** - Manages shared dependencies and scripts
-- **packages/style-kit/** - Core ESLint/Prettier configuration system
-- **packages/eslint-plugin-nextjs/** - Next.js ESLint plugin
+- **packages/style-kit/** - Core oxlint/oxfmt configuration system
 - **packages/typescript-config/** - Shared TypeScript configurations
-- **apps/** - Test applications for validating configurations
-- **docs/** - Documentation site built with Mintlify
+- **apps/** - Test applications for validating configurations (`next-test-app`, `vite-test-app`; a `vite-plus-test-app` is planned)
 
 ### Style-Kit Architecture
 
-The main package (`packages/style-kit/`) follows a modular configuration system:
+The main package (`packages/style-kit/`) exposes three factories:
 
-- **src/eslint/** - ESLint configuration modules organized by plugin/feature
-  - Each plugin has its own subdirectory (base/, import/, react/, etc.)
-  - Configurations are composable and can be enabled/disabled via options
-- **src/prettier/** - Prettier configuration with plugin support
-- **bin/** - CLI tool for initializing projects with the style guide
+- `oxlintConfig(options)` — returns a single oxlint config object (with `overrides[]` for file-pattern scoping)
+- `oxfmtConfig(options)` — returns an oxfmt config object
+- `styleKit(options)` — unified entry point that takes shared options (tailwind, react framework, etc.) and returns `{ oxlint, oxfmt }`, so a Vite+ user can wire both inline in `vite.config.ts`
+
+Consumer surface:
+
+- Standalone `oxlint.config.ts` / `oxfmt.config.ts` calling the matching factory
+- Vite+ users call `styleKit()` inside `vite.config.ts`
 
 Key files:
 
-- `src/index.ts` - Main entry point exporting ESLint and Prettier configs
-- `src/eslint/index.ts` - Main ESLint configuration factory function
-- `bin/index.ts` - CLI tool for project initialization
-
-### ESLint Plugin NextJS Architecture
-
-The NextJS plugin (`packages/eslint-plugin-nextjs/`) structure:
-
-- **src/rules/** - Individual ESLint rule implementations
-- **src/utils/** - Shared utilities for rules
-- **test/** - Comprehensive test suites including custom pages structures
+- `src/index.ts` - Main entry point
+- `src/oxlint/index.ts` - oxlint factory
+- `src/oxfmt/index.ts` - oxfmt factory
+- `bin/index.ts` - CLI for project initialization (detects Vite+ vs standalone path)
 
 ## Build System
 
-- **Turborepo** - Manages build pipeline and caching
-- **tsup** - TypeScript bundler for packages
+- **Turborepo** - Build pipeline and caching
+- **tsup** - TypeScript bundler
 - **Bun** - Package manager and test runner
 - **Changesets** - Version management and changelog generation
 
@@ -131,8 +121,8 @@ The NextJS plugin (`packages/eslint-plugin-nextjs/`) structure:
 
 - **Bun test** - Primary test runner
 - **Coverage reporting** - LCOV format for CI integration
-- **ESLint rule testing** - Uses custom rule test utilities
-- **Integration testing** - Test apps validate real-world usage
+- **Shape tests** - Assert factory output structure (rules present, overrides shaped correctly)
+- **Integration tests** - Run oxlint and oxfmt against the apps in `apps/` against known-good and known-bad fixtures
 
 ## CI/CD Pipeline
 
